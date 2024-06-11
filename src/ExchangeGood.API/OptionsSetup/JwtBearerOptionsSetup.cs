@@ -1,0 +1,27 @@
+﻿using System.Text;
+using ExchangeGood.Service.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+
+namespace ExchangeGood.API.OptionsSetup;
+
+public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
+{
+    private readonly JwtOptions _options;
+    public JwtBearerOptionsSetup(IOptions<JwtOptions> options)
+    {
+        _options = options.Value;
+    }
+
+    public void Configure(JwtBearerOptions options)
+    {
+        options.TokenValidationParameters.ValidateIssuer = false;
+        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters.ValidateIssuerSigningKey = true;
+        options.TokenValidationParameters.IssuerSigningKey =
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
+    }
+
+    public void Configure(string name, JwtBearerOptions options) => Configure(options);
+}

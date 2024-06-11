@@ -1,0 +1,19 @@
+﻿using ExchangeGood.Contract.Common;
+using ExchangeGood.Contract.DTOs;
+using ExchangeGood.Contract.Payloads.Request.Product;
+using ExchangeGood.Contract.Payloads.Response;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ExchangeGood.Repository.Interfaces {
+    public interface IProductRepository { // Return DTOs
+        public Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
+        public Task<ProductDto> GetProduct(int productId);
+        public Task<int> AddProduct(CreateProductRequest productRequest);
+        public Task<int> UpdateProduct(UpdateProductRequest prodductRequest);
+        public Task DeleteProduct(int productId);
+    } 
+}
