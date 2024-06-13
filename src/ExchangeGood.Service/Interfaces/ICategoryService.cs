@@ -13,6 +13,7 @@ namespace ExchangeGood.Service.Interfaces
 	{
 		public Task<BaseResponse> GetAllCategories();
 		public Task<BaseResponse> GetCategoryByID(int id);
+		public Task<BaseResponse> GetCategoryByName(string name);
 		public Task<BaseResponse> AddCategory(CreateCategoryRequest createCategory);
 		public Task<BaseResponse> UpdateCategory(UpdateCategoryRequest updateCategory);
 		public Task<BaseResponse> DeleteCategory(int id);

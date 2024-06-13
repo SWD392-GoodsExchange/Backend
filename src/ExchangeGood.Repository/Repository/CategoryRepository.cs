@@ -29,6 +29,12 @@ namespace ExchangeGood.Repository.Repository
 
 		public async Task<int> AddCategory(CreateCategoryRequest createCategory)
 		{
+			var existingCategory = await GetCategoryByName(createCategory.CategoryName);
+			if (existingCategory != null)
+			{
+				return existingCategory.CateId;
+			}
+
 			var category = _mapper.Map<Category>(createCategory);
 			_uow.CategoryDAO.AddCategory(category);
 
@@ -61,6 +67,12 @@ namespace ExchangeGood.Repository.Repository
 		public async Task<CategoryDto> GetCategoryByID(int id)
 		{
 			var category = await _uow.CategoryDAO.GetCategoryByIdAsync(id);
+			return _mapper.Map<CategoryDto>(category);
+		}
+
+		public async Task<CategoryDto> GetCategoryByName(string name)
+		{
+			var category = await _uow.CategoryDAO.GetCategoryByNameAsync(name);
 			return _mapper.Map<CategoryDto>(category);
 		}
 

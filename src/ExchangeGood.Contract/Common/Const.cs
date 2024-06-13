@@ -34,6 +34,7 @@ namespace ExchangeGood.Contract.Common {
         public static string FAIL_READ_MSG = "Get data fail";
         public static string FAIL_UPDATE_MSG = "Update data fail";
         public static string FAIL_DELETE_MSG = "Delete data fail";
+        public static string FAIL_DUPLCATE_MSG = "Duplicate data";
 
         #endregion
 
