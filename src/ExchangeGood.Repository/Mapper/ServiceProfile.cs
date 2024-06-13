@@ -13,7 +13,8 @@ namespace ExchangeGood.Repository.Mapper {
     public class ServiceProfile : Profile {
         public ServiceProfile() {
             CreateMap<Product, ProductDto>();
-            CreateMap<Member, MemberDto>();
+			CreateMap<Category, CategoryDto>();
+			CreateMap<Member, MemberDto>();
             CreateMap<CreateProductRequest, Product>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => decimal.Parse(src.Price)));
             CreateMap<UpdateProductRequest, Product>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => decimal.Parse(src.Price)));
         }
