@@ -13,7 +13,8 @@ namespace ExchangeGood.Service.Extensions {
     public static class ServiceCollectionExtensions {
         public static IServiceCollection AddServiceLayer(this IServiceCollection services) {
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IMemberService, MemberService>();
+			services.AddScoped<ICategoryService, CategoryService>();
+			services.AddScoped<IMemberService, MemberService>();
             services.AddScoped<IJwtProvider, JwtProvider>();
             return services;
         }
