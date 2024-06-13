@@ -22,14 +22,20 @@ namespace ExchangeGood.DAO {
             return await _context.Products.FindAsync(id);
         }
 
-        public IQueryable<Product> GetProducts(string keyword) {
+        public IQueryable<Product> GetProducts(string? keyword, string orderBy) {
             var query = _context.Products
                 .Include(p => p.Cate)
                 .AsQueryable();
 
             // Add another logic later
-            query = query.Where(x => x.Title == keyword);
-            query = query.Where(x => x.Cate.CateName == keyword);
+            if(!string.IsNullOrEmpty(keyword)) {
+                query = query.Where(x => x.Title.ToLower().Contains(keyword.ToLower().Trim()));
+            }
+
+            query = orderBy switch {
+                "created" => query.OrderByDescending(u => u.CreatedTime),
+                _ => query.OrderByDescending(u => u.UpdatedTime)
+            };
 
             // Add thu tu cua list later
 

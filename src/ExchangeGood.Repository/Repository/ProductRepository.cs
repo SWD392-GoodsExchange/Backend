@@ -41,7 +41,7 @@ namespace ExchangeGood.Repository.Repository
         }
 
         public async Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams) {
-            var query = _uow.ProductDAO.GetProducts(productParams.Keyword);
+            var query = _uow.ProductDAO.GetProducts(productParams.Keyword, productParams.OrderBy);
 
             var result = await PagedList<ProductDto>.CreateAsync(query.ProjectTo<ProductDto>(_mapper.ConfigurationProvider),
             productParams.PageNumber, productParams.PageSize);

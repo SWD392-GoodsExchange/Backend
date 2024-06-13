@@ -11,20 +11,18 @@ namespace ExchangeGood.Repository.Repository;
 
 public class MemberRepository : IMemberRepository
 {
-    private readonly MemberDAO _dao;
     private readonly IUnitOfWork _uow;
     private readonly IMapper _mapper;
 
-    public MemberRepository(MemberDAO dao, IUnitOfWork uow, IMapper mapper)
+    public MemberRepository(IUnitOfWork uow, IMapper mapper)
     {
-        _dao = dao;
         _uow = uow;
         _mapper = mapper;
     }
 
     public async Task<PagedList<MemberDto>> GetMembers(GetMembersQuery getMembersQuery)
     {
-        var query = _dao.GetAllMembers(getMembersQuery.SearchTerm, getMembersQuery.SortColumn,
+        var query = _uow.MemberDAO.GetAllMembers(getMembersQuery.SearchTerm, getMembersQuery.SortColumn,
             getMembersQuery.SortOrder);
         var result = await PagedList<MemberDto>.CreateAsync(query.ProjectTo<MemberDto>(_mapper.ConfigurationProvider),
             getMembersQuery.PageNumber,getMembersQuery.PageSize);
