@@ -26,6 +26,10 @@ namespace ExchangeGood.DAO
 		{
 			return await _context.Categories.FindAsync(id);
 		}
+		public async Task<Category> GetCategoryByNameAsync(string cateName)
+		{
+			return await _context.Categories.FirstOrDefaultAsync(c => c.CateName == cateName);
+		}
 
 		public IQueryable<Category> GetCategories()
 		{

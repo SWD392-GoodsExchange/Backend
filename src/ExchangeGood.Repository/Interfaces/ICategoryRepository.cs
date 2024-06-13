@@ -13,7 +13,8 @@ namespace ExchangeGood.Repository.Interfaces
 	{
 		public Task<List<CategoryDto>> GetAllCategories();
 		public Task<CategoryDto> GetCategoryByID(int id);
-		public Task<int> AddCategory(CreateCategoryRequest  createCategory);
+		public Task<CategoryDto> GetCategoryByName(string name);
+		public Task<int> AddCategory(CreateCategoryRequest createCategory);
 		public Task<int> UpdateCategory(UpdateCategoryRequest updateCategory);	
 		public Task DeleteCategory(int id);
 

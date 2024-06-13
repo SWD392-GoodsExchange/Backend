@@ -24,14 +24,30 @@ namespace ExchangeGood.Service.UseCase
 		}
 		public async Task<BaseResponse> AddCategory(CreateCategoryRequest createCategory)
 		{
+			var existingCategory = await _categoryRepository.GetCategoryByName(createCategory.CategoryName);
+			if (existingCategory != null)
+			{
+				return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_DUPLCATE_MSG);
+			}
+
 			await _categoryRepository.AddCategory(createCategory);
-			return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
+			return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, createCategory);
 		}
+
 
 		public async Task<BaseResponse> DeleteCategory(int id)
 		{
-			await _categoryRepository.DeleteCategory(id);
-			return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
+			var result = await _categoryRepository.GetCategoryByID(id);
+
+			if (result != null)
+			{
+				await _categoryRepository.DeleteCategory(id);
+				return BaseResponse.Success(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG, result);
+			}
+			else
+			{
+				return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_DELETE_MSG);
+			}
 		}
 
 		public async Task<BaseResponse> GetAllCategories()
@@ -52,10 +68,31 @@ namespace ExchangeGood.Service.UseCase
 			return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
 		}
 
+		public async Task<BaseResponse> GetCategoryByName(string name)
+		{
+			var result = await _categoryRepository.GetCategoryByName(name);
+
+			if (result != null)
+			{
+				return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+			}
+
+			return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
+		}
+
 		public async Task<BaseResponse> UpdateCategory(UpdateCategoryRequest updateCategory)
 		{
-			await _categoryRepository.UpdateCategory(updateCategory);
-			return BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
+			var result = await _categoryRepository.GetCategoryByID(updateCategory.CategoryId);
+
+			if (result != null)
+			{
+				await _categoryRepository.UpdateCategory(updateCategory);
+				return BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, updateCategory);
+			}
+			else
+			{
+				return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG);
+			}
 		}
 	}
 }
