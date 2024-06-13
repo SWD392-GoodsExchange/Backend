@@ -14,7 +14,7 @@ namespace ExchangeGood.Repository.Extensions {
             services.AddAutoMapper(typeof(ServiceProfile));
 
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IMemberRepository,MemberRepository>();
+            services.AddScoped<IMemberRepository, MemberRepository>();
             return services; 
         }
     }

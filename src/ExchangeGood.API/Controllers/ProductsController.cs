@@ -11,7 +11,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts([FromQuery]ProductParams productParams) {
+        public async Task<IActionResult> GetProducts([FromQuery] ProductParams productParams) {
             var response = await _productService.GetAllProducts(productParams);
             if(response.Data != null) {
                 return Ok(response);
