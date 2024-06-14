@@ -1,0 +1,56 @@
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using ExchangeGood.Service.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ExchangeGood.Service.Services {
+    public class PhotoService : IPhotoService {
+        private readonly Cloudinary _cloudinary;
+
+        public PhotoService(IOptions<CloudinarySettings> config)
+        {
+            // create a account by ctor
+            var acc = new Account
+            (
+                config.Value.CloudName,
+                config.Value.ApiKey,
+                config.Value.ApiSecret
+            );
+
+            // set up an account(sign up) to the Cloudinary thirdparty Service.
+            _cloudinary = new Cloudinary(acc);
+        }
+
+        public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file) {
+            var uploadResult = new ImageUploadResult();
+
+            if (file.Length > 0) {
+                using var stream = file.OpenReadStream();
+                var uploadParams = new ImageUploadParams {
+                    File = new FileDescription(file.FileName, stream),
+                    Transformation = new Transformation().AspectRatio("1.0").Height(250).Crop("fill").Chain(),
+                    Folder = "swd-392"
+                };
+
+                // i have tip to remember the thirdparty service.
+                // just think this service is the special object of our app
+                // this object has some method to push/operation the infomation(params) here into there server.
+                uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            }
+
+            return uploadResult;
+        }
+
+        public async Task<DeletionResult> DeletePhotoAsync(string publicId) {
+            var deleteParams = new DeletionParams(publicId);
+
+            return await _cloudinary.DestroyAsync(deleteParams);
+        }
+    }
+}
