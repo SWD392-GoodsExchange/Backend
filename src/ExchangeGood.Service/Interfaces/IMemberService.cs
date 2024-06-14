@@ -6,4 +6,5 @@ namespace ExchangeGood.Service.Interfaces;
 public interface IMemberService
 {
     Task<BaseResponse> GetAllMembers(GetMembersQuery getMembersQuery);
+    Task<BaseResponse> CreateMember(CreateMemberRequest createMemberRequest);
 }

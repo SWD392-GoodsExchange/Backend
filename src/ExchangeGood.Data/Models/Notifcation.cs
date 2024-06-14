@@ -5,15 +5,14 @@ using System.Collections.Generic;
 
 namespace ExchangeGood.Data.Models
 {
-    public partial class Report
+    public partial class Notifcation
     {
-        public int ReportId { get; set; }
+        public int NotificationId { get; set; }
         public string FeId { get; set; }
-        public int ProductId { get; set; }
-        public string Message { get; set; }
-        public string Status { get; set; }
+        public string Content { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string Type { get; set; }
 
         public virtual Member Fe { get; set; }
-        public virtual Product Product { get; set; }
     }
 }

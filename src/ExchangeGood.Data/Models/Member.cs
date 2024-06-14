@@ -3,43 +3,40 @@
 using System;
 using System.Collections.Generic;
 
-namespace ExchangeGood.Data.Models;
-
-public partial class Member
+namespace ExchangeGood.Data.Models
 {
-    public string FeId { get; set; }
+    public partial class Member
+    {
+        public Member()
+        {
+            Bookmarks = new HashSet<Bookmark>();
+            Comments = new HashSet<Comment>();
+            Notifcations = new HashSet<Notifcation>();
+            Orders = new HashSet<Order>();
+            Products = new HashSet<Product>();
+            Reports = new HashSet<Report>();
+        }
 
-    public int? RoleId { get; set; }
+        public string FeId { get; set; }
+        public int RoleId { get; set; }
+        public string UserName { get; set; }
+        public byte[] PasswordSalt { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public string Address { get; set; }
+        public string Gender { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public DateTime CreatedTime { get; set; }
+        public DateTime UpdatedTime { get; set; }
+        public string Status { get; set; }
+        public DateTime? Dob { get; set; }
 
-    public string UserName { get; set; }
-
-    public string Password { get; set; }
-
-    public string Address { get; set; }
-
-    public string Gender { get; set; }
-
-    public string Email { get; set; }
-
-    public string Phone { get; set; }
-
-    public DateTime CreatedTime { get; set; }
-
-    public DateTime UpdatedTime { get; set; }
-
-    public string Status { get; set; }
-
-    public DateTime? Dob { get; set; }
-
-    public virtual ICollection<Bookmark> Bookmarks { get; set; } = new List<Bookmark>();
-
-    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
-
-    public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
-
-    public virtual Role Role { get; set; }
+        public virtual Role Role { get; set; }
+        public virtual ICollection<Bookmark> Bookmarks { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Notifcation> Notifcations { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Report> Reports { get; set; }
+    }
 }

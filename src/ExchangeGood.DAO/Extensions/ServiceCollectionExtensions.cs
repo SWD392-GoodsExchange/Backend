@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExchangeGood.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExchangeGood.DAO.Extensions {

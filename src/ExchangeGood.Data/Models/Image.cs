@@ -3,17 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace ExchangeGood.Data.Models;
-
-public partial class Image
+namespace ExchangeGood.Data.Models
 {
-    public int ImageId { get; set; }
+    public partial class Image
+    {
+        public int ImageId { get; set; }
+        public string ImageUrl { get; set; }
+        public int ProductId { get; set; }
+        public string PublicId { get; set; }
 
-    public string ImageUrl { get; set; }
-
-    public int ProductId { get; set; }
-
-    public string PublicId { get; set; }
-
-    public virtual Product Product { get; set; }
+        public virtual Product Product { get; set; }
+    }
 }

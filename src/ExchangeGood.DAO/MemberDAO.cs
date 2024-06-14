@@ -13,6 +13,10 @@ public class MemberDAO
         _context = context;
     }
 
+    public async Task<Member> GetMemberById(string feId)
+    {
+        return await _context.Members.FindAsync(feId);
+    }
     public IQueryable<Member> GetAllMembers(string? searchTerm, string? sortColumn, string? sortOrder)
     {
         IQueryable<Member> membersQuery = _context.Members;
@@ -49,7 +53,12 @@ public class MemberDAO
         _context.Members.Update(member);
     }
 
+    public void Add(Member member)
+    {
+        _context.Members.Add(member);
+    }
     public void Delete(Member member)
     {
+        _context.Members.Remove(member);
     }
 }
