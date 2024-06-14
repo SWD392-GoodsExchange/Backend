@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 namespace ExchangeGood.DAO {
     public interface IUnitOfWork {
         public ProductDAO ProductDAO { get; }
-        Task SaveChangesAsync(CancellationToken cancellationToken = default);
+        public MemberDAO MemberDAO { get; }
+        public CategoryDAO CategoryDAO { get; }
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default);
+        public Task<int> SaveChangesWithTransactionAsync();
     }
 }
