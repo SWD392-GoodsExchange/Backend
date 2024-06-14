@@ -9,10 +9,12 @@ namespace ExchangeGood.Service.UseCase;
 public class MemberService : IMemberService
 {
     private readonly IMemberRepository _memberRepository;
+    private readonly IJwtProvider _jwtProvider;
 
-    public MemberService(IMemberRepository memberRepository)
+    public MemberService(IMemberRepository memberRepository, IJwtProvider jwtProvider)
     {
         _memberRepository = memberRepository;
+        _jwtProvider = jwtProvider;
     }
 
     public async Task<BaseResponse> GetAllMembers(GetMembersQuery getMembersQuery)
@@ -22,5 +24,10 @@ public class MemberService : IMemberService
             ? BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result)
             : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
     }
-    
+
+    public async Task<BaseResponse> CreateMember(CreateMemberRequest createMemberRequest)
+    {
+        var memberFeId = await _memberRepository.CreateMember(createMemberRequest);
+        return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, memberFeId);
+    }
 }

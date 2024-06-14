@@ -16,9 +16,9 @@ namespace ExchangeGood.DAO {
             _context = context;
         }
 
-        public CategoryDAO CategoryDAO => _categoryDAO ??= new CategoryDAO(_context);
-		public ProductDAO ProductDAO => _productDAO ??= new ProductDAO(_context);
-        public MemberDAO MemberDAO => _memberDAO ??= new MemberDAO(_context);
+        public CategoryDAO CategoryDAO => _categoryDAO = new CategoryDAO(_context);
+		public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
+        public MemberDAO MemberDAO => _memberDAO = new MemberDAO(_context);
 
         public Task SaveChangesAsync(CancellationToken cancellationToken = default) {
             return _context.SaveChangesAsync(cancellationToken);

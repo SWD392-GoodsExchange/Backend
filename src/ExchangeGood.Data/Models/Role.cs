@@ -3,13 +3,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace ExchangeGood.Data.Models;
-
-public partial class Role
+namespace ExchangeGood.Data.Models
 {
-    public int RoleId { get; set; }
+    public partial class Role
+    {
+        public Role()
+        {
+            Members = new HashSet<Member>();
+        }
 
-    public string RoleName { get; set; }
+        public int RoleId { get; set; }
+        public string RoleName { get; set; }
 
-    public virtual ICollection<Member> Members { get; set; } = new List<Member>();
+        public virtual ICollection<Member> Members { get; set; }
+    }
 }

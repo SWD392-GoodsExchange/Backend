@@ -1,5 +1,5 @@
 ﻿{
-   "CodeGenerationMode": 3,
+   "CodeGenerationMode": 2,
    "ContextClassName": "GoodsExchangeContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
@@ -32,6 +32,10 @@
       },
       {
          "Name": "[dbo].[Member]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Notifcation]",
          "ObjectType": 0
       },
       {

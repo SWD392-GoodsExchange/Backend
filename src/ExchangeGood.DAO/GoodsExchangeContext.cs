@@ -4,298 +4,377 @@ using System;
 using System.Collections.Generic;
 using ExchangeGood.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace ExchangeGood.DAO;
-
-public partial class GoodsExchangeContext : DbContext
+namespace ExchangeGood.DAO
 {
-    public GoodsExchangeContext(DbContextOptions<GoodsExchangeContext> options)
-        : base(options)
+    public partial class GoodsExchangeContext : DbContext
     {
+        public GoodsExchangeContext()
+        {
+        }
+
+        public GoodsExchangeContext(DbContextOptions<GoodsExchangeContext> options)
+            : base(options)
+        {
+        }
+
+        public virtual DbSet<Bookmark> Bookmarks { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<Member> Members { get; set; }
+        public virtual DbSet<Notifcation> Notifcations { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Report> Reports { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Bookmark>(entity =>
+            {
+                entity.HasKey(e => new { e.ProductId, e.FeId })
+                    .HasName("PK__Bookmark__D767AE40C712D5D8");
+
+                entity.ToTable("Bookmark");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.FeId)
+                    .HasMaxLength(8)
+                    .HasColumnName("FeID");
+
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Fe)
+                    .WithMany(p => p.Bookmarks)
+                    .HasForeignKey(d => d.FeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Bookmark__FeID__4CA06362");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Bookmarks)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Bookmark__Produc__4BAC3F29");
+            });
+
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.HasKey(e => e.CateId)
+                    .HasName("PK__Category__27638D74A9B022D9");
+
+                entity.ToTable("Category");
+
+                entity.Property(e => e.CateId).HasColumnName("CateID");
+
+                entity.Property(e => e.CateName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.ToTable("Comment");
+
+                entity.Property(e => e.CommentId).HasColumnName("CommentID");
+
+                entity.Property(e => e.Content)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.FeId)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .HasColumnName("FeID");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.HasOne(d => d.Fe)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.FeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Comment__FeID__4F7CD00D");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Comment__Product__5070F446");
+            });
+
+            modelBuilder.Entity<Image>(entity =>
+            {
+                entity.ToTable("Image");
+
+                entity.Property(e => e.ImageId).HasColumnName("ImageID");
+
+                entity.Property(e => e.ImageUrl)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.PublicId)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("PublicID");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Images)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Image__ProductID__4222D4EF");
+            });
+
+            modelBuilder.Entity<Member>(entity =>
+            {
+                entity.HasKey(e => e.FeId)
+                    .HasName("PK__Member__36B68AD7093CEFF1");
+
+                entity.ToTable("Member");
+
+                entity.Property(e => e.FeId)
+                    .HasMaxLength(8)
+                    .HasColumnName("FeID");
+
+                entity.Property(e => e.Address)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Dob).HasColumnType("date");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Gender)
+                    .IsRequired()
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.PasswordHash)
+                    .IsRequired()
+                    .HasMaxLength(128);
+
+                entity.Property(e => e.PasswordSalt)
+                    .IsRequired()
+                    .HasMaxLength(128);
+
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasMaxLength(15);
+
+                entity.Property(e => e.RoleId).HasColumnName("RoleID");
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.UserName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.Members)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Member__RoleID__398D8EEE");
+            });
+
+            modelBuilder.Entity<Notifcation>(entity =>
+            {
+                entity.HasKey(e => e.NotificationId)
+                    .HasName("PK__Notifcat__20CF2E32D877B441");
+
+                entity.ToTable("Notifcation");
+
+                entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
+
+                entity.Property(e => e.Content)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.FeId)
+                    .HasMaxLength(8)
+                    .HasColumnName("FeID");
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.Fe)
+                    .WithMany(p => p.Notifcations)
+                    .HasForeignKey(d => d.FeId)
+                    .HasConstraintName("FK__Notifcatio__FeID__571DF1D5");
+            });
+
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.ToTable("Order");
+
+                entity.Property(e => e.OrderId).HasColumnName("OrderID");
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.FeId)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .HasColumnName("FeID");
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Fe)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.FeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Order__FeID__44FF419A");
+            });
+
+            modelBuilder.Entity<OrderDetail>(entity =>
+            {
+                entity.ToTable("OrderDetail");
+
+                entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
+
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.OrderId).HasColumnName("OrderID");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__OrderDeta__Order__47DBAE45");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__OrderDeta__Produ__48CFD27E");
+            });
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.ToTable("Product");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.CateId).HasColumnName("CateID");
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.FeId)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .HasColumnName("FeID");
+
+                entity.Property(e => e.Origin)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.UsageInformation)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.Cate)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.CateId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Product__CateID__3F466844");
+
+                entity.HasOne(d => d.Fe)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.FeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Product__FeID__3E52440B");
+            });
+
+            modelBuilder.Entity<Report>(entity =>
+            {
+                entity.ToTable("Report");
+
+                entity.Property(e => e.ReportId).HasColumnName("ReportID");
+
+                entity.Property(e => e.FeId)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .HasColumnName("FeID");
+
+                entity.Property(e => e.Message)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.Fe)
+                    .WithMany(p => p.Reports)
+                    .HasForeignKey(d => d.FeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Report__FeID__534D60F1");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Reports)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Report__ProductI__5441852A");
+            });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.ToTable("Role");
+
+                entity.Property(e => e.RoleId).HasColumnName("RoleID");
+
+                entity.Property(e => e.RoleName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
+
+            OnModelCreatingPartial(modelBuilder);
+        }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
-
-    public virtual DbSet<Bookmark> Bookmarks { get; set; }
-
-    public virtual DbSet<Category> Categories { get; set; }
-
-    public virtual DbSet<Comment> Comments { get; set; }
-
-    public virtual DbSet<Image> Images { get; set; }
-
-    public virtual DbSet<Member> Members { get; set; }
-
-    public virtual DbSet<Order> Orders { get; set; }
-
-    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-
-    public virtual DbSet<Product> Products { get; set; }
-
-    public virtual DbSet<Report> Reports { get; set; }
-
-    public virtual DbSet<Role> Roles { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Bookmark>(entity =>
-        {
-            entity.HasKey(e => new { e.ProductId, e.FeId }).HasName("PK__Bookmark__D767AE40533BB0DE");
-
-            entity.ToTable("Bookmark");
-
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.FeId)
-                .HasMaxLength(8)
-                .HasColumnName("FeID");
-            entity.Property(e => e.CreateTime).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Fe).WithMany(p => p.Bookmarks)
-                .HasForeignKey(d => d.FeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Bookmark__FeID__4CA06362");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.Bookmarks)
-                .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Bookmark__Produc__4BAC3F29");
-        });
-
-        modelBuilder.Entity<Category>(entity =>
-        {
-            entity.HasKey(e => e.CateId).HasName("PK__Category__27638D74A0CB2846");
-
-            entity.ToTable("Category");
-
-            entity.Property(e => e.CateId).HasColumnName("CateID");
-            entity.Property(e => e.CateName)
-                .IsRequired()
-                .HasMaxLength(100);
-        });
-
-        modelBuilder.Entity<Comment>(entity =>
-        {
-            entity.HasKey(e => e.CommentId).HasName("PK__Comment__C3B4DFAAADC94D02");
-
-            entity.ToTable("Comment");
-
-            entity.Property(e => e.CommentId).HasColumnName("CommentID");
-            entity.Property(e => e.Content)
-                .IsRequired()
-                .HasMaxLength(255);
-            entity.Property(e => e.CreatedTime).HasColumnType("datetime");
-            entity.Property(e => e.FeId)
-                .IsRequired()
-                .HasMaxLength(8)
-                .HasColumnName("FeID");
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
-
-            entity.HasOne(d => d.Fe).WithMany(p => p.Comments)
-                .HasForeignKey(d => d.FeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Comment__FeID__4F7CD00D");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.Comments)
-                .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Comment__Product__5070F446");
-        });
-
-        modelBuilder.Entity<Image>(entity =>
-        {
-            entity.HasKey(e => e.ImageId).HasName("PK__Image__7516F4ECB436FCEB");
-
-            entity.ToTable("Image");
-
-            entity.Property(e => e.ImageId).HasColumnName("ImageID");
-            entity.Property(e => e.ImageUrl)
-                .IsRequired()
-                .HasMaxLength(255);
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.PublicId)
-                .IsRequired()
-                .HasMaxLength(50)
-                .HasColumnName("PublicID");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.Images)
-                .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Image__ProductID__4222D4EF");
-        });
-
-        modelBuilder.Entity<Member>(entity =>
-        {
-            entity.HasKey(e => e.FeId).HasName("PK__Member__36B68AD75F80774E");
-
-            entity.ToTable("Member");
-
-            entity.Property(e => e.FeId)
-                .HasMaxLength(8)
-                .HasColumnName("FeID");
-            entity.Property(e => e.Address)
-                .IsRequired()
-                .HasMaxLength(255);
-            entity.Property(e => e.CreatedTime).HasColumnType("datetime");
-            entity.Property(e => e.Dob).HasColumnType("date");
-            entity.Property(e => e.Email)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.Property(e => e.Gender)
-                .IsRequired()
-                .HasMaxLength(10);
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.Property(e => e.Phone)
-                .IsRequired()
-                .HasMaxLength(15);
-            entity.Property(e => e.RoleId).HasColumnName("RoleID");
-            entity.Property(e => e.Status)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
-            entity.Property(e => e.UserName)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            entity.HasOne(d => d.Role).WithMany(p => p.Members)
-                .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__Member__RoleID__398D8EEE");
-        });
-
-        modelBuilder.Entity<Order>(entity =>
-        {
-            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BAF4A762270");
-
-            entity.ToTable("Order");
-
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.CreatedTime).HasColumnType("datetime");
-            entity.Property(e => e.FeId)
-                .IsRequired()
-                .HasMaxLength(8)
-                .HasColumnName("FeID");
-            entity.Property(e => e.Status)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.Type)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Fe).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.FeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Order__FeID__44FF419A");
-        });
-
-        modelBuilder.Entity<OrderDetail>(entity =>
-        {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CF5B20302");
-
-            entity.ToTable("OrderDetail");
-
-            entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
-            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.Status)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
-                .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Order__47DBAE45");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
-                .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Produ__48CFD27E");
-        });
-
-        modelBuilder.Entity<Product>(entity =>
-        {
-            entity.HasKey(e => e.ProductId).HasName("PK__Product__B40CC6ED5A5AFC96");
-
-            entity.ToTable("Product");
-
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.CateId).HasColumnName("CateID");
-            entity.Property(e => e.CreatedTime).HasColumnType("datetime");
-            entity.Property(e => e.FeId)
-                .IsRequired()
-                .HasMaxLength(8)
-                .HasColumnName("FeID");
-            entity.Property(e => e.Origin)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.Status)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.Title)
-                .IsRequired()
-                .HasMaxLength(255);
-            entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
-            entity.Property(e => e.UsageInformation)
-                .IsRequired()
-                .HasMaxLength(255);
-
-            entity.HasOne(d => d.Cate).WithMany(p => p.Products)
-                .HasForeignKey(d => d.CateId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Product__CateID__3F466844");
-
-            entity.HasOne(d => d.Fe).WithMany(p => p.Products)
-                .HasForeignKey(d => d.FeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Product__FeID__3E52440B");
-        });
-
-        modelBuilder.Entity<Report>(entity =>
-        {
-            entity.HasKey(e => e.ReportId).HasName("PK__Report__D5BD48E57518742A");
-
-            entity.ToTable("Report");
-
-            entity.Property(e => e.ReportId).HasColumnName("ReportID");
-            entity.Property(e => e.FeId)
-                .IsRequired()
-                .HasMaxLength(8)
-                .HasColumnName("FeID");
-            entity.Property(e => e.Message)
-                .IsRequired()
-                .HasMaxLength(255);
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.Status)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            entity.HasOne(d => d.Fe).WithMany(p => p.Reports)
-                .HasForeignKey(d => d.FeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Report__FeID__534D60F1");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.Reports)
-                .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Report__ProductI__5441852A");
-        });
-
-        modelBuilder.Entity<Role>(entity =>
-        {
-            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE3AFEB529AB");
-
-            entity.ToTable("Role");
-
-            entity.Property(e => e.RoleId).HasColumnName("RoleID");
-            entity.Property(e => e.RoleName)
-                .IsRequired()
-                .HasMaxLength(100);
-        });
-
-        OnModelCreatingPartial(modelBuilder);
-    }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
