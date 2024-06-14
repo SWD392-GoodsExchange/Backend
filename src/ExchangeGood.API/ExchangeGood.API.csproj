@@ -20,4 +20,11 @@
     <ProjectReference Include="..\ExchangeGood.Service\ExchangeGood.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="SeedData\Category.json" />
+    <None Include="SeedData\Member.json" />
+    <None Include="SeedData\Product.json" />
+    <None Include="SeedData\Role.json" />
+  </ItemGroup>
+
 </Project>

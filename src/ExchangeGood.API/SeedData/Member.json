@@ -1,0 +1,62 @@
+[
+  {
+    "FeID": "SE173531",
+    "RoleID": 1,
+    "UserName": "john_doe",
+    "Address": "123 Main St, Cityville",
+    "Gender": "Male",
+    "Email": "john.doe@example.com",
+    "Phone": "01234567890",
+    "Dob": "1990-01-01"
+  },
+  {
+    "FeID": "SE182732",
+    "RoleID": 1,
+    "UserName": "jane_smith",
+    "Address": "456 Oak Ave, Townsville",
+    "Gender": "Female",
+    "Email": "jane.smith@example.com",
+    "Phone": "01987654321",
+    "Dob": "1985-05-15"
+  },
+  {
+    "FeID": "QE188271",
+    "RoleID": 1,
+    "UserName": "alice jones",
+    "Address": "789 Pine Rd, Villageville",
+    "Gender": "Female",
+    "Email": "alice.jones@example.com",
+    "Phone": "01098765432",
+    "Dob": "1992-12-25"
+  },
+  {
+    "FeID": "HS173621",
+    "RoleID": 3,
+    "UserName": "bob brown",
+    "Address": "101 Maple Ln, Hamletville",
+    "Gender": "Male",
+    "Email": "bob.brown@example.com",
+    "Phone": "01123456789",
+    "Dob": "1980-07-07"
+  },
+  {
+    "FeID": "QE182327",
+    "RoleID": 2,
+    "UserName": "charlie black",
+    "Address": "202 Birch St, Metropolis",
+    "Gender": "Other",
+    "Email": "charlie.black@example.com",
+    "Phone": "01222333444",
+    "Dob": "1995-03-20"
+  },
+  {
+    "FeID": "CE173621",
+    "RoleID": 3,
+    "UserName": "Hoang Huy",
+    "Address": "101 Maple Ln, Hamletville",
+    "Gender": "Male",
+    "Email": "bob.brown@example.com",
+    "Phone": "01123456789",
+    "Dob": "1980-07-07"
+  }
+]
