@@ -21,13 +21,25 @@ namespace ExchangeGood.Repository.Repository
             _mapper = mapper;
         }
 
-        public async Task<int> AddProduct(CreateProductRequest productRequest) {
+        public async Task<ProductDto> AddProduct(CreateProductRequest productRequest) {
             // vô được tới đây có nghĩa CreateProductRequest đã được Validation
-            var product = _mapper.Map<Product>(productRequest);
+            // get member
+            // get category
+            var product = _mapper.Map<Product>(productRequest); // map to create new Product
+            product.CreatedTime = DateTime.Now;
+            product.UpdatedTime = DateTime.Now;
+            Image image = new Image() {
+                PublicId = productRequest.Image.PublicId,
+                ImageUrl = productRequest.Image.Url,
+            };
+            product.Images.Add(image);
+
             _uow.ProductDAO.AddProduct(product);
 
-            await _uow.SaveChangesAsync();
-            return product.ProductId;
+            if(await _uow.SaveChangesAsync()) {
+                return _mapper.Map<ProductDto>(product);
+            }
+            return null;
         }
 
         public async Task DeleteProduct(int productId) {
@@ -41,7 +53,7 @@ namespace ExchangeGood.Repository.Repository
         }
 
         public async Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams) {
-            var query = _uow.ProductDAO.GetProducts(productParams.Keyword, productParams.OrderBy);
+            var query = _uow.ProductDAO.GetProducts(productParams.Keyword, productParams.Orderby);
 
             var result = await PagedList<ProductDto>.CreateAsync(query.ProjectTo<ProductDto>(_mapper.ConfigurationProvider),
             productParams.PageNumber, productParams.PageSize);
@@ -54,7 +66,7 @@ namespace ExchangeGood.Repository.Repository
             return _mapper.Map<ProductDto>(product);
         }
 
-        public async Task<int> UpdateProduct(UpdateProductRequest productRequest)
+        public async Task<ProductDto> UpdateProduct(UpdateProductRequest productRequest)
         {
             Product existedProduct = await _uow.ProductDAO.GetProductByIdAsync(productRequest.ProductId);
             if(existedProduct == null) {
@@ -63,8 +75,10 @@ namespace ExchangeGood.Repository.Repository
             _mapper.Map(productRequest, existedProduct);
             _uow.ProductDAO.UpdateProduct(existedProduct);
 
-            await _uow.SaveChangesAsync();
-            return existedProduct.ProductId;
+            if(await _uow.SaveChangesAsync()) {
+                return _mapper.Map<ProductDto>(existedProduct);
+            }
+            return null;
         }
     }
 }
