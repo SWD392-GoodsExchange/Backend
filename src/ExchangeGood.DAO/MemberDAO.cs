@@ -13,9 +13,15 @@ public class MemberDAO
         _context = context;
     }
 
-    public async Task<Member> GetMemberById(string feId)
+    public async Task<Member> GetMemberById(string feId, bool role =false)
     {
-        return await _context.Members.FindAsync(feId);
+        var query = _context.Members.Where(x => x.FeId == feId);
+        if (role)
+        {
+            query = query.Include(x => x.Role);
+        }
+
+        return await query.FirstOrDefaultAsync();
     }
     public IQueryable<Member> GetAllMembers(string? searchTerm, string? sortColumn, string? sortOrder)
     {

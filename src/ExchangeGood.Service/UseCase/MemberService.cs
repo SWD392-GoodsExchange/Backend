@@ -30,4 +30,11 @@ public class MemberService : IMemberService
         var memberFeId = await _memberRepository.CreateMember(createMemberRequest);
         return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, memberFeId);
     }
+
+    public async Task<BaseResponse> Login(LoginRequest loginRequest)
+    {
+        var member = await _memberRepository.CheckLogin(loginRequest);
+        var token = _jwtProvider.Generate(member);
+        return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, token);
+    }
 }

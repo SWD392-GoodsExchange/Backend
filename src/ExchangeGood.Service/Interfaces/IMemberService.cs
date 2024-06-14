@@ -7,4 +7,5 @@ public interface IMemberService
 {
     Task<BaseResponse> GetAllMembers(GetMembersQuery getMembersQuery);
     Task<BaseResponse> CreateMember(CreateMemberRequest createMemberRequest);
+    Task<BaseResponse> Login(LoginRequest loginRequest);
 }
