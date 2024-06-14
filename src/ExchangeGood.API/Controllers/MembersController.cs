@@ -23,7 +23,12 @@ namespace ExchangeGood.API.Controllers
             var result = await _memberService.GetAllMembers(getMembersQuery);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
-
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        {
+            var result = await _memberService.Login(loginRequest);
+            return Ok(result);
+        }
         [HttpPost]
         public async Task<IActionResult> CreateMember([FromBody] CreateMemberRequest createMemberRequest)
         {

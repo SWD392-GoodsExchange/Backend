@@ -28,18 +28,18 @@ public class JwtProvider : IJwtProvider
         };
         // create sign credentials
         var signingCredentials = new SigningCredentials(
-             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey))
-             , SecurityAlgorithms.Sha256);
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey))
+            , SecurityAlgorithms.HmacSha512Signature);
 
-        var token = new JwtSecurityToken(
-            _options.Issuer,
-            _options.Audience,
-            claims,
-            null,
-            DateTime.Now.AddDays(5),
-            signingCredentials
-        );
-        string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
-        return tokenValue;
+        var token = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.Now.AddDays(5),
+            SigningCredentials = signingCredentials
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var securityToken = tokenHandler.CreateToken(token);
+        var tokenResult = tokenHandler.WriteToken(securityToken);
+        return tokenResult;
     }
 }

@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography;
+using System.Text;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.DTOs;
@@ -42,9 +44,25 @@ public class MemberRepository : IMemberRepository
         return result;
     }
 
+    public async Task<Member> CheckLogin(LoginRequest loginRequest)
+    {
+        var result = await _uow.MemberDAO.GetMemberById(loginRequest.FeId, true);
+        if (result == null)
+        {
+            throw new MemberNotFoundException(loginRequest.FeId);
+        }
+        // check password
+        using var hmac = new HMACSHA512(result.PasswordSalt);
+        var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginRequest.Password));
+        for (int i = 0; i < computeHash.Length; i++)
+        {
+            if (computeHash[i] != result.PasswordHash[i]) throw new PasswordInvalidException();
+        }
+        return result;
+    }
     public async Task<string> CreateMember(CreateMemberRequest createMemberRequest)
     {
-        var existMember = await this.GetMemberById(createMemberRequest.FeId);
+        var existMember = await GetMemberById(createMemberRequest.FeId);
         if (existMember != null)
         {
             throw new ExistMemberException(createMemberRequest.FeId);
