@@ -20,8 +20,8 @@ namespace ExchangeGood.DAO {
 		public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
         public MemberDAO MemberDAO => _memberDAO = new MemberDAO(_context);
 
-        public Task SaveChangesAsync(CancellationToken cancellationToken = default) {
-            return _context.SaveChangesAsync(cancellationToken);
+        public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default) {
+            return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
 
         public async Task<int> SaveChangesWithTransactionAsync() {

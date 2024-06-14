@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.IdentityServices();
 builder.Services.AddRepositoryLayer();
-builder.Services.AddServiceLayer();
+builder.Services.AddServiceLayer(builder.Configuration);
 builder.Services.AddDAOLayer(builder.Configuration);
 
 

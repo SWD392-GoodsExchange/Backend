@@ -25,6 +25,7 @@ namespace ExchangeGood.DAO {
         public IQueryable<Product> GetProducts(string? keyword, string orderBy) {
             var query = _context.Products
                 .Include(p => p.Cate)
+                .Include(p => p.Images)
                 .AsQueryable();
 
             // Add another logic later
@@ -34,6 +35,7 @@ namespace ExchangeGood.DAO {
 
             query = orderBy switch {
                 "created" => query.OrderByDescending(u => u.CreatedTime),
+                "price" => query.OrderByDescending(u => u.Price),
                 _ => query.OrderByDescending(u => u.UpdatedTime)
             };
 

@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using ExchangeGood.Contract.Common;
+﻿using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Product;
 using ExchangeGood.Contract.Payloads.Response;
@@ -9,18 +8,33 @@ using ExchangeGood.Service.Interfaces;
 namespace ExchangeGood.Service.UseCase {
     public class ProductService : IProductService { // Return BaseResponse
         private readonly IProductRepository _productRepository;
+        private readonly IPhotoService _photoService;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IPhotoService photoService)
         {
             _productRepository = productRepository;
+            _photoService = photoService;
         }
 
         public async Task<BaseResponse> AddProduct(CreateProductRequest createProductRequest)
         {
-            // get FeId
             // Call third-party to create picture
-            await _productRepository.AddProduct(createProductRequest);
-            return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
+            var result = await _photoService.AddPhotoAsync(createProductRequest.File);
+            if(result.Error != null) {
+                throw new Exception("Upload images fail");
+            }
+            ImageDto imageDto = new ImageDto() {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId,
+            };
+            createProductRequest.Image = imageDto;
+            // create new product
+            var product = await _productRepository.AddProduct(createProductRequest);
+            if(product != null) {
+                return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, product);
+            }
+
+            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
         }
 
         public async Task<BaseResponse> DeleteProduct(int productId)
@@ -54,8 +68,11 @@ namespace ExchangeGood.Service.UseCase {
         public async Task<BaseResponse> UpdateProduct(UpdateProductRequest updateProductRequest)
         {
             // Call third-party to create picture
-            await _productRepository.UpdateProduct(updateProductRequest);
-            return BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
+            var product = await _productRepository.UpdateProduct(updateProductRequest);
+            if(product != null) {
+                return BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
+            }
+            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG);
         }
     }
 }

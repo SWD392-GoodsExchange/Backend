@@ -12,8 +12,8 @@ namespace ExchangeGood.Repository.Interfaces {
     public interface IProductRepository { // Return DTOs
         public Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
         public Task<ProductDto> GetProduct(int productId);
-        public Task<int> AddProduct(CreateProductRequest productRequest);
-        public Task<int> UpdateProduct(UpdateProductRequest prodductRequest);
+        public Task<ProductDto> AddProduct(CreateProductRequest productRequest);
+        public Task<ProductDto> UpdateProduct(UpdateProductRequest prodductRequest);
         public Task DeleteProduct(int productId);
     } 
 }
