@@ -25,8 +25,7 @@ public class MemberService : IMemberService
             : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
     }
 
-    public async Task<BaseResponse> CreateMember(CreateMemberRequest createMemberRequest)
-    {
+    public async Task<BaseResponse> CreateMember(CreateMemberRequest createMemberRequest) {
         var memberFeId = await _memberRepository.CreateMember(createMemberRequest);
         return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, memberFeId);
     }
