@@ -7,6 +7,7 @@ using AutoMapper.QueryableExtensions;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Exceptions;
+using ExchangeGood.Contract.Enum.Product;
 
 namespace ExchangeGood.Repository.Repository
 {
@@ -28,6 +29,7 @@ namespace ExchangeGood.Repository.Repository
             var product = _mapper.Map<Product>(productRequest); // map to create new Product
             product.CreatedTime = DateTime.Now;
             product.UpdatedTime = DateTime.Now;
+            product.Status = Status.Sale.Name;
             Image image = new Image() {
                 PublicId = productRequest.Image.PublicId,
                 ImageUrl = productRequest.Image.Url,

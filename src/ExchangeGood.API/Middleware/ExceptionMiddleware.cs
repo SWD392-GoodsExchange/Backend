@@ -12,8 +12,7 @@ namespace ExchangeGood.API.Middleware {
         private readonly ILogger<ExceptionMiddleware> _logger;
 
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger,
-            IHostEnvironment env) {
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger) {
             _next = next;
             _logger = logger;
         }
@@ -54,6 +53,7 @@ namespace ExchangeGood.API.Middleware {
 
         private static int GetStatusCode(Exception exception) =>
             exception switch {
+                BadRequestException => StatusCodes.Status400BadRequest,
                 NotFoundException => StatusCodes.Status404NotFound,
                 ExchangeGood.Repository.Exceptions.ValidationException => StatusCodes.Status400BadRequest,
                 _ => StatusCodes.Status500InternalServerError

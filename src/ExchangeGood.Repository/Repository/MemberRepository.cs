@@ -62,7 +62,7 @@ public class MemberRepository : IMemberRepository
     }
     public async Task<string> CreateMember(CreateMemberRequest createMemberRequest)
     {
-        var existMember = await GetMemberById(createMemberRequest.FeId);
+        var existMember = await _uow.MemberDAO.GetMemberById(createMemberRequest.FeId);
         if (existMember != null)
         {
             throw new ExistMemberException(createMemberRequest.FeId);
