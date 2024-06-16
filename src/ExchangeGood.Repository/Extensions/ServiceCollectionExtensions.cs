@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExchangeGood.Data.Models;
 
 namespace ExchangeGood.Repository.Extensions {
     public static class ServiceCollectionExtensions {
@@ -16,6 +17,7 @@ namespace ExchangeGood.Repository.Extensions {
             services.AddScoped<IProductRepository, ProductRepository>();
 			services.AddScoped<ICategoryRepository, CategoryRepository>();
 			services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddScoped<IBookmarkRepository, BookmarkRepository>();
             return services; 
         }
     }

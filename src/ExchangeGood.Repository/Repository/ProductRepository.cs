@@ -54,6 +54,12 @@ namespace ExchangeGood.Repository.Repository
             await _uow.SaveChangesAsync();
         }
 
+        public async Task<bool> CheckProductStatus(int productId)
+        {
+            var result = await _uow.ProductDAO.GetProductByIdAsync(productId);
+            return result.Status == Contract.Enum.Product.Status.Sold.Name;
+        }
+
         public async Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams) {
             var query = _uow.ProductDAO.GetProducts(productParams.Keyword, productParams.Orderby);
 
