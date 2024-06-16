@@ -1,6 +1,8 @@
 ﻿using ExchangeGood.Contract.Common;
+using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Members;
 using ExchangeGood.Contract.Payloads.Response;
+using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
 
@@ -9,10 +11,16 @@ namespace ExchangeGood.Service.UseCase;
 public class MemberService : IMemberService
 {
     private readonly IMemberRepository _memberRepository;
+    private readonly IBookmarkRepository _bookmarkRepository;
+    private readonly IProductRepository _productRepository;
+
     private readonly IJwtProvider _jwtProvider;
 
-    public MemberService(IMemberRepository memberRepository, IJwtProvider jwtProvider)
+    public MemberService(IMemberRepository memberRepository, IProductRepository productRepository,
+        IBookmarkRepository bookmarkRepository, IJwtProvider jwtProvider)
     {
+        _bookmarkRepository = bookmarkRepository;
+        _productRepository = productRepository;
         _memberRepository = memberRepository;
         _jwtProvider = jwtProvider;
     }
@@ -25,9 +33,11 @@ public class MemberService : IMemberService
             : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
     }
 
-    public async Task<BaseResponse> CreateMember(CreateMemberRequest createMemberRequest) {
-        var memberFeId = await _memberRepository.CreateMember(createMemberRequest);
-        return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, memberFeId);
+    public async Task<BaseResponse> CreateMember(CreateMemberRequest createMemberRequest)
+    {
+        var result = await _memberRepository.CreateMember(createMemberRequest);
+
+        return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
     }
 
     public async Task<BaseResponse> Login(LoginRequest loginRequest)
@@ -35,5 +45,33 @@ public class MemberService : IMemberService
         var member = await _memberRepository.CheckLogin(loginRequest);
         var token = _jwtProvider.Generate(member);
         return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, token);
+    }
+
+    public async Task<BaseResponse> GetMemberByFeId(string feId)
+    {
+        var member = await _memberRepository.GetMemberById(feId);
+        return member == null
+            ? BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG)
+            : BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, member);
+    }
+
+    public async Task<BaseResponse> GetBookMarkByFeId(string feId)
+    {
+        var product = await _bookmarkRepository.GetAllBookmarks(feId);
+        return product.Count > 0
+            ? BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, product)
+            : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
+    }
+
+    public async Task<BaseResponse> CreateBookmark(CreateBookmarkRequest createBookmarkRequest)
+    {
+        // check if product is sold => can not bookmark
+        var checkProductStatus = await _productRepository.CheckProductStatus(createBookmarkRequest.ProductId);
+        if (checkProductStatus) return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+        
+        var result = await _bookmarkRepository.AddBookmark(createBookmarkRequest);
+        return result
+            ? BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG)
+            : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
     }
 }

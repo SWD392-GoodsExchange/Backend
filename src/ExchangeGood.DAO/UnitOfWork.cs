@@ -11,13 +11,15 @@ namespace ExchangeGood.DAO {
         private ProductDAO _productDAO;
         private MemberDAO _memberDAO;
         private CategoryDAO _categoryDAO;
+        private BookmarkDAO _bookmarkDAO;
         public UnitOfWork(GoodsExchangeContext context)
         {
             _context = context;
         }
 
         public CategoryDAO CategoryDAO => _categoryDAO = new CategoryDAO(_context);
-		public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
+        public BookmarkDAO BookmarkDAO => _bookmarkDAO =  new BookmarkDAO(_context);
+        public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
         public MemberDAO MemberDAO => _memberDAO = new MemberDAO(_context);
 
         public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default) {
