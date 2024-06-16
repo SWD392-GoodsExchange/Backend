@@ -24,7 +24,7 @@ namespace ExchangeGood.Service.UseCase {
                 throw new Exception("Upload images fail");
             }
             ImageDto imageDto = new ImageDto() {
-                Url = result.SecureUrl.AbsoluteUri,
+                ImageUrl = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId,
             };
             createProductRequest.Image = imageDto;

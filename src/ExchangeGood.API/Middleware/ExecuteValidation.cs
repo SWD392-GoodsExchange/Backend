@@ -52,8 +52,9 @@ namespace ExchangeGood.API.Middleware {
                     await next();
                 }
             }
-
-            await next();
+            else {
+                await next();
+            }
         }
     }
 }

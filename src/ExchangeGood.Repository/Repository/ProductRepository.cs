@@ -32,7 +32,7 @@ namespace ExchangeGood.Repository.Repository
             product.Status = Status.Sale.Name;
             Image image = new Image() {
                 PublicId = productRequest.Image.PublicId,
-                ImageUrl = productRequest.Image.Url,
+                ImageUrl = productRequest.Image.ImageUrl,
             };
             product.Images.Add(image);
 
@@ -75,6 +75,8 @@ namespace ExchangeGood.Repository.Repository
                  throw new ProductNotFoundException(productRequest.ProductId);
             }
             _mapper.Map(productRequest, existedProduct);
+            existedProduct.UpdatedTime = DateTime.Now;
+
             _uow.ProductDAO.UpdateProduct(existedProduct);
 
             if(await _uow.SaveChangesAsync()) {
