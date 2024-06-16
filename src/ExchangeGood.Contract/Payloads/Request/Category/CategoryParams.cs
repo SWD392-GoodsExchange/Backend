@@ -9,7 +9,7 @@ namespace ExchangeGood.Contract.Payloads.Request.Category
 {
 	public class CategoryParams : PaginationParams
 	{
-		public string? Keyword { get; set; }
+		public string Keyword { get; set; }
 		public string OrderBy { get; set; } = "lastActive";
 	}
 }

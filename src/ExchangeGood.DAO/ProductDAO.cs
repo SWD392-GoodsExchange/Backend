@@ -1,5 +1,6 @@
 ﻿using ExchangeGood.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using ExchangeGood.Contract.Enum.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,8 @@ namespace ExchangeGood.DAO {
                 .Include(p => p.Cate)
                 .Include(p => p.Images)
                 .AsQueryable();
+
+            query = query.Where(p => p.Status.Equals(Status.Sale.Name));
 
             // Add another logic later
             if(!string.IsNullOrEmpty(keyword)) {

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace ExchangeGood.Repository.Mapper {
     public class ServiceProfile : Profile {
         public ServiceProfile() {
-            CreateMap<Product, ProductDto>();
+            CreateMap<Product, ProductDto>().ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Cate.CateName));
 			CreateMap<Member, MemberDto>();
 			CreateMap<Category, CategoryDto>();
             CreateMap<Image, ImageDto>().ReverseMap();
