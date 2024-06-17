@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace ExchangeGood.Contract.Payloads.Request.Orders {
     public class CreateOrderRequest {
-        public string FeId { get; set; }
+
+        public string BuyerId { get; set; }
+
         public decimal TotalAmount { get; set; }
-        public string Type { get; set; }
-        public List<OrderDetailDto> OrderDetails { get; set; }
+
+        public IEnumerable<OrderDetailDto> OrderDetails { get; set; }
     }
 }

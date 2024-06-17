@@ -17,6 +17,7 @@ namespace ExchangeGood.Repository.Extensions {
             services.AddScoped<IProductRepository, ProductRepository>();
 			services.AddScoped<ICategoryRepository, CategoryRepository>();
 			services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IBookmarkRepository, BookmarkRepository>();
             return services; 
         }

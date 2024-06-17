@@ -1,6 +1,7 @@
-﻿using ExchangeGood.API.Extensions;
+using ExchangeGood.API.Extensions;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Members;
+using ExchangeGood.Contract.Payloads.Request.Orders;
 using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Interfaces;
@@ -14,10 +15,12 @@ namespace ExchangeGood.API.Controllers
     public class MembersController : BaseApiController
     {
         private readonly IMemberService _memberService;
+        private readonly IOrderService _orderService;
 
-        public MembersController(IMemberService memberService)
+        public MembersController(IMemberService memberService, IOrderService orderService)
         {
             _memberService = memberService;
+            _orderService = orderService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -67,12 +70,23 @@ namespace ExchangeGood.API.Controllers
                 : BadRequest(list);
         }
 
-        [HttpPost("bookmark/create")]
+        [HttpPost("bookmark")]
         public async Task<IActionResult> CreateBookmark(CreateBookmarkRequest createBookmarkRequest)
         {
             createBookmarkRequest.FeId = User.GetFeID();
-           var result = await _memberService.CreateBookmark(createBookmarkRequest);
-           return result.IsSuccess ? Ok(result) : BadRequest(result);
+            var result = await _memberService.CreateBookmark(createBookmarkRequest);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        // Đặt hàng
+        [HttpPost("checkout")]
+        public async Task<IActionResult> CheckoutOrder([FromBody] CreateOrderRequest createOrderRequest) {
+            var result = await _orderService.AddOrder(createOrderRequest);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }

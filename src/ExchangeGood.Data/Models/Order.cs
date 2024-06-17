@@ -3,24 +3,25 @@
 using System;
 using System.Collections.Generic;
 
-namespace ExchangeGood.Data.Models
+namespace ExchangeGood.Data.Models;
+
+public partial class Order
 {
-    public partial class Order
-    {
-        public Order()
-        {
-            OrderDetails = new HashSet<OrderDetail>();
-        }
+    public int OrderId { get; set; }
 
-        public int OrderId { get; set; }
-        public string FeId { get; set; }
-        public DateTime CreatedTime { get; set; }
-        public DateTime UpdatedTime { get; set; }
-        public decimal TotalAmount { get; set; }
-        public string Type { get; set; }
-        public string Status { get; set; }
+    public string BuyerId { get; set; }
 
-        public virtual Member Fe { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-    }
+    public DateTime CreatedTime { get; set; }
+
+    public DateTime UpdatedTime { get; set; }
+
+    public decimal TotalAmount { get; set; }
+
+    public int? TotalOrderDetails { get; set; }
+
+    public string Status { get; set; }
+
+    public virtual Member Buyer { get; set; }
+
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 }
