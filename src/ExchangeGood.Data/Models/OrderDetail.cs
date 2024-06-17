@@ -3,18 +3,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace ExchangeGood.Data.Models
-{
-    public partial class OrderDetail
-    {
-        public int OrderDetailId { get; set; }
-        public int OrderId { get; set; }
-        public int ProductId { get; set; }
-        public decimal Amount { get; set; }
-        public int Quantity { get; set; }
-        public string Status { get; set; }
+namespace ExchangeGood.Data.Models;
 
-        public virtual Order Order { get; set; }
-        public virtual Product Product { get; set; }
-    }
+public partial class OrderDetail
+{
+    public int OrderDetailId { get; set; }
+
+    public int OrderId { get; set; }
+
+    public int ProductId { get; set; }
+
+    public string SellerId { get; set; }
+
+    public decimal Amount { get; set; }
+
+    public int Quantity { get; set; }
+
+    public string Type { get; set; }
+
+    public string Status { get; set; }
+
+    public virtual Order Order { get; set; }
+
+    public virtual Product Product { get; set; }
 }

@@ -3,17 +3,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace ExchangeGood.Data.Models
-{
-    public partial class Comment
-    {
-        public int CommentId { get; set; }
-        public string FeId { get; set; }
-        public int ProductId { get; set; }
-        public string Content { get; set; }
-        public DateTime CreatedTime { get; set; }
+namespace ExchangeGood.Data.Models;
 
-        public virtual Member Fe { get; set; }
-        public virtual Product Product { get; set; }
-    }
+public partial class Comment
+{
+    public int CommentId { get; set; }
+
+    public string FeId { get; set; }
+
+    public int ProductId { get; set; }
+
+    public string Content { get; set; }
+
+    public DateTime CreatedTime { get; set; }
+
+    public virtual Member Fe { get; set; }
+
+    public virtual Product Product { get; set; }
 }

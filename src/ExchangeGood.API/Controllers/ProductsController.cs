@@ -32,7 +32,7 @@ namespace ExchangeGood.API.Controllers {
             productRequest.FeId = feId;
             var result = await _productService.AddProduct(productRequest);
             if(result.IsSuccess) {
-                return CreatedAtAction(nameof(CreateProduct), result.Data);
+                return CreatedAtAction(nameof(CreateProduct), result);
             }
             return BadRequest(result);            
         }

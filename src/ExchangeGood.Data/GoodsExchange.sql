@@ -48,6 +48,7 @@ CREATE TABLE Product (
     CateID INT NOT NULL,
 	UsageInformation NVARCHAR(255) NOT NULL,
     Origin NVARCHAR(100) NOT NULL,
+	[Type] NVARCHAR(50) NOT NULL,
     [Status] NVARCHAR(50) NOT NULL,
     CreatedTime DATETIME NOT NULL,
     UpdatedTime DATETIME NOT NULL,
@@ -67,21 +68,23 @@ CREATE TABLE Image (
 GO
 CREATE TABLE [Order] (
     OrderID INT IDENTITY(1,1) PRIMARY KEY,
-    FeID NVARCHAR(8) NOT NULL,
+    BuyerID NVARCHAR(8) NOT NULL,
     CreatedTime DATETIME NOT NULL,
     UpdatedTime DATETIME NOT NULL,
     TotalAmount DECIMAL(18, 2) NOT NULL,
-    [Type] NVARCHAR(50) NOT NULL,
+	TotalOrderDetails INT,
     [Status] NVARCHAR(50) NOT NULL,
-    FOREIGN KEY (FeID) REFERENCES [Member](FeID),
+    FOREIGN KEY (BuyerID) REFERENCES [Member](FeID),
 );
 GO
 CREATE TABLE OrderDetail (
     OrderDetailID INT IDENTITY(1,1) PRIMARY KEY,
     OrderID INT NOT NULL,
     ProductID INT NOT NULL,
+	SellerID NVARCHAR(8) NOT NULL,
     Amount DECIMAL(18, 2) NOT NULL,
     Quantity INT NOT NULL,
+	[Type] NVARCHAR(50) NOT NULL,
 	[Status] NVARCHAR(50) NOT NULL,
     FOREIGN KEY (OrderID) REFERENCES [Order](OrderID),
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
@@ -112,6 +115,7 @@ CREATE TABLE Report (
 	ProductID INT NOT NULL,
     [Message] NVARCHAR(255) NOT NULL,
     [Status] NVARCHAR(50) NOT NULL,
+	CreatedTime DATETIME NOT NULL,
     FOREIGN KEY (FeID) REFERENCES [Member](FeID),
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );

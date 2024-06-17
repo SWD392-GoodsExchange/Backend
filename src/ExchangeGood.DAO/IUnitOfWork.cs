@@ -9,6 +9,7 @@ namespace ExchangeGood.DAO {
         public ProductDAO ProductDAO { get; }
         public MemberDAO MemberDAO { get; }
         public CategoryDAO CategoryDAO { get; }
+        public OrderDAO OrderDAO { get; }
         public BookmarkDAO BookmarkDAO { get; }
         public Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
         public Task<int> SaveChangesWithTransactionAsync();

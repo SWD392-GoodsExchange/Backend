@@ -3,18 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace ExchangeGood.Data.Models
+namespace ExchangeGood.Data.Models;
+
+public partial class Category
 {
-    public partial class Category
-    {
-        public Category()
-        {
-            Products = new HashSet<Product>();
-        }
+    public int CateId { get; set; }
 
-        public int CateId { get; set; }
-        public string CateName { get; set; }
+    public string CateName { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; }
-    }
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }
