@@ -16,33 +16,15 @@ namespace ExchangeGood.Repository.Repository {
     public class OrderRepository : IOrderRepository {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        public OrderRepository(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
 
-        public async Task<Order> AddOrder(CreateOrderRequest createOrderRequest) {
-            // Add new Order
-            var order = new Order() {
-                BuyerId = createOrderRequest.BuyerId,
-                CreatedTime = DateTime.Now,
-                UpdatedTime = DateTime.Now,
-                TotalAmount = createOrderRequest.TotalAmount,
-                Status = Contract.Enum.Order.Status.Pending.Name,
-                TotalOrderDetails = createOrderRequest.OrderDetails.Count()
-            };
-            // Add OrderDetail for Order
-            foreach(var orderDetailDto in createOrderRequest.OrderDetails) {
-                order.OrderDetails.Add(new OrderDetail() 
-                {   
-                    ProductId = orderDetailDto.ProductId, 
-                    Amount = orderDetailDto.Amount,
-                    Quantity = orderDetailDto.Quantity,
-                    Status = Contract.Enum.OrderDetail.Status.Pending.Name
-                });
-            }
-
+        public async Task<bool> AddOrder(Order order) {
             _uow.OrderDAO.AddOrder(order);
-            if(await _uow.SaveChangesAsync()) 
-                return order;
-
-            return null;
+            
+            return await _uow.SaveChangesAsync();
         }
 
         public Task<PagedList<Order>> GetAllOrders() {

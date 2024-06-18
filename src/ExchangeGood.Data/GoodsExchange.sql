@@ -4,6 +4,7 @@ CREATE DATABASE GoodsExchange;
 GO
 USE GoodsExchange;
 GO
+
 -- Create tables
 CREATE TABLE [Role] (
     RoleID INT IDENTITY(1,1) PRIMARY KEY,
@@ -120,3 +121,27 @@ CREATE TABLE Report (
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
 GO
+
+-- drop table
+Drop table [Role]
+go
+Drop table [Member]
+go
+Drop table Notifcation
+go
+Drop table Category
+go
+Drop table Product
+go
+Drop table Image
+go
+Drop table [Order]
+go
+Drop table OrderDetail
+go
+Drop table Bookmark
+go
+Drop table Comment
+go
+Drop table Report
+go

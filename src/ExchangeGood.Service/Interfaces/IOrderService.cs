@@ -12,6 +12,7 @@ namespace ExchangeGood.Service.Interfaces {
     public interface IOrderService {
         public Task<BaseResponse> GetAllOrders();
         public Task<BaseResponse> GetOrder(int orderId);
-        public Task<BaseResponse> AddOrder(CreateOrderRequest createOrderRequest);
+        public Task<BaseResponse> CreateOrderForTrade(CreateOrderRequest createOrderRequest);
+        public Task<BaseResponse> CreateOrderForExchange(CreateOrderExchangeRequest createOrderRequest);
     }
 }
