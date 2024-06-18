@@ -22,6 +22,7 @@ namespace ExchangeGood.Repository.Repository
             _uow = unitOfWork;
             _mapper = mapper;
         }
+
         public async Task<List<ProductDto>> GetAllBookmarks(string feId)
         {
             var query = _uow.BookmarkDAO.GetALl(feId);
@@ -34,6 +35,14 @@ namespace ExchangeGood.Repository.Repository
             var bookmark = _mapper.Map<Bookmark>(createBookmarkRequest);
             bookmark.CreateTime = DateTime.UtcNow;
             _uow.BookmarkDAO.Add(bookmark);
+            return await _uow.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
+        {
+            Bookmark bookmark = _mapper.Map<Bookmark>(deleteBookmarkRequest);
+            Bookmark bookmarkDelete = await _uow.BookmarkDAO.GetBookmark(bookmark);
+            _uow.BookmarkDAO.Delete(bookmarkDelete);
             return await _uow.SaveChangesAsync();
         }
     }

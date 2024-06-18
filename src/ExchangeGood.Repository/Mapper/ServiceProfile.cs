@@ -19,7 +19,8 @@ namespace ExchangeGood.Repository.Mapper {
 			CreateMap<Member, MemberDto>();
 			CreateMap<Category, CategoryDto>();
             CreateMap<Image, ImageDto>().ReverseMap();
-            CreateMap<CreateBookmarkRequest, Bookmark>();
+            CreateMap<CreateBookmarkRequest, Bookmark>().ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => Int32.Parse(src.ProductId)));
+            CreateMap<DeleteBookmarkRequest, Bookmark>().ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => Int32.Parse(src.ProductId)));
             CreateMap<CreateProductRequest, Product>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => decimal.Parse(src.Price)));
             CreateMap<UpdateProductRequest, Product>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => decimal.Parse(src.Price)));
 			CreateMap<CreateCategoryRequest, Category>().ForMember(dest => dest.CateName, opt => opt.MapFrom(src => src.CategoryName));

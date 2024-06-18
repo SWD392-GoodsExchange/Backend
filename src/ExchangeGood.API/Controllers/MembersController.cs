@@ -17,7 +17,7 @@ namespace ExchangeGood.API.Controllers
         private readonly IMemberService _memberService;
         private readonly IOrderService _orderService;
 
-        public MembersController(IMemberService memberService, IOrderService orderService)
+        public MembersController(IMemberService memberService,IOrderService orderService)
         {
             _memberService = memberService;
             _orderService = orderService;
@@ -38,6 +38,13 @@ namespace ExchangeGood.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> UpdatePassword([FromBody] PasswordRequest passwordRequest)
+        {
+            passwordRequest.FeId = User.GetFeID();
+            var result = await _memberService.UpdatePassword(passwordRequest);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
         [HttpPost]
         public async Task<IActionResult> CreateMember([FromBody] CreateMemberRequest createMemberRequest)
         {
@@ -57,7 +64,7 @@ namespace ExchangeGood.API.Controllers
             var member = await _memberService.GetMemberByFeId(feId);
             return member.IsSuccess
                 ? Ok(member)
-                : BadRequest(member);
+                : NotFound(member);
         }
 
         [HttpGet("bookmark")]
@@ -87,6 +94,14 @@ namespace ExchangeGood.API.Controllers
                 return BadRequest(result);
             }
             return Ok(result);
+        }
+
+        [HttpDelete("bookmark")]
+        public async Task<IActionResult> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
+        {
+            deleteBookmarkRequest.FeId = User.GetFeID();
+            var result = await _memberService.DeleteBookmark(deleteBookmarkRequest);
+            return result.IsSuccess ? NoContent() : BadRequest(result);
         }
     }
 }

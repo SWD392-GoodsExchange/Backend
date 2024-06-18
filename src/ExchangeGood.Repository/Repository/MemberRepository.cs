@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -40,6 +41,7 @@ public class MemberRepository : IMemberRepository
         {
             return default;
         }
+
         return _mapper.Map<MemberDto>(result);
     }
 
@@ -50,6 +52,7 @@ public class MemberRepository : IMemberRepository
         {
             throw new MemberNotFoundException(loginRequest.FeId);
         }
+
         // check password
         using var hmac = new HMACSHA512(result.PasswordSalt);
         var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginRequest.Password));
@@ -57,8 +60,30 @@ public class MemberRepository : IMemberRepository
         {
             if (computeHash[i] != result.PasswordHash[i]) throw new PasswordInvalidException();
         }
+
         return result;
     }
+
+    public async Task<bool> UpdatePassword(PasswordRequest passwordRequest)
+    {
+        var member = await _uow.MemberDAO.GetMemberById(passwordRequest.FeId);
+        // check old password
+        using var hmac = new HMACSHA512(member.PasswordSalt);
+        var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(passwordRequest.OldPassword));
+        for (int i = 0; i < computeHash.Length; i++)
+        {
+            if (computeHash[i] != member.PasswordHash[i]) throw new OldPasswordInvalidException();
+        }
+        // update new password
+        using (var hash = new HMACSHA512())
+        {
+            member.PasswordHash = hash.ComputeHash(Encoding.UTF8.GetBytes(passwordRequest.NewPassword));
+            member.PasswordSalt = hash.Key;
+        }
+        _uow.MemberDAO.Update(member);
+        return await _uow.SaveChangesAsync();
+    }
+
     public async Task<string> CreateMember(CreateMemberRequest createMemberRequest)
     {
         var existMember = await _uow.MemberDAO.GetMemberById(createMemberRequest.FeId);

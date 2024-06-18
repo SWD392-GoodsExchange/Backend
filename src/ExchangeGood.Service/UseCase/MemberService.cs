@@ -1,10 +1,12 @@
-﻿using ExchangeGood.Contract.Common;
+﻿using Azure.Core;
+using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Members;
 using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
+using Microsoft.VisualBasic;
 
 namespace ExchangeGood.Service.UseCase;
 
@@ -47,6 +49,15 @@ public class MemberService : IMemberService
         return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, token);
     }
 
+    public async Task<BaseResponse> UpdatePassword(PasswordRequest passwordRequest)
+    {
+         var result = await _memberRepository.UpdatePassword(passwordRequest);
+         return result
+             ? BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG,
+                 nameof(UpdatePassword) + " successful")
+             : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG);
+    }
+
     public async Task<BaseResponse> GetMemberByFeId(string feId)
     {
         var member = await _memberRepository.GetMemberById(feId);
@@ -66,12 +77,25 @@ public class MemberService : IMemberService
     public async Task<BaseResponse> CreateBookmark(CreateBookmarkRequest createBookmarkRequest)
     {
         // check if product is sold => can not bookmark
-        var checkProductStatus = await _productRepository.CheckProductStatus(createBookmarkRequest.ProductId);
+        if (!Int32.TryParse(createBookmarkRequest.ProductId, out int productId))
+            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+        var product = await _productRepository.GetProduct(productId);
+        var checkProductStatus = product.Status == Contract.Enum.Product.Status.Sold.Name;
         if (checkProductStatus) return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
-        
+
         var result = await _bookmarkRepository.AddBookmark(createBookmarkRequest);
         return result
             ? BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG)
             : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+    }
+
+    public async Task<BaseResponse> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
+    {
+        if (!Int32.TryParse(deleteBookmarkRequest.ProductId, out int productId))
+            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+        var result = await _bookmarkRepository.DeleteBookmark(deleteBookmarkRequest);
+        return result
+            ? BaseResponse.Success(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG)
+            : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_DELETE_MSG);
     }
 }

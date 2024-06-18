@@ -10,5 +10,6 @@ namespace ExchangeGood.Repository.Interfaces
     {
         public Task<List<ProductDto>> GetAllBookmarks(string feId);
         public Task<bool> AddBookmark(CreateBookmarkRequest createBookmarkRequest);
+        public Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest);
     }
 }

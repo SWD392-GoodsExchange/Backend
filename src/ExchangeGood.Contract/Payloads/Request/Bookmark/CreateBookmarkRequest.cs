@@ -5,6 +5,6 @@ namespace ExchangeGood.Contract.Payloads.Request.Bookmark
     public class CreateBookmarkRequest
     {
         public string FeId { get; set; }
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
     }
 }
