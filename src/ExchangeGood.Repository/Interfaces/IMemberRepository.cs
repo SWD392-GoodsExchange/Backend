@@ -7,8 +7,9 @@ namespace ExchangeGood.Repository.Interfaces;
 
 public interface IMemberRepository
 {
-    Task<PagedList<MemberDto>> GetMembers(GetMembersQuery getMembersQuery);
-    Task<MemberDto> GetMemberById(string feId);
-    Task<Member> CheckLogin(LoginRequest loginRequest);
+    public Task<PagedList<MemberDto>> GetMembers(GetMembersQuery getMembersQuery);
+    public Task<MemberDto> GetMemberById(string feId);
+    public Task<Member> CheckLogin(LoginRequest loginRequest);
+    public Task<bool> UpdatePassword(PasswordRequest passwordRequest); 
     Task<string> CreateMember(CreateMemberRequest createMemberRequest);
 }

@@ -10,7 +10,7 @@ namespace ExchangeGood.API.Middleware {
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next) {
             var method = context.HttpContext.Request.Method;
-            if (method.Equals("POST") || method.Equals("PUT")) {
+            if (method.Equals("POST") || method.Equals("PUT") || method.Equals("DELETE")) {
                 var allErrors = new List<FluentValidation.Results.ValidationFailure>();
 
                 // get All ValidationFailure

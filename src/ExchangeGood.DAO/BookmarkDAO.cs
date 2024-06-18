@@ -1,4 +1,5 @@
-﻿using ExchangeGood.Data.Models;
+﻿using ExchangeGood.Contract.Payloads.Request.Bookmark;
+using ExchangeGood.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExchangeGood.DAO
@@ -20,7 +21,12 @@ namespace ExchangeGood.DAO
                 .ThenInclude(x => x.Cate)
                 .OrderBy(x => x.CreateTime).AsNoTracking();
         }
-        
+
+        public async Task<Bookmark> GetBookmark(Bookmark deleteBookmark)
+        {
+            return await _context.Bookmarks.FirstOrDefaultAsync(x =>
+                x.FeId == deleteBookmark.FeId && x.ProductId == deleteBookmark.ProductId);
+        }
         public void Add(Bookmark bookmark)
         {
             _context.Bookmarks.Add(bookmark);
