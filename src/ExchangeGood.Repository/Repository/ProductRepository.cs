@@ -54,7 +54,7 @@ namespace ExchangeGood.Repository.Repository
             await _uow.SaveChangesAsync();
         }
         public async Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams) {
-            var query = _uow.ProductDAO.GetProducts(productParams.Keyword, productParams.Orderby);
+            var query = _uow.ProductDAO.GetProducts(productParams.Keyword, productParams.Type, productParams.Orderby);
 
             var result = await PagedList<ProductDto>.CreateAsync(query.ProjectTo<ProductDto>(_mapper.ConfigurationProvider),
             productParams.PageNumber, productParams.PageSize);
@@ -62,9 +62,8 @@ namespace ExchangeGood.Repository.Repository
             return result;
         }
 
-        public async Task<ProductDto> GetProduct(int productId) {
-            var product = await _uow.ProductDAO.GetProductByIdAsync(productId);
-            return _mapper.Map<ProductDto>(product);
+        public async Task<Product> GetProduct(int productId) {
+            return await _uow.ProductDAO.GetProductByIdAsync(productId);
         }
 
         public async Task<ProductDto> UpdateProduct(UpdateProductRequest productRequest)

@@ -13,6 +13,6 @@ namespace ExchangeGood.Repository.Interfaces {
     public interface IOrderRepository {
         public Task<PagedList<Order>> GetAllOrders();
         public Task<Order> GetOrder(int orderId);
-        public Task<Order> AddOrder(CreateOrderRequest createOrderRequest);
+        public Task<bool> AddOrder(Order order);
     }
 }

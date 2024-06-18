@@ -1,11 +1,15 @@
-﻿using ExchangeGood.Data.Models;
+﻿using ExchangeGood.DAO;
+using ExchangeGood.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExchangeGood.DAO {
+namespace ExchangeGood.Repository {
     public class UnitOfWork : IUnitOfWork {
         private readonly GoodsExchangeContext _context;
         private ProductDAO _productDAO;
@@ -27,6 +31,12 @@ namespace ExchangeGood.DAO {
 
         public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default) {
             return await _context.SaveChangesAsync(cancellationToken) > 0;
+        }
+
+        public IDbTransaction BeginTransaction() {
+            var transaction = _context.Database.BeginTransaction();
+
+            return transaction.GetDbTransaction();
         }
 
         public async Task<int> SaveChangesWithTransactionAsync() {

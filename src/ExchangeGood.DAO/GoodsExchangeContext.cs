@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using ExchangeGood.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ExchangeGood.DAO;
 
@@ -41,7 +40,7 @@ public partial class GoodsExchangeContext : DbContext
     {
         modelBuilder.Entity<Bookmark>(entity =>
         {
-            entity.HasKey(e => new { e.ProductId, e.FeId }).HasName("PK__Bookmark__D767AE40819B94EC");
+            entity.HasKey(e => new { e.ProductId, e.FeId }).HasName("PK__Bookmark__D767AE40E5B799B8");
 
             entity.ToTable("Bookmark");
 
@@ -64,7 +63,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CateId).HasName("PK__Category__27638D74E919DF24");
+            entity.HasKey(e => e.CateId).HasName("PK__Category__27638D746AE66F6E");
 
             entity.ToTable("Category");
 
@@ -76,7 +75,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.CommentId).HasName("PK__Comment__C3B4DFAA4E023691");
+            entity.HasKey(e => e.CommentId).HasName("PK__Comment__C3B4DFAA04B01C0E");
 
             entity.ToTable("Comment");
 
@@ -104,7 +103,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__Image__7516F4ECE5BDC7D4");
+            entity.HasKey(e => e.ImageId).HasName("PK__Image__7516F4EC8FD8103A");
 
             entity.ToTable("Image");
 
@@ -126,7 +125,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Member>(entity =>
         {
-            entity.HasKey(e => e.FeId).HasName("PK__Member__36B68AD7864EB41B");
+            entity.HasKey(e => e.FeId).HasName("PK__Member__36B68AD7B970451F");
 
             entity.ToTable("Member");
 
@@ -170,7 +169,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Notifcation>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifcat__20CF2E326FCEC39F");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifcat__20CF2E32D0BFB145");
 
             entity.ToTable("Notifcation");
 
@@ -193,7 +192,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BAF53BB179E");
+            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BAFA47181CD");
 
             entity.ToTable("Order");
 
@@ -217,7 +216,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C5C563E01");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CD9817683");
 
             entity.ToTable("OrderDetail");
 
@@ -249,7 +248,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Product__B40CC6ED69EAC973");
+            entity.HasKey(e => e.ProductId).HasName("PK__Product__B40CC6ED247969CB");
 
             entity.ToTable("Product");
 
@@ -291,7 +290,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Report>(entity =>
         {
-            entity.HasKey(e => e.ReportId).HasName("PK__Report__D5BD48E5835FB3D1");
+            entity.HasKey(e => e.ReportId).HasName("PK__Report__D5BD48E59E9D99FC");
 
             entity.ToTable("Report");
 
@@ -322,7 +321,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE3AC9E11544");
+            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE3A8F369681");
 
             entity.ToTable("Role");
 

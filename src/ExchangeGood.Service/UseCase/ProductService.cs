@@ -2,8 +2,10 @@
 using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Product;
 using ExchangeGood.Contract.Payloads.Response;
+using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
+using ExchangeGood.Contract.Enum.Product;
 
 namespace ExchangeGood.Service.UseCase {
     public class ProductService : IProductService { // Return BaseResponse
@@ -54,15 +56,16 @@ namespace ExchangeGood.Service.UseCase {
             return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
         }
 
-        public async Task<BaseResponse> GetProduct(int productId)
+        public async Task<Product> GetProduct(int productId)
         {
-           var result = await _productRepository.GetProduct(productId);
+            return await _productRepository.GetProduct(productId); 
+           /*var result = await _productRepository.GetProduct(productId);
          
             if (result != null) {
                 return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
             }
 
-            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
+            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);*/
         }
 
         public async Task<BaseResponse> UpdateProduct(UpdateProductRequest updateProductRequest)

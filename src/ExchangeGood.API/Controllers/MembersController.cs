@@ -2,16 +2,11 @@ using ExchangeGood.API.Extensions;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Members;
 using ExchangeGood.Contract.Payloads.Request.Orders;
-using ExchangeGood.Contract.Payloads.Response;
-using ExchangeGood.Data.Models;
-using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Role = ExchangeGood.Contract.Enum.Member.Role;
 
-namespace ExchangeGood.API.Controllers
-{
+namespace ExchangeGood.API.Controllers {
     public class MembersController : BaseApiController
     {
         private readonly IMemberService _memberService;
@@ -85,10 +80,21 @@ namespace ExchangeGood.API.Controllers
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
+        [HttpDelete("bookmark")]
+        public async Task<IActionResult> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
+        {
+            deleteBookmarkRequest.FeId = User.GetFeID();
+            var result = await _memberService.DeleteBookmark(deleteBookmarkRequest);
+            return result.IsSuccess ? NoContent() : BadRequest(result);
+        }
+
         // Đặt hàng
+        [Authorize(Roles = "Member")]
         [HttpPost("checkout")]
         public async Task<IActionResult> CheckoutOrder([FromBody] CreateOrderRequest createOrderRequest) {
-            var result = await _orderService.AddOrder(createOrderRequest);
+            var feId = User.GetFeID();
+            createOrderRequest.MemberId = feId;
+            var result = await _orderService.CreateOrderForTrade(createOrderRequest);
             if (!result.IsSuccess)
             {
                 return BadRequest(result);
@@ -96,12 +102,16 @@ namespace ExchangeGood.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("bookmark")]
-        public async Task<IActionResult> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
-        {
-            deleteBookmarkRequest.FeId = User.GetFeID();
-            var result = await _memberService.DeleteBookmark(deleteBookmarkRequest);
-            return result.IsSuccess ? NoContent() : BadRequest(result);
+        [Authorize(Roles = "Member")]
+        [HttpPost("exchange")]
+        public async Task<IActionResult> ExchangeOrder([FromBody] CreateOrderExchangeRequest createOrderRequest) {
+            var feId = User.GetFeID();
+            createOrderRequest.OwnerID = feId;
+            var result = await _orderService.CreateOrderForExchange(createOrderRequest);
+            if (!result.IsSuccess) {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }
