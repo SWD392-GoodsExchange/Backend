@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Category;
+using ExchangeGood.Contract.Payloads.Request.Comment;
 using ExchangeGood.Contract.Payloads.Request.Product;
 using ExchangeGood.Data.Models;
 using System;
@@ -16,11 +17,17 @@ namespace ExchangeGood.Repository.Mapper {
             CreateMap<Product, ProductDto>();
 			CreateMap<Member, MemberDto>();
 			CreateMap<Category, CategoryDto>();
+            CreateMap<Comment,CommentDto>();
+
             CreateMap<Image, ImageDto>().ReverseMap();
             CreateMap<CreateProductRequest, Product>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => decimal.Parse(src.Price)));
             CreateMap<UpdateProductRequest, Product>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => decimal.Parse(src.Price)));
 			CreateMap<CreateCategoryRequest, Category>().ForMember(dest => dest.CateName, opt => opt.MapFrom(src => src.CategoryName));
 			CreateMap<UpdateCategoryRequest, Category>().ForMember(dest => dest.CateName, opt => opt.MapFrom(src => src.CategoryName));
-		}
-	}
+            CreateMap<CreateCommentRequest, Comment>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
+            CreateMap<UpdateCommentRequest, Comment>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
+
+
+        }
+    }
 }

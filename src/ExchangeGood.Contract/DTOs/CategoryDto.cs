@@ -9,7 +9,6 @@ namespace ExchangeGood.Contract.DTOs
 	public class CategoryDto
 	{
 		public int CateId { get; set; }
-
 		public string CateName { get; set; }
 	}
 }

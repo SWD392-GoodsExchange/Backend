@@ -11,6 +11,7 @@ namespace ExchangeGood.DAO {
         private ProductDAO _productDAO;
         private MemberDAO _memberDAO;
         private CategoryDAO _categoryDAO;
+        private CommentDAO _commentDAO;
         public UnitOfWork(GoodsExchangeContext context)
         {
             _context = context;
@@ -19,6 +20,8 @@ namespace ExchangeGood.DAO {
         public CategoryDAO CategoryDAO => _categoryDAO = new CategoryDAO(_context);
 		public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
         public MemberDAO MemberDAO => _memberDAO = new MemberDAO(_context);
+        public CommentDAO CommentDAO => _commentDAO = new CommentDAO(_context);
+
 
         public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default) {
             return await _context.SaveChangesAsync(cancellationToken) > 0;
