@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ExchangeGood.Contract\ExchangeGood.Contract.csproj" />
     <ProjectReference Include="..\ExchangeGood.Data\ExchangeGood.Data.csproj" />
   </ItemGroup>
 

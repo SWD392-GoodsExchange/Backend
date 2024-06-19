@@ -32,7 +32,7 @@ namespace ExchangeGood.Repository.Repository
             product.Status = Status.Sale.Name;
             Image image = new Image() {
                 PublicId = productRequest.Image.PublicId,
-                ImageUrl = productRequest.Image.Url,
+                ImageUrl = productRequest.Image.ImageUrl,
             };
             product.Images.Add(image);
 
@@ -53,9 +53,8 @@ namespace ExchangeGood.Repository.Repository
 
             await _uow.SaveChangesAsync();
         }
-
         public async Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams) {
-            var query = _uow.ProductDAO.GetProducts(productParams.Keyword, productParams.Orderby);
+            var query = _uow.ProductDAO.GetProducts(productParams.Keyword, productParams.Type, productParams.Orderby);
 
             var result = await PagedList<ProductDto>.CreateAsync(query.ProjectTo<ProductDto>(_mapper.ConfigurationProvider),
             productParams.PageNumber, productParams.PageSize);
@@ -63,9 +62,8 @@ namespace ExchangeGood.Repository.Repository
             return result;
         }
 
-        public async Task<ProductDto> GetProduct(int productId) {
-            var product = await _uow.ProductDAO.GetProductByIdAsync(productId);
-            return _mapper.Map<ProductDto>(product);
+        public async Task<Product> GetProduct(int productId) {
+            return await _uow.ProductDAO.GetProductByIdAsync(productId);
         }
 
         public async Task<ProductDto> UpdateProduct(UpdateProductRequest productRequest)
@@ -75,6 +73,8 @@ namespace ExchangeGood.Repository.Repository
                  throw new ProductNotFoundException(productRequest.ProductId);
             }
             _mapper.Map(productRequest, existedProduct);
+            existedProduct.UpdatedTime = DateTime.Now;
+
             _uow.ProductDAO.UpdateProduct(existedProduct);
 
             if(await _uow.SaveChangesAsync()) {

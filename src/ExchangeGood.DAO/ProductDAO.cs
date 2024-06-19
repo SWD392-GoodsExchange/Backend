@@ -1,5 +1,6 @@
 ﻿using ExchangeGood.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using ExchangeGood.Contract.Enum.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +23,14 @@ namespace ExchangeGood.DAO {
             return await _context.Products.FindAsync(id);
         }
 
-        public IQueryable<Product> GetProducts(string? keyword, string orderBy) {
+        public IQueryable<Product> GetProducts(string keyword, string type, string orderBy) {
             var query = _context.Products
                 .Include(p => p.Cate)
                 .Include(p => p.Images)
                 .AsQueryable();
+
+            query = query.Where(p => p.Type.ToLower().Equals(type));
+            query = query.Where(p => p.Status.Equals(Status.Sale.Name));
 
             // Add another logic later
             if(!string.IsNullOrEmpty(keyword)) {

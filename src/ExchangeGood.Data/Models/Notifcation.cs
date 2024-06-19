@@ -3,16 +3,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace ExchangeGood.Data.Models
-{
-    public partial class Notifcation
-    {
-        public int NotificationId { get; set; }
-        public string FeId { get; set; }
-        public string Content { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string Type { get; set; }
+namespace ExchangeGood.Data.Models;
 
-        public virtual Member Fe { get; set; }
-    }
+public partial class Notifcation
+{
+    public int NotificationId { get; set; }
+
+    public string FeId { get; set; }
+
+    public string Content { get; set; }
+
+    public DateTime CreatedDate { get; set; }
+
+    public string Type { get; set; }
+
+    public virtual Member Fe { get; set; }
 }

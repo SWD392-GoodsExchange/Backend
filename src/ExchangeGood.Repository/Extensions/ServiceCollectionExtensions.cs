@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExchangeGood.Data.Models;
+using ExchangeGood.DAO;
 
 namespace ExchangeGood.Repository.Extensions {
     public static class ServiceCollectionExtensions {
@@ -16,6 +18,10 @@ namespace ExchangeGood.Repository.Extensions {
             services.AddScoped<IProductRepository, ProductRepository>();
 			services.AddScoped<ICategoryRepository, CategoryRepository>();
 			services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IBookmarkRepository, BookmarkRepository>();
+            // Add UnitOfWork
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services; 
         }
     }

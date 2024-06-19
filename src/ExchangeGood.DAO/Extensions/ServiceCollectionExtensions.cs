@@ -16,8 +16,7 @@ namespace ExchangeGood.DAO.Extensions {
                 // configure the options for this Database
                 opt.UseSqlServer(configuration["ConnectionString:DefaultConnection"]);
             });
-            // Add UnitOfWork
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
             return services;
         }
     }

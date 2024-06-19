@@ -2,8 +2,10 @@
 using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Product;
 using ExchangeGood.Contract.Payloads.Response;
+using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
+using ExchangeGood.Contract.Enum.Product;
 
 namespace ExchangeGood.Service.UseCase {
     public class ProductService : IProductService { // Return BaseResponse
@@ -24,7 +26,7 @@ namespace ExchangeGood.Service.UseCase {
                 throw new Exception("Upload images fail");
             }
             ImageDto imageDto = new ImageDto() {
-                Url = result.SecureUrl.AbsoluteUri,
+                ImageUrl = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId,
             };
             createProductRequest.Image = imageDto;
@@ -54,15 +56,16 @@ namespace ExchangeGood.Service.UseCase {
             return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
         }
 
-        public async Task<BaseResponse> GetProduct(int productId)
+        public async Task<Product> GetProduct(int productId)
         {
-           var result = await _productRepository.GetProduct(productId);
+            return await _productRepository.GetProduct(productId); 
+           /*var result = await _productRepository.GetProduct(productId);
          
             if (result != null) {
                 return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
             }
 
-            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
+            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);*/
         }
 
         public async Task<BaseResponse> UpdateProduct(UpdateProductRequest updateProductRequest)
@@ -77,9 +80,9 @@ namespace ExchangeGood.Service.UseCase {
     }
 }
 
-/*
-            Note:
-        - Tách thằng SaveChanges() ra khởi thằng Service -> vì lỡ SaveChanges() fail thì quăng ra lỗi, mà lỗi đó là lỗi
-        của DB chứ ko phải Service
-        - Serive chỉ gọi thằng ở dưới ( SaveChanges ở dưới vì throw lỗi DB ) vì service có lỗi thì chỉ cần biết lỗi service
-        */
+/*    
+Note:
+- Tách thằng SaveChanges() ra khởi thằng Service -> vì lỡ SaveChanges() fail thì quăng ra lỗi, mà lỗi đó là lỗi
+của DB chứ ko phải Service
+- Serive chỉ gọi thằng ở dưới ( SaveChanges ở dưới vì throw lỗi DB ) vì service có lỗi thì chỉ cần biết lỗi service
+*/
