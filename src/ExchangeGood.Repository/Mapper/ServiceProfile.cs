@@ -36,6 +36,8 @@ namespace ExchangeGood.Repository.Mapper {
                 .ForMember(dest => dest.Origin, opt => opt.MapFrom(src => src.Product.Origin))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Product.Status))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Product.Title));
+            CreateMap<CreateCommentRequest, Comment>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
+            CreateMap<UpdateCommentRequest, Comment>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
         }
 	}
 }
