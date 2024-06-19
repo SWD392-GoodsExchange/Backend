@@ -21,7 +21,6 @@ namespace ExchangeGood.DAO
                 .ThenInclude(x => x.Cate)
                 .OrderBy(x => x.CreateTime).AsNoTracking();
         }
-
         public async Task<Bookmark> GetBookmark(Bookmark deleteBookmark)
         {
             return await _context.Bookmarks.FirstOrDefaultAsync(x =>
