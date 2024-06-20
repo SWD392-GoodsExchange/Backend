@@ -16,6 +16,7 @@ namespace ExchangeGood.Service.Extensions {
         public static IServiceCollection AddServiceLayer(this IServiceCollection services, IConfiguration config) {
             services.AddScoped<IProductService, ProductService>();
 			services.AddScoped<ICategoryService, CategoryService>();
+			services.AddScoped<IReportService, ReportService>();
 			services.AddScoped<IMemberService, MemberService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IJwtProvider, JwtProvider>();

@@ -12,6 +12,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
+using ExchangeGood.Contract.Payloads.Request.Report;
 
 namespace ExchangeGood.Repository.Mapper {
     public class ServiceProfile : Profile {
@@ -20,8 +21,9 @@ namespace ExchangeGood.Repository.Mapper {
 			CreateMap<Member, MemberDto>();
 			CreateMap<Category, CategoryDto>();
             CreateMap<Comment,CommentDto>();
+			CreateMap<Report, ReportDto>();
 
-            CreateMap<Image, ImageDto>().ReverseMap();
+			CreateMap<Image, ImageDto>().ReverseMap();
             CreateMap<CreateBookmarkRequest, Bookmark>().ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => Int32.Parse(src.ProductId)));
             CreateMap<DeleteBookmarkRequest, Bookmark>().ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => Int32.Parse(src.ProductId)));
             CreateMap<CreateProductRequest, Product>().ForMember(dest => dest.Price, opt => opt.MapFrom(src => decimal.Parse(src.Price)));
@@ -38,6 +40,8 @@ namespace ExchangeGood.Repository.Mapper {
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Product.Title));
             CreateMap<CreateCommentRequest, Comment>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
             CreateMap<UpdateCommentRequest, Comment>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
+            CreateMap<CreateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
+			CreateMap<UpdateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
         }
 	}
 }

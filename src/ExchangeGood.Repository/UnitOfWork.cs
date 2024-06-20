@@ -18,13 +18,16 @@ namespace ExchangeGood.Repository {
         private OrderDAO _orderDAO;
         private BookmarkDAO _bookmarkDAO;
         private CommentDAO _commentDAO;
-        public UnitOfWork(GoodsExchangeContext context)
+		private ReportDAO _reportDAO;
+
+		public UnitOfWork(GoodsExchangeContext context)
         {
             _context = context;
         }
 
         public CategoryDAO CategoryDAO => _categoryDAO = new CategoryDAO(_context);
-        public BookmarkDAO BookmarkDAO => _bookmarkDAO =  new BookmarkDAO(_context);
+		public ReportDAO ReportDAO => _reportDAO = new ReportDAO(_context);
+		public BookmarkDAO BookmarkDAO => _bookmarkDAO =  new BookmarkDAO(_context);
         public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
         public MemberDAO MemberDAO => _memberDAO = new MemberDAO(_context);
         public CommentDAO CommentDAO => _commentDAO = new CommentDAO(_context);

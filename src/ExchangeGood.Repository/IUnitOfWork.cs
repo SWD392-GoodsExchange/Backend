@@ -13,7 +13,8 @@ namespace ExchangeGood.Repository
         public ProductDAO ProductDAO { get; }
         public MemberDAO MemberDAO { get; }
         public CategoryDAO CategoryDAO { get; }
-        public OrderDAO OrderDAO { get; }
+		public ReportDAO ReportDAO { get; }
+		public OrderDAO OrderDAO { get; }
         public CommentDAO CommentDAO { get; }
         public BookmarkDAO BookmarkDAO { get; }
         public Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
