@@ -31,10 +31,7 @@ namespace ExchangeGood.Service.UseCase
 
 			if (existingProduct != null && existingMember != null)
 			{
-				ReportDto reportdto = new ReportDto();
-				reportdto = await _reportRepository.AddReport(createreportRequest);
-
-
+				ReportDto reportdto = await _reportRepository.AddReport(createreportRequest);
 				return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, reportdto);
 			}
 			return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);

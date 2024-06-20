@@ -10,7 +10,6 @@ namespace ExchangeGood.API.Controllers
 	public class CategoryController : BaseApiController
 	{
 		private readonly ICategoryService _categoryService;
-		private readonly ILogger<CategoryController> _logger;
 		public CategoryController(ICategoryService categoryService)
 		{
 			_categoryService = categoryService;

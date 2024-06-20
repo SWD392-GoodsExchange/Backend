@@ -23,7 +23,6 @@ namespace ExchangeGood.Repository.Repository
 		}
 		public async Task<ReportDto> AddReport(CreateReportRequest reportRequest)
 		{
-
 			var report = _mapper.Map<Report>(reportRequest);
 			report.ReportId = 0;
 			report.CreatedTime = DateTime.Now;
@@ -32,7 +31,6 @@ namespace ExchangeGood.Repository.Repository
 			
 			await _uow.SaveChangesAsync();
 			return _mapper.Map<ReportDto>(report);
-
 		}
 
 		public async Task DeleteReport(int reportId)
