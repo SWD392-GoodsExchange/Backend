@@ -5,14 +5,13 @@ using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
-using ExchangeGood.Contract.Enum.Product;
 
 namespace ExchangeGood.Service.UseCase {
     public class ProductService : IProductService { // Return BaseResponse
         private readonly IProductRepository _productRepository;
         private readonly IPhotoService _photoService;
 
-        public ProductService(IProductRepository productRepository, IPhotoService photoService)
+		public ProductService(IProductRepository productRepository, IPhotoService photoService)
         {
             _productRepository = productRepository;
             _photoService = photoService;
@@ -77,7 +76,7 @@ namespace ExchangeGood.Service.UseCase {
             }
             return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG);
         }
-    }
+	}
 }
 
 /*    
