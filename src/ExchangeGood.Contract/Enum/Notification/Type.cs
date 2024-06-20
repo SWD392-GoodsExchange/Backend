@@ -10,7 +10,7 @@
         }
         private sealed class SendType : Type
         {
-            public SendType() : base(1, nameof(Type))
+            public SendType() : base(1, nameof(Send))
             {
             }
         }

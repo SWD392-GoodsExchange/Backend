@@ -17,6 +17,7 @@ namespace ExchangeGood.Service.Extensions {
             services.AddScoped<IProductService, ProductService>();
 			services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<IReportService, ReportService>();
+			services.AddScoped<INotificationService, NotificationService>();
 			services.AddScoped<IMemberService, MemberService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IJwtProvider, JwtProvider>();
