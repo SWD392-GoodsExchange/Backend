@@ -1,5 +1,6 @@
 ﻿using ExchangeGood.DAO;
 using ExchangeGood.Data.Models;
+using ExchangeGood.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -34,8 +35,6 @@ namespace ExchangeGood.Repository {
         public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
         public MemberDAO MemberDAO => _memberDAO = new MemberDAO(_context);
         public CommentDAO CommentDAO => _commentDAO = new CommentDAO(_context);
-
-
         public OrderDAO OrderDAO => _orderDAO = new OrderDAO(_context);
 
         public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default) {
@@ -46,24 +45,6 @@ namespace ExchangeGood.Repository {
             var transaction = _context.Database.BeginTransaction();
 
             return transaction.GetDbTransaction();
-        }
-
-        public async Task<int> SaveChangesWithTransactionAsync() {
-            int result = -1;
-
-            //System.Data.IsolationLevel.Snapshot
-            using (var dbContextTransaction = _context.Database.BeginTransaction()) {
-                try {
-                    result = await _context.SaveChangesAsync();
-                    dbContextTransaction.Commit();
-                }
-                catch (Exception) {
-                    //Log Exception Handling message                      
-                    result = -1;
-                    dbContextTransaction.Rollback();
-                }
-            }
-            return result;
         }
     }
 }

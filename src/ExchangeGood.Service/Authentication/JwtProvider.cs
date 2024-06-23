@@ -23,8 +23,8 @@ public class JwtProvider : IJwtProvider
         // create claims
         var claims = new Claim[]
         {
-            new("feId", member.FeId),
-            new("role", member.Role.RoleName)
+            new(ClaimTypes.NameIdentifier, member.FeId),
+            new(ClaimTypes.Role, member.Role.RoleName)
         };
         // create sign credentials
         var signingCredentials = new SigningCredentials(

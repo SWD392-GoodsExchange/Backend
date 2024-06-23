@@ -6,44 +6,52 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExchangeGood.DAO
-{
-	public class NotificationDAO
-	{
-		private readonly GoodsExchangeContext _context;
+namespace ExchangeGood.DAO {
+    public class NotificationDAO {
+        private readonly GoodsExchangeContext _context;
 
-		public NotificationDAO(GoodsExchangeContext context)
-		{
-			_context = context;
-		}
+        public NotificationDAO(GoodsExchangeContext context) {
+            _context = context;
+        }
 
-		public void AddNotification(Notifcation notifcation)
-		{
-			_context.Notifcations.Add(notifcation);
-		}
+        public void AddNotification(Notification notifcation) {
+            _context.Notifications.Add(notifcation);
+        }
 
-		public async Task<Notifcation> GetNotificationByIdAsync(int id)
-		{
-			return await _context.Notifcations.FindAsync(id);
-		}
+        public async Task<Notification> GetNotificatioById(int id) {
+            return await _context.Notifications.FindAsync(id);
+        }
 
-		public IQueryable<Notifcation> GetNotifications()
-		{
-			var query = _context.Notifcations
-				.AsQueryable()
-				.AsNoTracking();
+        public async Task<IEnumerable<Notification>> GetNotificationsOfFeID(string id) {
+            var query =  await _context.Notifications
+                .Where(x => x.RecipientId.Equals(id))
+                .OrderBy(x => x.CreatedDate)
+                .ToListAsync();
 
-			return query.AsNoTracking();
-		}
+            var unreadNotification = query.Where(m => m.DateRead == null).ToList();
+            if(unreadNotification.Any()) {
+                foreach(var notification in unreadNotification) {
+                    notification.DateRead = DateTime.UtcNow;
+                }
+            }
 
-		public void RemoveNotification(Notifcation notifcation)
-		{
-			_context.Notifcations.Remove(notifcation);
-		}
+            return query.ToList(); 
+        }
 
-		public void UpdateNotification(Notifcation notifcation)
-		{
-			_context.Notifcations.Update(notifcation);
-		}
-	}
+        public async Task<IEnumerable<Notification>> GetNotificationsSendedByFeID(string id) {
+
+            return await _context.Notifications
+                .Where(n => n.SenderId.Equals(id))
+                .OrderBy(m => m.CreatedDate)
+                .ToListAsync();
+        }
+
+        public void RemoveNotification(Notification notifcation) {
+            _context.Notifications.Remove(notifcation);
+        }
+
+        public void UpdateNotification(Notification notifcation) {
+            _context.Notifications.Update(notifcation);
+        }
+    }
 }

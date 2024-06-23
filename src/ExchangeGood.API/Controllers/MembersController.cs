@@ -57,7 +57,7 @@ namespace ExchangeGood.API.Controllers {
         {
             var feId = User.GetFeID();
             var member = await _memberService.GetMemberByFeId(feId);
-            return member.IsSuccess
+            return member != null
                 ? Ok(member)
                 : NotFound(member);
         }
