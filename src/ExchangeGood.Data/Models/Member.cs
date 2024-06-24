@@ -37,7 +37,9 @@ public partial class Member
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-    public virtual ICollection<Notifcation> Notifcations { get; set; } = new List<Notifcation>();
+    public virtual ICollection<Notification> NotificationRecipients { get; set; } = new List<Notification>();
+
+    public virtual ICollection<Notification> NotificationSenders { get; set; } = new List<Notification>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 

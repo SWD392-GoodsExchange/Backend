@@ -15,6 +15,7 @@ public class MemberService : IMemberService
     private readonly IMemberRepository _memberRepository;
     private readonly IBookmarkRepository _bookmarkRepository;
     private readonly IProductRepository _productRepository;
+    private readonly INotificationRepository _notificationRepository;
 
     private readonly IJwtProvider _jwtProvider;
 
@@ -58,12 +59,12 @@ public class MemberService : IMemberService
              : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG);
     }
 
-    public async Task<BaseResponse> GetMemberByFeId(string feId)
+    public async Task<Member> GetMemberByFeId(string feId)
     {
-        var member = await _memberRepository.GetMemberById(feId);
-        return member == null
-            ? BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG)
-            : BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, member);
+        return await _memberRepository.GetMemberById(feId);
+        // return member == null
+        //     ? BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG)
+        //     : BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, member);
     }
 
     public async Task<BaseResponse> GetBookMarkByFeId(string feId)
@@ -97,5 +98,16 @@ public class MemberService : IMemberService
         return result
             ? BaseResponse.Success(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG)
             : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_DELETE_MSG);
+    }
+
+
+    // Notification
+    public async Task<IEnumerable<Notification>> GetNotificationsOfUser(string feId) {
+        var result = await _notificationRepository.GetNotifcationsForUser(feId);    
+        return result;
+    }
+
+    public async Task<bool> AddNotification(Notification notification) {
+        return await _notificationRepository.AddNotifcation(notification);
     }
 }

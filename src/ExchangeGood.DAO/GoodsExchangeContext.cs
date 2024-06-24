@@ -24,7 +24,7 @@ public partial class GoodsExchangeContext : DbContext
 
     public virtual DbSet<Member> Members { get; set; }
 
-    public virtual DbSet<Notifcation> Notifcations { get; set; }
+    public virtual DbSet<Notification> Notifications { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -40,7 +40,7 @@ public partial class GoodsExchangeContext : DbContext
     {
         modelBuilder.Entity<Bookmark>(entity =>
         {
-            entity.HasKey(e => new { e.ProductId, e.FeId }).HasName("PK__Bookmark__D767AE40E5B799B8");
+            entity.HasKey(e => new { e.ProductId, e.FeId }).HasName("PK__Bookmark__D767AE4030E5A437");
 
             entity.ToTable("Bookmark");
 
@@ -53,17 +53,17 @@ public partial class GoodsExchangeContext : DbContext
             entity.HasOne(d => d.Fe).WithMany(p => p.Bookmarks)
                 .HasForeignKey(d => d.FeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Bookmark__FeID__4F7CD00D");
+                .HasConstraintName("FK__Bookmark__FeID__5070F446");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Bookmarks)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Bookmark__Produc__4E88ABD4");
+                .HasConstraintName("FK__Bookmark__Produc__4F7CD00D");
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CateId).HasName("PK__Category__27638D746AE66F6E");
+            entity.HasKey(e => e.CateId).HasName("PK__Category__27638D747C36FF79");
 
             entity.ToTable("Category");
 
@@ -75,7 +75,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.CommentId).HasName("PK__Comment__C3B4DFAA04B01C0E");
+            entity.HasKey(e => e.CommentId).HasName("PK__Comment__C3B4DFAA6C118E8E");
 
             entity.ToTable("Comment");
 
@@ -93,17 +93,17 @@ public partial class GoodsExchangeContext : DbContext
             entity.HasOne(d => d.Fe).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.FeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Comment__FeID__52593CB8");
+                .HasConstraintName("FK__Comment__FeID__534D60F1");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Comment__Product__534D60F1");
+                .HasConstraintName("FK__Comment__Product__5441852A");
         });
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__Image__7516F4EC8FD8103A");
+            entity.HasKey(e => e.ImageId).HasName("PK__Image__7516F4ECFEAFD32E");
 
             entity.ToTable("Image");
 
@@ -120,12 +120,12 @@ public partial class GoodsExchangeContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.Images)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Image__ProductID__44FF419A");
+                .HasConstraintName("FK__Image__ProductID__45F365D3");
         });
 
         modelBuilder.Entity<Member>(entity =>
         {
-            entity.HasKey(e => e.FeId).HasName("PK__Member__36B68AD7B970451F");
+            entity.HasKey(e => e.FeId).HasName("PK__Member__36B68AD7AE5A1AFC");
 
             entity.ToTable("Member");
 
@@ -167,32 +167,56 @@ public partial class GoodsExchangeContext : DbContext
                 .HasConstraintName("FK__Member__RoleID__398D8EEE");
         });
 
-        modelBuilder.Entity<Notifcation>(entity =>
+        modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifcat__20CF2E32D0BFB145");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E323F339B41");
 
-            entity.ToTable("Notifcation");
+            entity.ToTable("Notification");
 
             entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
             entity.Property(e => e.Content)
                 .IsRequired()
                 .HasMaxLength(100);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-            entity.Property(e => e.FeId)
+            entity.Property(e => e.DateRead).HasColumnType("datetime");
+            entity.Property(e => e.ExchangerProductIds)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.OnwerProductId)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.RecipientId)
+                .IsRequired()
                 .HasMaxLength(8)
-                .HasColumnName("FeID");
+                .HasColumnName("RecipientID");
+            entity.Property(e => e.RecipientUsername)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.SenderId)
+                .IsRequired()
+                .HasMaxLength(8)
+                .HasColumnName("SenderID");
+            entity.Property(e => e.SenderUsername)
+                .IsRequired()
+                .HasMaxLength(100);
             entity.Property(e => e.Type)
                 .IsRequired()
                 .HasMaxLength(50);
 
-            entity.HasOne(d => d.Fe).WithMany(p => p.Notifcations)
-                .HasForeignKey(d => d.FeId)
-                .HasConstraintName("FK__Notifcatio__FeID__3C69FB99");
+            entity.HasOne(d => d.Recipient).WithMany(p => p.NotificationRecipients)
+                .HasForeignKey(d => d.RecipientId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Notificat__Recip__3D5E1FD2");
+
+            entity.HasOne(d => d.Sender).WithMany(p => p.NotificationSenders)
+                .HasForeignKey(d => d.SenderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Notificat__Sende__3C69FB99");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BAFA47181CD");
+            entity.HasKey(e => e.OrderId).HasName("PK__Order__C3905BAF8F6DCC2D");
 
             entity.ToTable("Order");
 
@@ -206,17 +230,20 @@ public partial class GoodsExchangeContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Type)
+                .IsRequired()
+                .HasMaxLength(50);
             entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
 
             entity.HasOne(d => d.Buyer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.BuyerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Order__BuyerID__47DBAE45");
+                .HasConstraintName("FK__Order__BuyerID__48CFD27E");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CD9817683");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CB09820D7");
 
             entity.ToTable("OrderDetail");
 
@@ -231,24 +258,21 @@ public partial class GoodsExchangeContext : DbContext
             entity.Property(e => e.Status)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.Type)
-                .IsRequired()
-                .HasMaxLength(50);
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Order__4AB81AF0");
+                .HasConstraintName("FK__OrderDeta__Order__4BAC3F29");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderDeta__Produ__4BAC3F29");
+                .HasConstraintName("FK__OrderDeta__Produ__4CA06362");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Product__B40CC6ED247969CB");
+            entity.HasKey(e => e.ProductId).HasName("PK__Product__B40CC6ED194D0E99");
 
             entity.ToTable("Product");
 
@@ -280,17 +304,17 @@ public partial class GoodsExchangeContext : DbContext
             entity.HasOne(d => d.Cate).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CateId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Product__CateID__4222D4EF");
+                .HasConstraintName("FK__Product__CateID__4316F928");
 
             entity.HasOne(d => d.Fe).WithMany(p => p.Products)
                 .HasForeignKey(d => d.FeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Product__FeID__412EB0B6");
+                .HasConstraintName("FK__Product__FeID__4222D4EF");
         });
 
         modelBuilder.Entity<Report>(entity =>
         {
-            entity.HasKey(e => e.ReportId).HasName("PK__Report__D5BD48E59E9D99FC");
+            entity.HasKey(e => e.ReportId).HasName("PK__Report__D5BD48E53E7C832C");
 
             entity.ToTable("Report");
 
@@ -311,17 +335,17 @@ public partial class GoodsExchangeContext : DbContext
             entity.HasOne(d => d.Fe).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.FeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Report__FeID__5629CD9C");
+                .HasConstraintName("FK__Report__FeID__571DF1D5");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Report__ProductI__571DF1D5");
+                .HasConstraintName("FK__Report__ProductI__5812160E");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE3A8F369681");
+            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE3AF745DA0F");
 
             entity.ToTable("Role");
 

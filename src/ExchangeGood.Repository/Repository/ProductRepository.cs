@@ -27,8 +27,8 @@ namespace ExchangeGood.Repository.Repository
             // get member
             // get category
             var product = _mapper.Map<Product>(productRequest); // map to create new Product
-            product.CreatedTime = DateTime.Now;
-            product.UpdatedTime = DateTime.Now;
+            product.CreatedTime = DateTime.UtcNow;
+            product.UpdatedTime = DateTime.UtcNow;
             product.Status = Status.Sale.Name;
             Image image = new Image() {
                 PublicId = productRequest.Image.PublicId,
@@ -73,7 +73,7 @@ namespace ExchangeGood.Repository.Repository
                  throw new ProductNotFoundException(productRequest.ProductId);
             }
             _mapper.Map(productRequest, existedProduct);
-            existedProduct.UpdatedTime = DateTime.Now;
+            existedProduct.UpdatedTime = DateTime.UtcNow;
 
             _uow.ProductDAO.UpdateProduct(existedProduct);
 

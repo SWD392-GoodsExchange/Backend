@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace ExchangeGood.Repository.Repository
 {
-	public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : ICategoryRepository
 	{
 		private readonly IUnitOfWork _uow;
 		private readonly IMapper _mapper;

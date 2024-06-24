@@ -19,8 +19,6 @@ public partial class OrderDetail
 
     public int Quantity { get; set; }
 
-    public string Type { get; set; }
-
     public string Status { get; set; }
 
     public virtual Order Order { get; set; }

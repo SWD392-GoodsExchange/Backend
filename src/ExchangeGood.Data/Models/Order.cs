@@ -19,6 +19,8 @@ public partial class Order
 
     public int? TotalOrderDetails { get; set; }
 
+    public string Type { get; set; }
+
     public string Status { get; set; }
 
     public virtual Member Buyer { get; set; }

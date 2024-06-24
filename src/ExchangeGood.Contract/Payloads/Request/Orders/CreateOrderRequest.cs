@@ -9,7 +9,6 @@ namespace ExchangeGood.Contract.Payloads.Request.Orders {
     public class CreateOrderRequest {
 
         public string MemberId { get; set; }
-        public string Type { get; set; }  
         public IEnumerable<OrderDetailDto> OrderDetails { get; set; }
     }
 }

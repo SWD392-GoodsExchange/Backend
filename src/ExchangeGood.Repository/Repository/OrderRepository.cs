@@ -12,7 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExchangeGood.Repository.Repository {
+namespace ExchangeGood.Repository.Repository
+{
     public class OrderRepository : IOrderRepository {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;

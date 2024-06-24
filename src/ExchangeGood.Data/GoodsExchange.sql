@@ -4,7 +4,6 @@ CREATE DATABASE GoodsExchange;
 GO
 USE GoodsExchange;
 GO
-
 -- Create tables
 CREATE TABLE [Role] (
     RoleID INT IDENTITY(1,1) PRIMARY KEY,
@@ -29,13 +28,20 @@ CREATE TABLE [Member] (
     
 );
 GO
-CREATE TABLE Notifcation(
+CREATE TABLE [Notification](
 	NotificationID INT IDENTITY(1,1) PRIMARY KEY,
-	FeID NVARCHAR(8),
+	SenderID NVARCHAR(8) not null,
+	SenderUsername NVARCHAR(100) NOT NULL,
+	RecipientID NVARCHAR(8) not null,
+	RecipientUsername NVARCHAR(100) NOT NULL,
+	OnwerProductId NVarchar(255) NOT null,
+	ExchangerProductIds NVarchar(255) NOT null,
 	Content NVARCHAR(100) NOT NULL,
+	DateRead Datetime,
 	CreatedDate DATETIME NOT NULL,
 	[Type] NVARCHAR(50) NOT NULL,
-	FOREIGN KEY (FeID) REFERENCES [Member](FeID)
+	FOREIGN KEY (SenderID) REFERENCES [Member](FeID),
+	FOREIGN KEY (RecipientID) REFERENCES [Member](FeID)
 )
 GO
 CREATE TABLE Category (
@@ -74,6 +80,7 @@ CREATE TABLE [Order] (
     UpdatedTime DATETIME NOT NULL,
     TotalAmount DECIMAL(18, 2) NOT NULL,
 	TotalOrderDetails INT,
+	[Type] NVARCHAR(50) NOT NULL,
     [Status] NVARCHAR(50) NOT NULL,
     FOREIGN KEY (BuyerID) REFERENCES [Member](FeID),
 );
@@ -85,7 +92,6 @@ CREATE TABLE OrderDetail (
 	SellerID NVARCHAR(8) NOT NULL,
     Amount DECIMAL(18, 2) NOT NULL,
     Quantity INT NOT NULL,
-	[Type] NVARCHAR(50) NOT NULL,
 	[Status] NVARCHAR(50) NOT NULL,
     FOREIGN KEY (OrderID) REFERENCES [Order](OrderID),
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
@@ -121,27 +127,3 @@ CREATE TABLE Report (
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
 GO
-
--- drop table
-Drop table [Role]
-go
-Drop table [Member]
-go
-Drop table Notifcation
-go
-Drop table Category
-go
-Drop table Product
-go
-Drop table Image
-go
-Drop table [Order]
-go
-Drop table OrderDetail
-go
-Drop table Bookmark
-go
-Drop table Comment
-go
-Drop table Report
-go

@@ -6,20 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExchangeGood.Repository
+namespace ExchangeGood.Repository.Interfaces
 {
     public interface IUnitOfWork
     {
         public ProductDAO ProductDAO { get; }
         public MemberDAO MemberDAO { get; }
         public CategoryDAO CategoryDAO { get; }
-		public ReportDAO ReportDAO { get; }
-        public NotificationDAO NotificationDAO { get; }
-		public OrderDAO OrderDAO { get; }
-        public CommentDAO CommentDAO { get; }
+        public OrderDAO OrderDAO { get; }
         public BookmarkDAO BookmarkDAO { get; }
+        public NotificationDAO NotificationDAO { get; }
+        public CommentDAO CommentDAO { get; }
+        public ReportDAO ReportDAO { get; }
         public Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
         public IDbTransaction BeginTransaction();
-        public Task<int> SaveChangesWithTransactionAsync();
     }
 }

@@ -10,7 +10,19 @@ public static class IdentityServiceExtensions
     {
         services.ConfigureOptions<JwtOptionsSetup>();
         services.ConfigureOptions<JwtBearerOptionsSetup>();
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt => {
+            opt.Events = new JwtBearerEvents {
+                OnMessageReceived = context => {
+                    var accesssToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    if(string.IsNullOrEmpty(accesssToken) && path.StartsWithSegments("/hubs")) {
+                        context.Token = accesssToken;
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
         return services;
     }
     

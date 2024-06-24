@@ -34,7 +34,7 @@ public class MemberRepository : IMemberRepository
         return result;
     }
 
-    public async Task<MemberDto> GetMemberById(string feId)
+    public async Task<Member> GetMemberById(string feId)
     {
         var result = await _uow.MemberDAO.GetMemberById(feId);
         if (result == null)
@@ -42,7 +42,7 @@ public class MemberRepository : IMemberRepository
             return default;
         }
 
-        return _mapper.Map<MemberDto>(result);
+        return result;
     }
 
     public async Task<Member> CheckLogin(LoginRequest loginRequest)
