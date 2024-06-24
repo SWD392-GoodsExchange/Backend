@@ -19,6 +19,8 @@ public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
         options.TokenValidationParameters.ValidateIssuer = false;
         options.TokenValidationParameters.ValidateAudience = false;
         options.TokenValidationParameters.ValidateIssuerSigningKey = true;
+        options.TokenValidationParameters.RequireExpirationTime = true;
+        options.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
         options.TokenValidationParameters.IssuerSigningKey =
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
     }

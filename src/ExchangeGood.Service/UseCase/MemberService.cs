@@ -15,13 +15,18 @@ public class MemberService : IMemberService
     private readonly IMemberRepository _memberRepository;
     private readonly IBookmarkRepository _bookmarkRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly INotificationRepository _notificationRepository;
-
     private readonly IJwtProvider _jwtProvider;
 
-    public MemberService(IMemberRepository memberRepository, IProductRepository productRepository,
-        IBookmarkRepository bookmarkRepository, INotificationRepository notificationRepository, IJwtProvider jwtProvider)
+    public MemberService(IMemberRepository memberRepository,
+        IProductRepository productRepository,
+        IBookmarkRepository bookmarkRepository,
+        IJwtProvider jwtProvider,
+        IRefreshTokenRepository refreshTokenRepository,
+        INotificationRepository notificationRepository)
     {
+        _refreshTokenRepository = refreshTokenRepository;
         _bookmarkRepository = bookmarkRepository;
         _productRepository = productRepository;
         _memberRepository = memberRepository;
@@ -47,8 +52,45 @@ public class MemberService : IMemberService
     public async Task<BaseResponse> Login(LoginRequest loginRequest)
     {
         var member = await _memberRepository.CheckLogin(loginRequest);
-        var token = _jwtProvider.Generate(member);
-        return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, token);
+        bool result = false;
+        // get refresh token
+        var refreshToken = await _refreshTokenRepository.GetRefreshTokenByFeId(loginRequest.FeId);
+        // Gen token & refresh token
+        var jwtToken = _jwtProvider.GenerateToken(member);
+        var refreshTokenString = _jwtProvider.GenerateRefreshToken();
+
+        // check refresh token if null => create 
+        if (refreshToken == null)
+        {
+            var newRefreshToken = new RefreshToken
+            {
+                FeId = member.FeId,
+                Token = refreshTokenString,
+                ExpiryDate = DateTime.UtcNow.AddHours(12)
+            };
+            result = await _refreshTokenRepository.AddRefreshToken(newRefreshToken);
+            if (!result)
+            {
+                return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+            }
+        }
+        // Update token
+        else
+        {
+            refreshToken.Token = refreshTokenString;
+            refreshToken.ExpiryDate = DateTime.UtcNow.AddHours(12);
+            result = await _refreshTokenRepository.UpdateRefreshToken(refreshToken);
+            if (!result)
+            {
+                return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+            }
+        }
+        var loginResponse = new LoginResponse
+        {
+            JwtToken = jwtToken,
+            RefreshToken = refreshTokenString
+        };
+        return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, loginResponse);
     }
 
     public async Task<BaseResponse> UpdatePassword(PasswordRequest passwordRequest)

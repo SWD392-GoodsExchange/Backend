@@ -4,6 +4,7 @@ CREATE DATABASE GoodsExchange;
 GO
 USE GoodsExchange;
 GO
+
 -- Create tables
 CREATE TABLE [Role] (
     RoleID INT IDENTITY(1,1) PRIMARY KEY,
@@ -80,7 +81,6 @@ CREATE TABLE [Order] (
     UpdatedTime DATETIME NOT NULL,
     TotalAmount DECIMAL(18, 2) NOT NULL,
 	TotalOrderDetails INT,
-	[Type] NVARCHAR(50) NOT NULL,
     [Status] NVARCHAR(50) NOT NULL,
     FOREIGN KEY (BuyerID) REFERENCES [Member](FeID),
 );
@@ -92,6 +92,7 @@ CREATE TABLE OrderDetail (
 	SellerID NVARCHAR(8) NOT NULL,
     Amount DECIMAL(18, 2) NOT NULL,
     Quantity INT NOT NULL,
+	[Type] NVARCHAR(50) NOT NULL,
 	[Status] NVARCHAR(50) NOT NULL,
     FOREIGN KEY (OrderID) REFERENCES [Order](OrderID),
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
@@ -125,5 +126,14 @@ CREATE TABLE Report (
 	CreatedTime DATETIME NOT NULL,
     FOREIGN KEY (FeID) REFERENCES [Member](FeID),
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+);
+GO
+
+CREATE TABLE RefreshToken(
+    RefreshTokenID INT IDENTITY(1,1) PRIMARY KEY,
+    FeID NVARCHAR(8) NOT NULL,
+    Token NVARCHAR(255) NOT NULL,
+    ExpiryDate DATETIME NOT NULL,
+    FOREIGN KEY (FeID) REFERENCES [Member](FeID)
 );
 GO

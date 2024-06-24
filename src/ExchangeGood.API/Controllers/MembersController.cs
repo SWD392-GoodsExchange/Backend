@@ -1,4 +1,5 @@
 using ExchangeGood.API.Extensions;
+using ExchangeGood.Contract.Enum.Member;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Members;
 using ExchangeGood.Contract.Payloads.Request.Orders;
@@ -18,7 +19,6 @@ namespace ExchangeGood.API.Controllers {
             _orderService = orderService;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetMembers([FromQuery] GetMembersQuery getMembersQuery)
         {
@@ -34,6 +34,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpPost("changepassword")]
+        [Authorize]
         public async Task<IActionResult> UpdatePassword([FromBody] PasswordRequest passwordRequest)
         {
             passwordRequest.FeId = User.GetFeID();
@@ -53,6 +54,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpGet("information")]
+        [Authorize]
         public async Task<IActionResult> GetMemberById()
         {
             var feId = User.GetFeID();
@@ -63,6 +65,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpGet("bookmark")]
+        [Authorize]
         public async Task<IActionResult> GetBookMark()
         {
             var feId = User.GetFeID();
@@ -73,6 +76,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpPost("bookmark")]
+        [Authorize]
         public async Task<IActionResult> CreateBookmark(CreateBookmarkRequest createBookmarkRequest)
         {
             createBookmarkRequest.FeId = User.GetFeID();
@@ -81,6 +85,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpDelete("bookmark")]
+        [Authorize]
         public async Task<IActionResult> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
         {
             deleteBookmarkRequest.FeId = User.GetFeID();

@@ -51,6 +51,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[RefreshToken]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Report]",
          "ObjectType": 0
       },
