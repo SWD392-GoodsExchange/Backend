@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using ExchangeGood.Data.Models;
 using ExchangeGood.Service.Interfaces;
@@ -18,7 +19,7 @@ public class JwtProvider : IJwtProvider
         _options = options.Value;
     }
 
-    public string Generate(Member member)
+    public string GenerateToken(Member member)
     {
         // create claims
         var claims = new Claim[]
@@ -34,12 +35,25 @@ public class JwtProvider : IJwtProvider
         var token = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(5),
+            Expires = DateTime.UtcNow.Add(_options.ExpiryTimeFrame),
             SigningCredentials = signingCredentials
         };
         var tokenHandler = new JwtSecurityTokenHandler();
         var securityToken = tokenHandler.CreateToken(token);
         var tokenResult = tokenHandler.WriteToken(securityToken);
+
         return tokenResult;
+    }
+
+    public string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[64];
+
+        using (var numberGenerator = RandomNumberGenerator.Create())
+        {
+            numberGenerator.GetBytes(randomNumber);
+        }
+
+        return Convert.ToBase64String(randomNumber);
     }
 }

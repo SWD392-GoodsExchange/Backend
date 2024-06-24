@@ -1,6 +1,5 @@
 ﻿using ExchangeGood.DAO;
 using ExchangeGood.Data.Models;
-using ExchangeGood.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -19,6 +18,7 @@ namespace ExchangeGood.Repository {
         private OrderDAO _orderDAO;
         private BookmarkDAO _bookmarkDAO;
         private CommentDAO _commentDAO;
+        private RefreshTokenDAO _refreshTokenDAO;
 		private ReportDAO _reportDAO;
 		private NotificationDAO _notificationDAO;
 
@@ -29,12 +29,15 @@ namespace ExchangeGood.Repository {
         }
 
         public CategoryDAO CategoryDAO => _categoryDAO = new CategoryDAO(_context);
+        public BookmarkDAO BookmarkDAO => _bookmarkDAO =  new BookmarkDAO(_context);
+        public RefreshTokenDAO RefreshTokenDAO => _refreshTokenDAO = new RefreshTokenDAO(_context);
 		public ReportDAO ReportDAO => _reportDAO = new ReportDAO(_context);
 		public NotificationDAO NotificationDAO => _notificationDAO = new NotificationDAO(_context);
-		public BookmarkDAO BookmarkDAO => _bookmarkDAO =  new BookmarkDAO(_context);
         public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
         public MemberDAO MemberDAO => _memberDAO = new MemberDAO(_context);
         public CommentDAO CommentDAO => _commentDAO = new CommentDAO(_context);
+
+
         public OrderDAO OrderDAO => _orderDAO = new OrderDAO(_context);
 
         public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default) {
@@ -45,6 +48,24 @@ namespace ExchangeGood.Repository {
             var transaction = _context.Database.BeginTransaction();
 
             return transaction.GetDbTransaction();
+        }
+
+        public async Task<int> SaveChangesWithTransactionAsync() {
+            int result = -1;
+
+            //System.Data.IsolationLevel.Snapshot
+            using (var dbContextTransaction = _context.Database.BeginTransaction()) {
+                try {
+                    result = await _context.SaveChangesAsync();
+                    dbContextTransaction.Commit();
+                }
+                catch (Exception) {
+                    //Log Exception Handling message                      
+                    result = -1;
+                    dbContextTransaction.Rollback();
+                }
+            }
+            return result;
         }
     }
 }

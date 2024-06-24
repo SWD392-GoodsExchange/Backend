@@ -4,5 +4,6 @@ namespace ExchangeGood.Service.Interfaces;
 
 public interface IJwtProvider
 {
-    string Generate(Member member);
+    string GenerateToken(Member member);
+    string GenerateRefreshToken();
 }

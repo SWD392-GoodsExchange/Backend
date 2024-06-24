@@ -46,6 +46,8 @@ public partial class Member
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
-
+    
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
+    
     public virtual Role Role { get; set; }
 }

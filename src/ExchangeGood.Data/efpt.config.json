@@ -1,5 +1,5 @@
 ﻿{
-   "CodeGenerationMode": 3,
+   "CodeGenerationMode": 2,
    "ContextClassName": "GoodsExchangeContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
@@ -48,6 +48,10 @@
       },
       {
          "Name": "[dbo].[Product]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RefreshToken]",
          "ObjectType": 0
       },
       {

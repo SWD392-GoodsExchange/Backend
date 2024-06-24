@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExchangeGood.Repository.Interfaces
+namespace ExchangeGood.Repository
 {
     public interface IUnitOfWork
     {
@@ -14,11 +14,13 @@ namespace ExchangeGood.Repository.Interfaces
         public MemberDAO MemberDAO { get; }
         public CategoryDAO CategoryDAO { get; }
         public OrderDAO OrderDAO { get; }
-        public BookmarkDAO BookmarkDAO { get; }
-        public NotificationDAO NotificationDAO { get; }
         public CommentDAO CommentDAO { get; }
+        public NotificationDAO NotificationDAO { get; }
+        public BookmarkDAO BookmarkDAO { get; }
         public ReportDAO ReportDAO { get; }
+        public RefreshTokenDAO RefreshTokenDAO { get; }
         public Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
         public IDbTransaction BeginTransaction();
+        public Task<int> SaveChangesWithTransactionAsync();
     }
 }

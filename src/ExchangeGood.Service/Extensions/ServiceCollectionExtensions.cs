@@ -20,8 +20,11 @@ namespace ExchangeGood.Service.Extensions {
 			services.AddScoped<IMemberService, MemberService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IJwtProvider, JwtProvider>();
+            services.AddScoped<IAuthService, AuthService>();
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
             services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<IClaimsPrincipalExtensions, ClaimsPrincipalExtensions>();
+            
             return services;
         }
     }

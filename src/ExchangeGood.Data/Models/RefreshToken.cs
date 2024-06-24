@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace ExchangeGood.Data.Models
 {
-    public partial class Bookmark
+    public partial class RefreshToken
     {
-        public int ProductId { get; set; }
+        public int RefreshTokenId { get; set; }
         public string FeId { get; set; }
-        public DateTime CreateTime { get; set; }
+        public string Token { get; set; }
+        public DateTime ExpiryDate { get; set; }
 
         public virtual Member Fe { get; set; }
-        public virtual Product Product { get; set; }
     }
 }

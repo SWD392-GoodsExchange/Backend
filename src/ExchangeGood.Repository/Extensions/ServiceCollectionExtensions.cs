@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 using ExchangeGood.Data.Models;
 using ExchangeGood.DAO;
 
-namespace ExchangeGood.Repository.Extensions
-{
+namespace ExchangeGood.Repository.Extensions {
     public static class ServiceCollectionExtensions {
         public static IServiceCollection AddRepositoryLayer(this IServiceCollection services) {
             services.AddAutoMapper(typeof(ServiceProfile));
-            // Regist Repositories into ServiceCollection
+
             services.AddScoped<IProductRepository, ProductRepository>();
 			services.AddScoped<ICategoryRepository, CategoryRepository>();
 			services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IBookmarkRepository, BookmarkRepository>();
+            services.AddScoped<IRefreshTokenRepository,RefreshTokenRepository>();
 			services.AddScoped<IReportRepository, ReportRepository>();
-			services.AddScoped<IBookmarkRepository, BookmarkRepository>();
 			services.AddScoped<INotificationRepository, NotificationRepository>();
 
 			// Add UnitOfWork

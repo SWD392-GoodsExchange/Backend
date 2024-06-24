@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using ExchangeGood.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ExchangeGood.DAO;
 
@@ -14,35 +15,26 @@ public partial class GoodsExchangeContext : DbContext
     {
     }
 
-    public virtual DbSet<Bookmark> Bookmarks { get; set; }
-
-    public virtual DbSet<Category> Categories { get; set; }
-
-    public virtual DbSet<Comment> Comments { get; set; }
-
-    public virtual DbSet<Image> Images { get; set; }
-
-    public virtual DbSet<Member> Members { get; set; }
-
-    public virtual DbSet<Notification> Notifications { get; set; }
-
-    public virtual DbSet<Order> Orders { get; set; }
-
-    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-
-    public virtual DbSet<Product> Products { get; set; }
-
-    public virtual DbSet<Report> Reports { get; set; }
-
-    public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Bookmark> Bookmarks { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<Member> Members { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+        public virtual DbSet<Report> Reports { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Bookmark>(entity =>
         {
-            entity.HasKey(e => new { e.ProductId, e.FeId }).HasName("PK__Bookmark__D767AE4030E5A437");
+            entity.HasKey(e => new { e.ProductId, e.FeId }).HasName("PK__Bookmark__D767AE40E5B799B8");
 
-            entity.ToTable("Bookmark");
+                entity.ToTable("Bookmark");
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.FeId)
@@ -53,17 +45,17 @@ public partial class GoodsExchangeContext : DbContext
             entity.HasOne(d => d.Fe).WithMany(p => p.Bookmarks)
                 .HasForeignKey(d => d.FeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Bookmark__FeID__5070F446");
+                .HasConstraintName("FK__Bookmark__FeID__4F7CD00D");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Bookmarks)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Bookmark__Produc__4F7CD00D");
+                .HasConstraintName("FK__Bookmark__Produc__4E88ABD4");
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CateId).HasName("PK__Category__27638D747C36FF79");
+            entity.HasKey(e => e.CateId).HasName("PK__Category__27638D746AE66F6E");
 
             entity.ToTable("Category");
 
@@ -75,7 +67,7 @@ public partial class GoodsExchangeContext : DbContext
 
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.CommentId).HasName("PK__Comment__C3B4DFAA6C118E8E");
+            entity.HasKey(e => e.CommentId).HasName("PK__Comment__C3B4DFAA04B01C0E");
 
             entity.ToTable("Comment");
 
@@ -93,17 +85,17 @@ public partial class GoodsExchangeContext : DbContext
             entity.HasOne(d => d.Fe).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.FeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Comment__FeID__534D60F1");
+                .HasConstraintName("FK__Comment__FeID__52593CB8");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Comment__Product__5441852A");
+                .HasConstraintName("FK__Comment__Product__534D60F1");
         });
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__Image__7516F4ECFEAFD32E");
+            entity.HasKey(e => e.ImageId).HasName("PK__Image__7516F4EC8FD8103A");
 
             entity.ToTable("Image");
 
@@ -120,12 +112,12 @@ public partial class GoodsExchangeContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.Images)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Image__ProductID__45F365D3");
+                .HasConstraintName("FK__Image__ProductID__44FF419A");
         });
 
         modelBuilder.Entity<Member>(entity =>
         {
-            entity.HasKey(e => e.FeId).HasName("PK__Member__36B68AD7AE5A1AFC");
+            entity.HasKey(e => e.FeId).HasName("PK__Member__36B68AD7B970451F");
 
             entity.ToTable("Member");
 
@@ -225,6 +217,7 @@ public partial class GoodsExchangeContext : DbContext
                 .IsRequired()
                 .HasMaxLength(8)
                 .HasColumnName("BuyerID");
+            
             entity.Property(e => e.CreatedTime).HasColumnType("datetime");
             entity.Property(e => e.Status)
                 .IsRequired()
@@ -310,6 +303,29 @@ public partial class GoodsExchangeContext : DbContext
                 .HasForeignKey(d => d.FeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Product__FeID__4222D4EF");
+        });
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.ToTable("RefreshToken");
+
+            entity.Property(e => e.RefreshTokenId).HasColumnName("RefreshTokenID");
+
+            entity.Property(e => e.ExpiryDate).HasColumnType("datetime");
+
+            entity.Property(e => e.FeId)
+                .IsRequired()
+                .HasMaxLength(8)
+                .HasColumnName("FeID");
+
+            entity.Property(e => e.Token)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            entity.HasOne(d => d.Fe)
+                .WithMany(p => p.RefreshTokens)
+                .HasForeignKey(d => d.FeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__RefreshTok__FeID__59FA5E80");
         });
 
         modelBuilder.Entity<Report>(entity =>
