@@ -20,11 +20,12 @@ public class MemberService : IMemberService
     private readonly IJwtProvider _jwtProvider;
 
     public MemberService(IMemberRepository memberRepository, IProductRepository productRepository,
-        IBookmarkRepository bookmarkRepository, IJwtProvider jwtProvider)
+        IBookmarkRepository bookmarkRepository, INotificationRepository notificationRepository, IJwtProvider jwtProvider)
     {
         _bookmarkRepository = bookmarkRepository;
         _productRepository = productRepository;
         _memberRepository = memberRepository;
+        _notificationRepository = notificationRepository;
         _jwtProvider = jwtProvider;
     }
 
