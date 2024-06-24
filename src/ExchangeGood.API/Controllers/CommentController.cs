@@ -11,7 +11,7 @@ namespace ExchangeGood.API.Controllers
     public class CommentController : BaseApiController
     {
         private readonly ICommentService _CommentService;
-        private readonly ILogger<CommentController> _logger;
+        // private readonly ILogger<CommentController> _logger;
 
         public CommentController(ICommentService commentService)
         {

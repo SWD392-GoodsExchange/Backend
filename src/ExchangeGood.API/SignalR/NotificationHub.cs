@@ -12,9 +12,12 @@ namespace ExchangeGood.API.SignalR
     {
         private readonly IMemberService _memberService;
         private readonly IMapper _mapper;
-        public NotificationHub(IMemberService memberService)
+        private readonly PresenceTracker _tracker;
+        public NotificationHub(IMemberService memberService, PresenceTracker tracker, IMapper mapper)  
         {
             _memberService = memberService;
+            _tracker = tracker;
+            _mapper = mapper; 
         }
 
         public async override Task OnConnectedAsync()

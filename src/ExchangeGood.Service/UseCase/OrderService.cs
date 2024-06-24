@@ -21,10 +21,11 @@ namespace ExchangeGood.Service.UseCase
         private readonly IProductService _productService;
         private readonly IUnitOfWork _uow;
 
-        public OrderService(IOrderRepository orderRepository, IProductService productService)
+        public OrderService(IOrderRepository orderRepository, IProductService productService, IUnitOfWork uow)
         {
             _orderRepository = orderRepository;
             _productService = productService;
+            _uow = uow;
         }
 
         public async Task<BaseResponse> CreateOrderForExchange(CreateOrderExchangeRequest createOrderRequest) {
@@ -78,7 +79,7 @@ namespace ExchangeGood.Service.UseCase
                 transaction.Commit();
                 return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
             }
-            catch (Exception ex) {
+            catch (Exception) {
                 transaction.Rollback();
                 return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
             }
