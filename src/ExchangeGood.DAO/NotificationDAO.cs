@@ -25,7 +25,7 @@ namespace ExchangeGood.DAO {
         public async Task<IEnumerable<Notification>> GetNotificationsOfFeID(string id) {
             var query =  await _context.Notifications
                 .Where(x => x.RecipientId.Equals(id))
-                .OrderBy(x => x.CreatedDate)
+                .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
 
             var unreadNotification = query.Where(m => m.DateRead == null).ToList();
@@ -42,7 +42,7 @@ namespace ExchangeGood.DAO {
 
             return await _context.Notifications
                 .Where(n => n.SenderId.Equals(id))
-                .OrderBy(m => m.CreatedDate)
+                .OrderByDescending(m => m.CreatedDate)
                 .ToListAsync();
         }
 

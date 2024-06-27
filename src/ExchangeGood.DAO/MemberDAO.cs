@@ -23,7 +23,7 @@ public class MemberDAO
 
         return await query.FirstOrDefaultAsync();
     }
-    public IQueryable<Member> GetAllMembers(string? searchTerm, string? sortColumn, string? sortOrder)
+    public IQueryable<Member> GetAllMembers(string searchTerm, string sortColumn, string sortOrder)
     {
         IQueryable<Member> membersQuery = _context.Members;
         if (!string.IsNullOrEmpty(searchTerm))
@@ -41,7 +41,7 @@ public class MemberDAO
         return membersQuery.AsNoTracking();
     }
 
-    public Expression<Func<Member, object>> GetSortExpression(string? sortColumn) =>
+    public Expression<Func<Member, object>> GetSortExpression(string sortColumn) =>
         // check if sort column is null => sort by feId, otherwise sort by option
         sortColumn?.ToLower() switch
         {

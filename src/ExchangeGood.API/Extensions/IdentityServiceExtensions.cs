@@ -15,7 +15,7 @@ public static class IdentityServiceExtensions
                 OnMessageReceived = context => {
                     var accesssToken = context.Request.Query["access_token"];
                     var path = context.HttpContext.Request.Path;
-                    if(string.IsNullOrEmpty(accesssToken) && path.StartsWithSegments("/hubs")) {
+                    if(!string.IsNullOrEmpty(accesssToken) && path.StartsWithSegments("/hubs")) {
                         context.Token = accesssToken;
                     }
                     return Task.CompletedTask;

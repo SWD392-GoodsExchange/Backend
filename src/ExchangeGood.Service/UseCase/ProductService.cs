@@ -1,8 +1,10 @@
-﻿using ExchangeGood.Contract.Common;
+﻿using ExchangeGood.Contract;
+using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Product;
 using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Data.Models;
+using ExchangeGood.Repository.Exceptions;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
 
@@ -58,13 +60,21 @@ namespace ExchangeGood.Service.UseCase {
         public async Task<Product> GetProduct(int productId)
         {
             return await _productRepository.GetProduct(productId); 
-           /*var result = await _productRepository.GetProduct(productId);
-         
-            if (result != null) {
-                return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsForExchangeRequest(GetProductsForExchangeRequest request)
+        {
+            var result = await _productRepository.GetProductsForExchange(request.ProductIds);
+
+            if(result.FirstOrDefault(x => x.FeId.Equals(request.FeId)) == null) {
+                throw new BadRequestException("Your product has already exchanged before.");
             }
 
-            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);*/
+            if(result.Where(x => !x.FeId.Equals(request.FeId)).Count() < 1) {
+                throw new BadRequestException("Products of exchanger have already exchange before.");
+            }
+
+            return result;
         }
 
         public async Task<BaseResponse> UpdateProduct(UpdateProductRequest updateProductRequest)

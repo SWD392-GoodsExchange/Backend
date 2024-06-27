@@ -15,10 +15,10 @@ public class Enumeration<TEnum> : IEquatable<Enumeration<TEnum>>
         Value = value;
         Name = name;
     }
-    public static TEnum? FromValue(int value)
+    public static TEnum FromValue(int value)
     {
         return Enumerations
-            .TryGetValue(value, out TEnum? enumeration)
+            .TryGetValue(value, out TEnum enumeration)
             ? enumeration
             : default;
     }
@@ -31,12 +31,12 @@ public class Enumeration<TEnum> : IEquatable<Enumeration<TEnum>>
     {
         return Name;
     }
-    public static TEnum? FromName(string name)
+    public static TEnum FromName(string name)
     {
         return Enumerations.Values.SingleOrDefault(x => x.Name == name);
     }
 
-    public bool Equals(Enumeration<TEnum>? other)
+    public bool Equals(Enumeration<TEnum> other)
     {
         if (other is null)
         {
@@ -46,7 +46,7 @@ public class Enumeration<TEnum> : IEquatable<Enumeration<TEnum>>
         return GetType() == other.GetType() && Value == other.Value;
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         return obj is Enumeration<TEnum> other && Equals(other);
     }

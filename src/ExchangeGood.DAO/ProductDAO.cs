@@ -19,8 +19,26 @@ namespace ExchangeGood.DAO {
             _context.Products.Add(product);
         }
 
-        public async Task<Product> GetProductByIdAsync(int id) {
-            return await _context.Products.FindAsync(id);
+        public async Task<Product> GetProductByIdAsync(int id, bool includeDetail = false) {
+
+            var query = _context.Products.AsQueryable();
+            // for view product so that use .AsNoTracking() otherwise use for business logic
+            if(includeDetail) {
+                query = query
+                    .Include(x => x.Cate)
+                    .Include(x => x.Images)
+                    .AsNoTracking();
+            }
+
+            return await query.FirstOrDefaultAsync(x => x.ProductId == id);   
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsForExchange(IEnumerable<int> productIds) {
+            return await _context.Products
+                .Include(x => x.Cate)
+                .Include(x => x.Images)
+                .Where(x => productIds.Contains(x.ProductId))
+                .ToListAsync();
         }
 
         public IQueryable<Product> GetProducts(string keyword, string type, string orderBy) {

@@ -1,4 +1,5 @@
 ﻿using ExchangeGood.API.Extensions;
+using ExchangeGood.Contract;
 using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.Enum.Member;
 using ExchangeGood.Contract.Payloads.Request.Product;
@@ -25,7 +26,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         // POST http://localhost:5000/api/products
-        [Authorize(Roles = nameof(Role.Member.Name))]
+        [Authorize(Roles = nameof(Role.Member))]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequest productRequest) {
             var feId = User.GetFeID();
@@ -37,6 +38,13 @@ namespace ExchangeGood.API.Controllers {
             return BadRequest(result);            
         }
 
-
+        [Authorize(Roles = "Member")]
+        [HttpGet("exchanges")]
+        public async Task<IActionResult> GetProductsForExchange([FromQuery] GetProductsForExchangeRequest request) {
+            var feId = User.GetFeID();
+            request.FeId = feId;
+            var result = await _productService.GetProductsForExchangeRequest(request);
+            return Ok(result);
+        }
     }
 }

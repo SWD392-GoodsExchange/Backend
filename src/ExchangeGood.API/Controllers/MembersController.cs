@@ -1,22 +1,30 @@
+using AutoMapper;
 using ExchangeGood.API.Extensions;
 using ExchangeGood.Contract.Enum.Member;
+using ExchangeGood.Contract.Common;
+using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Members;
 using ExchangeGood.Contract.Payloads.Request.Orders;
+using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Role = ExchangeGood.Contract.Enum.Member.Role;
 
-namespace ExchangeGood.API.Controllers {
+namespace ExchangeGood.API.Controllers
+{
     public class MembersController : BaseApiController
     {
         private readonly IMemberService _memberService;
         private readonly IOrderService _orderService;
+        private readonly IMapper _mapper;
 
-        public MembersController(IMemberService memberService,IOrderService orderService)
+        public MembersController(IMemberService memberService, IOrderService orderService, IMapper mapper)
         {
             _memberService = memberService;
             _orderService = orderService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -96,7 +104,8 @@ namespace ExchangeGood.API.Controllers {
         // Đặt hàng
         [Authorize(Roles = "Member")]
         [HttpPost("checkout")]
-        public async Task<IActionResult> CheckoutOrder([FromBody] CreateOrderRequest createOrderRequest) {
+        public async Task<IActionResult> CheckoutOrder([FromBody] CreateOrderRequest createOrderRequest)
+        {
             var feId = User.GetFeID();
             createOrderRequest.MemberId = feId;
             var result = await _orderService.CreateOrderForTrade(createOrderRequest);
@@ -109,14 +118,30 @@ namespace ExchangeGood.API.Controllers {
 
         [Authorize(Roles = "Member")]
         [HttpPost("exchange")]
-        public async Task<IActionResult> ExchangeOrder([FromBody] CreateOrderExchangeRequest createOrderRequest) {
+        public async Task<IActionResult> ExchangeOrder([FromBody] CreateOrderExchangeRequest createOrderRequest)
+        {
             var feId = User.GetFeID();
             createOrderRequest.OwnerID = feId;
             var result = await _orderService.CreateOrderForExchange(createOrderRequest);
-            if (!result.IsSuccess) {
+            if (!result.IsSuccess)
+            {
                 return BadRequest(result);
             }
             return Ok(result);
+        }
+
+        // notification
+        [Authorize(Roles = "Member")]
+        [HttpGet("notifications-sended")]
+        public async Task<IActionResult> GetNotificationsSendedByUser()
+        {
+            var feId = User.GetFeID();
+            var result = await _memberService.GetNotificationsWereSendedByUser(feId);
+            if (result != null)
+            {
+                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<NotificationDto>>(result)));
+            }
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
     }
 }

@@ -27,7 +27,7 @@ namespace ExchangeGood.DAO
 			return await _context.Reports.FindAsync(id);
 		}
 
-		public IQueryable<Report> GetReports(string? keyword, string orderBy)
+		public IQueryable<Report> GetReports(string keyword, string orderBy)
 		{
 			var query = _context.Reports
 				.Include(p => p.Fe)
@@ -60,7 +60,5 @@ namespace ExchangeGood.DAO
 		{
 			_context.Reports.Update(report);
 		}
-
-
 	}
 }

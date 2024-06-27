@@ -5,7 +5,7 @@
     "UsageInformation": "Gently used, no marks or tears.",
     "Origin": "USA",
     "Type": "Trade",
-    "Status": "Sold",
+    "Status": "Sale",
     "CreatedTime": "2024-06-14T08:00:00",
     "UpdatedTime": "2024-06-14T08:00:00",
     "Price": 10.00,
@@ -17,18 +17,18 @@
     "UsageInformation": "Brand new, unopened.",
     "Origin": "China",
     "Type": "Trade",
-    "Status": "Sold",
+    "Status": "Sale",
     "CreatedTime": "2024-06-14T09:00:00",
     "UpdatedTime": "2024-06-14T09:00:00",
     "Price": 5.50,
     "Title": "Set of Mechanical Pencils"
   },
   {
-    "FeID": "SE182732",
+    "FeID": "SE173531",
     "CateID": 3,
     "UsageInformation": "Used for one semester, in great condition.",
     "Origin": "Canada",
-    "Type": "Trade",
+    "Type": "Exchange",
     "Status": "Sale",
     "CreatedTime": "2024-06-14T10:00:00",
     "UpdatedTime": "2024-06-14T10:00:00",
@@ -36,7 +36,7 @@
     "Title": "College Algebra Textbook"
   },
   {
-    "FeID": "QE188271",
+    "FeID": "SE172732",
     "CateID": 4,
     "UsageInformation": "Slightly used, works perfectly.",
     "Origin": "Japan",
@@ -48,7 +48,7 @@
     "Title": "Scientific Calculator"
   },
   {
-    "FeID": "QE188271",
+    "FeID": "SE172732",
     "CateID": 5,
     "UsageInformation": "Used for a project, like new.",
     "Origin": "Germany",
@@ -58,5 +58,17 @@
     "UpdatedTime": "2024-06-14T12:00:00",
     "Price": 7.99,
     "Title": "Watercolor Paint Set"
+  },
+  {
+    "FeID": "SE172732",
+    "CateID": 5,
+    "UsageInformation": "Used for a project, like new.",
+    "Origin": "Germany",
+    "Type": "Trade",
+    "Status": "Sale",
+    "CreatedTime": "2024-06-14T12:00:00",
+    "UpdatedTime": "2024-06-14T12:00:00",
+    "Price": 8.99,
+    "Title": "ABC Paint Set"
   }
 ]
