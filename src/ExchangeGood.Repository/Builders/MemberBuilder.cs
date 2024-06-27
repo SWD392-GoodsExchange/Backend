@@ -19,7 +19,7 @@ public class MemberBuilder
     private string _phone;
     private DateTime _createdTime;
     private DateTime _updatedTime;
-    private string? _status;
+    private string _status;
     private DateTime? _dob;
 
     private MemberBuilder()
@@ -91,7 +91,7 @@ public class MemberBuilder
         return this;
     }
 
-    public MemberBuilder Status(string? status)
+    public MemberBuilder Status(string status)
     {
         _status = status;
         return this;

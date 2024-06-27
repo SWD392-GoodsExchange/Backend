@@ -16,7 +16,7 @@ namespace ExchangeGood.Repository.Repository
 {
     public class OrderRepository : IOrderRepository {
         private readonly IUnitOfWork _uow;
-        private readonly IMapper _mapper;
+        // private readonly IMapper _mapper;
         public OrderRepository(IUnitOfWork uow)
         {
             _uow = uow;

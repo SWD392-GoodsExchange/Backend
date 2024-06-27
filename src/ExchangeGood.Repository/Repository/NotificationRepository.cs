@@ -16,7 +16,7 @@ namespace ExchangeGood.Repository.Repository {
         }
 
         public async Task<bool> AddNotifcation(Notification notification) {
-            _uow.NotificationDAO.UpdateNotification(notification);
+            _uow.NotificationDAO.AddNotification(notification);
 
             return await _uow.SaveChangesAsync();
         }

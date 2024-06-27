@@ -4,39 +4,33 @@ public class PresenceTracker
 {
     private static readonly Dictionary<string, List<string>> OnlineUsers = new Dictionary<string, List<string>>(); 
 
-    public Task<bool> UserConnected(string feId, string connectionId) {
-        bool isOnline = false;
+    public Task AddConnection(string feId, string connectionId) {
         lock (OnlineUsers) {
             if(OnlineUsers.ContainsKey(feId)) {
                 OnlineUsers[feId].Add(connectionId);
             }
             else {
                 OnlineUsers.Add(feId, new List<string> { connectionId });
-                isOnline = true;
             }
         }
-        return Task.FromResult(isOnline);
+        return Task.CompletedTask;
     }
 
-    public Task<bool> UserDisconnected(string username, string connectionId) {
-        bool isOffline = false;
-
+    public Task RemoveConnection(string feId, string connectionId) {
         lock(OnlineUsers) {
-            if(!OnlineUsers.ContainsKey(username)) return Task.FromResult(isOffline);
+            if(!OnlineUsers.ContainsKey(feId)) return Task.CompletedTask;
 
-            OnlineUsers[username].Remove(connectionId);
+            OnlineUsers[feId].Remove(connectionId);
 
-            if(OnlineUsers[username].Count == 0) {
-                OnlineUsers.Remove(username);
-                isOffline = true;   
+            if(OnlineUsers[feId].Count == 0) {
+                OnlineUsers.Remove(feId);
             }
         }
-
-        return Task.FromResult(isOffline);
+        return Task.CompletedTask;
     }
 
     public Task<List<string>> GetConnectionForUser(string feId) {
-        List<string> connectionIds;
+        List<string> connectionIds = new List<string>();
 
         lock(OnlineUsers) {
             // get all the values by key -> using method GetValueOrDefault()

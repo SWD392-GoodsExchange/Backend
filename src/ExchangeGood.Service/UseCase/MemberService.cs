@@ -95,11 +95,11 @@ public class MemberService : IMemberService
 
     public async Task<BaseResponse> UpdatePassword(PasswordRequest passwordRequest)
     {
-         var result = await _memberRepository.UpdatePassword(passwordRequest);
-         return result
-             ? BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG,
-                 nameof(UpdatePassword) + " successful")
-             : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG);
+        var result = await _memberRepository.UpdatePassword(passwordRequest);
+        return result
+            ? BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG,
+                nameof(UpdatePassword) + " successful")
+            : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG);
     }
 
     public async Task<Member> GetMemberByFeId(string feId)
@@ -145,12 +145,19 @@ public class MemberService : IMemberService
 
 
     // Notification
-    public async Task<IEnumerable<Notification>> GetNotificationsOfUser(string feId) {
-        var result = await _notificationRepository.GetNotifcationsForUser(feId);    
+    public async Task<IEnumerable<Notification>> GetNotificationsOfUser(string feId)
+    {
+        var result = await _notificationRepository.GetNotifcationsForUser(feId);
         return result;
     }
 
-    public async Task<bool> AddNotification(Notification notification) {
+    public async Task<bool> AddNotification(Notification notification)
+    {
         return await _notificationRepository.AddNotifcation(notification);
+    }
+
+    public async Task<IEnumerable<Notification>> GetNotificationsWereSendedByUser(string feId)
+    {
+        return await _notificationRepository.GetNotifcationsSendedByUser(feId);
     }
 }

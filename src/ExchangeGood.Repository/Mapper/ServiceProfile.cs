@@ -23,7 +23,7 @@ namespace ExchangeGood.Repository.Mapper {
 			CreateMap<Category, CategoryDto>();
             CreateMap<Comment,CommentDto>();
 			CreateMap<Report, ReportDto>();
-			CreateMap<Notification, NotificationDto>();
+			CreateMap<Notification, NotificationDto>().ReverseMap();
 			CreateMap<Image, ImageDto>().ReverseMap();
             CreateMap<CreateBookmarkRequest, Bookmark>().ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => Int32.Parse(src.ProductId)));
             CreateMap<DeleteBookmarkRequest, Bookmark>().ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => Int32.Parse(src.ProductId)));
@@ -43,7 +43,6 @@ namespace ExchangeGood.Repository.Mapper {
             CreateMap<UpdateCommentRequest, Comment>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
             CreateMap<CreateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
 			CreateMap<UpdateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
-			CreateMap<CreateNotificationRequest, Notification>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
 			CreateMap<UpdateNotificationRequest, Notification>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
 		}
 	}
