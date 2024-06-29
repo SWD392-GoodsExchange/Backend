@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.Enum.Order;
-using ExchangeGood.Contract.Enum.OrderDetail;
 using ExchangeGood.Contract.Payloads.Request.Orders;
 using ExchangeGood.DAO;
 using ExchangeGood.Data.Models;

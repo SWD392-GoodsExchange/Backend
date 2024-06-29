@@ -49,7 +49,7 @@ namespace ExchangeGood.DAO {
                 .AsQueryable();
 
             query = query.Where(p => p.Type.ToLower().Equals(type));
-            query = query.Where(p => p.Status.Equals(Status.Sale.Name));
+            query = query.Where(p => p.Status.Equals(Status.Selling.Name));
 
             // Add another logic later
             if(!string.IsNullOrEmpty(keyword)) {

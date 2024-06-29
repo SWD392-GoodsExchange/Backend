@@ -30,7 +30,7 @@ namespace ExchangeGood.Repository.Repository
             var product = _mapper.Map<Product>(productRequest); // map to create new Product
             product.CreatedTime = DateTime.UtcNow;
             product.UpdatedTime = DateTime.UtcNow;
-            product.Status = Status.Sale.Name;
+            product.Status = Status.Selling.Name;
             Image image = new Image() {
                 PublicId = productRequest.Image.PublicId,
                 ImageUrl = productRequest.Image.ImageUrl,
