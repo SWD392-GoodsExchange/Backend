@@ -17,7 +17,6 @@ namespace ExchangeGood.Repository {
         private CategoryDAO _categoryDAO;
         private OrderDAO _orderDAO;
         private BookmarkDAO _bookmarkDAO;
-        private CommentDAO _commentDAO;
         private RefreshTokenDAO _refreshTokenDAO;
 		private ReportDAO _reportDAO;
 		private NotificationDAO _notificationDAO;
@@ -35,8 +34,6 @@ namespace ExchangeGood.Repository {
 		public NotificationDAO NotificationDAO => _notificationDAO = new NotificationDAO(_context);
         public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
         public MemberDAO MemberDAO => _memberDAO = new MemberDAO(_context);
-        public CommentDAO CommentDAO => _commentDAO = new CommentDAO(_context);
-
 
         public OrderDAO OrderDAO => _orderDAO = new OrderDAO(_context);
 

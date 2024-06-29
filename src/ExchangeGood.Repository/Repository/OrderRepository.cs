@@ -14,25 +14,31 @@ using System.Threading.Tasks;
 
 namespace ExchangeGood.Repository.Repository
 {
-    public class OrderRepository : IOrderRepository {
+    public class OrderRepository : IOrderRepository
+    {
         private readonly IUnitOfWork _uow;
-        // private readonly IMapper _mapper;
         public OrderRepository(IUnitOfWork uow)
         {
             _uow = uow;
         }
 
-        public async Task<bool> AddOrder(Order order) {
+        public async Task<Order> AddOrder(Order order)
+        {
             _uow.OrderDAO.AddOrder(order);
+
+            if (await _uow.SaveChangesAsync())
+                return order;
             
-            return await _uow.SaveChangesAsync();
+            return null;
         }
 
-        public Task<PagedList<Order>> GetAllOrders() {
+        public Task<IEnumerable<Order>> GetAllOrders()
+        {
             throw new NotImplementedException();
         }
 
-        public Task<Order> GetOrder(int orderId) {
+        public Task<Order> GetOrder(int orderId)
+        {
             throw new NotImplementedException();
         }
     }

@@ -29,7 +29,7 @@ namespace ExchangeGood.Service.UseCase
             _uow = uow;
         }
 
-        public async Task<BaseResponse> CreateOrderForExchange(CreateOrderExchangeRequest createOrderRequest) {
+        public async Task<bool> CreateOrdersForExchange(CreateOrderExchangeRequest createOrderRequest) {
             // checkout order type Exchange
             using var transaction = _uow.BeginTransaction();
             try {
@@ -78,15 +78,15 @@ namespace ExchangeGood.Service.UseCase
                 await _orderRepository.AddOrder(orderExchanger);
             
                 transaction.Commit();
-                return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
+                return true;
             }
             catch (Exception) {
                 transaction.Rollback();
-                return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+                return false;
             }
         }
 
-        public async Task<BaseResponse> CreateOrderForTrade(CreateOrderRequest createOrderRequest) {
+        public async Task<Order> CreateOrderForTrade(CreateOrderRequest createOrderRequest) {
             decimal totalAmount = 0;
             // Check Product and Update
             foreach (var orderDetail in createOrderRequest.OrderDetails) {
@@ -128,17 +128,16 @@ namespace ExchangeGood.Service.UseCase
                 });
             }
 
-            if (await _orderRepository.AddOrder(order)) {
-                return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
-            }
-            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+            return await _orderRepository.AddOrder(order);
         }
 
-        public Task<BaseResponse> GetAllOrders() {
+        public Task<IEnumerable<Order>> GetAllOrders()
+        {
             throw new NotImplementedException();
         }
 
-        public Task<BaseResponse> GetOrder(int orderId) {
+        public Task<Order> GetOrder(int orderId)
+        {
             throw new NotImplementedException();
         }
     }

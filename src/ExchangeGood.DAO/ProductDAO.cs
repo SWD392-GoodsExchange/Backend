@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExchangeGood.Contract.Common;
 
 namespace ExchangeGood.DAO {
     public class ProductDAO { // return Entity
@@ -60,8 +61,6 @@ namespace ExchangeGood.DAO {
                 "price" => query.OrderByDescending(u => u.Price),
                 _ => query.OrderByDescending(u => u.UpdatedTime)
             };
-
-            // Add thu tu cua list later
 
             return query.AsNoTracking();
         }

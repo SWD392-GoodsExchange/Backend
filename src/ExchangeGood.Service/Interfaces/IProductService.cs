@@ -1,5 +1,6 @@
 ﻿using ExchangeGood.Contract;
 using ExchangeGood.Contract.Common;
+using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Product;
 using ExchangeGood.Contract.Payloads.Request.Report;
 using ExchangeGood.Contract.Payloads.Response;
@@ -12,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace ExchangeGood.Service.Interfaces {
     public interface IProductService {
-        public Task<BaseResponse> GetAllProducts(ProductParams productParams);
+        public Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
         public Task<Product> GetProduct(int ProductId);
         public Task<IEnumerable<Product>> GetProductsForExchangeRequest(GetProductsForExchangeRequest request);
-        public Task<BaseResponse> AddProduct(CreateProductRequest createProductRequest);
-        public Task<BaseResponse> UpdateProduct(UpdateProductRequest updateProductRequest);
-        public Task<BaseResponse> DeleteProduct(int ProductId);
+        public Task<Product> AddProduct(CreateProductRequest createProductRequest);
+        public Task<Product> UpdateProduct(UpdateProductRequest updateProductRequest);
+        public Task DeleteProduct(int ProductId);
 	}
 }

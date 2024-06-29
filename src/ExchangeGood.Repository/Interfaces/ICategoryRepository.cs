@@ -11,11 +11,10 @@ namespace ExchangeGood.Repository.Interfaces
 {
 	public interface ICategoryRepository
 	{
-		public Task<List<CategoryDto>> GetAllCategories();
-		public Task<CategoryDto> GetCategoryByID(int id);
-		public Task<CategoryDto> GetCategoryByName(string name);
-		public Task<int> AddCategory(CreateCategoryRequest createCategory);
-		public Task<int> UpdateCategory(UpdateCategoryRequest updateCategory);	
+		public Task<IEnumerable<Category>> GetAllCategories();
+		public Task<Category> GetCategoryByID(int id);
+		public Task<Category> AddCategory(CreateCategoryRequest createCategory);
+		public Task<Category> UpdateCategory(UpdateCategoryRequest updateCategory);	
 		public Task DeleteCategory(int id);
 
 	}

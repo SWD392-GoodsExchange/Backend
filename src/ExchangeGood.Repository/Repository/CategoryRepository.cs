@@ -27,19 +27,13 @@ namespace ExchangeGood.Repository.Repository
 			_mapper = mapper;
 		}
 
-		public async Task<int> AddCategory(CreateCategoryRequest createCategory)
+		public async Task<Category> AddCategory(CreateCategoryRequest createCategory)
 		{
-			var existingCategory = await GetCategoryByName(createCategory.CategoryName);
-			if (existingCategory != null)
-			{
-				return existingCategory.CateId;
-			}
-
 			var category = _mapper.Map<Category>(createCategory);
 			_uow.CategoryDAO.AddCategory(category);
-
-			await _uow.SaveChangesAsync();
-			return category.CateId;
+			if(await _uow.SaveChangesAsync())
+				return category;
+			return null;
 		}
 
 		public async Task DeleteCategory(int id)
@@ -53,30 +47,17 @@ namespace ExchangeGood.Repository.Repository
 
 			await _uow.SaveChangesAsync();
 		}
-		public async Task<List<CategoryDto>> GetAllCategories()
+		public async Task<IEnumerable<Category>> GetAllCategories()
 		{
-			var query = _uow.CategoryDAO.GetCategories();
-
-			var result = await query
-				.ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
-				.ToListAsync();
-
-			return result;
+			return await _uow.CategoryDAO.GetCategories();
 		}
 
-		public async Task<CategoryDto> GetCategoryByID(int id)
+		public async Task<Category> GetCategoryByID(int id)
 		{
-			var category = await _uow.CategoryDAO.GetCategoryByIdAsync(id);
-			return _mapper.Map<CategoryDto>(category);
+			return await _uow.CategoryDAO.GetCategoryByIdAsync(id);
 		}
 
-		public async Task<CategoryDto> GetCategoryByName(string name)
-		{
-			var category = await _uow.CategoryDAO.GetCategoryByNameAsync(name);
-			return _mapper.Map<CategoryDto>(category);
-		}
-
-		public async Task<int> UpdateCategory(UpdateCategoryRequest updateCategory)
+		public async Task<Category> UpdateCategory(UpdateCategoryRequest updateCategory)
 		{
 			Category existedCategory = await _uow.CategoryDAO.GetCategoryByIdAsync(updateCategory.CategoryId);
 			if (existedCategory == null)
@@ -86,8 +67,10 @@ namespace ExchangeGood.Repository.Repository
 			_mapper.Map(updateCategory, existedCategory);
 			_uow.CategoryDAO.UpdateCategory(existedCategory);
 
-			await _uow.SaveChangesAsync();
-			return existedCategory.CateId;
+			if(await _uow.SaveChangesAsync())
+				return existedCategory;
+
+			return null;
 		}
 	}
 }

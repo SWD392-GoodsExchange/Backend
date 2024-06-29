@@ -4,6 +4,6 @@ namespace ExchangeGood.Service.Interfaces
 {
     public interface IClaimsPrincipalExtensions
     {
-        ClaimsPrincipal? GetTokenPrincipal(string token);
+        ClaimsPrincipal GetTokenPrincipal(string token);
     }
 }
