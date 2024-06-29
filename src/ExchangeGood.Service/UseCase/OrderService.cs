@@ -7,6 +7,7 @@ using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Exceptions;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
+using ExchangeGood.Contract.Enum.Order;
 using ExchangeGood.Contract.Enum.Product;
 using System;
 using System.Collections.Generic;
@@ -35,21 +36,20 @@ namespace ExchangeGood.Service.UseCase
             try {
                 // create Order for seller who has a product for other want to exchange
                 var product = await _productService.GetProduct(createOrderRequest.OwnerProduct.ProductId) ?? throw new ProductNotFoundException(createOrderRequest.OwnerProduct.ProductId);
-                product.Status = Status.Sold.Name;
+                product.Status = Contract.Enum.Product.Status.Sold.Name;
                 var orderOwner = new Order() {
                     BuyerId = createOrderRequest.ExchangerID,
                     CreatedTime = DateTime.UtcNow,
                     UpdatedTime = DateTime.UtcNow,
                     TotalAmount = 0,
-                    Type = "Exchange",
-                    Status = Contract.Enum.Order.Status.Pending.Name,
+                    Type = Contract.Enum.Order.Type.Exchange.Name,
+                    Status = Contract.Enum.Order.Status.Proccessing.Name,
                     TotalOrderDetails = 1,
                     OrderDetails = new List<OrderDetail>() { new OrderDetail() {
                         ProductId = createOrderRequest.OwnerProduct.ProductId,
                         SellerId = createOrderRequest.OwnerID,
                         Amount = 0,
                         Quantity = 1,
-                        Status = Contract.Enum.OrderDetail.Status.Pending.Name,
                     }}
                 };
                 await _orderRepository.AddOrder(orderOwner);
@@ -60,20 +60,19 @@ namespace ExchangeGood.Service.UseCase
                     CreatedTime = DateTime.UtcNow,
                     UpdatedTime = DateTime.UtcNow,
                     TotalAmount = 0,
-                    Type = "Exchange",
-                    Status = Contract.Enum.Order.Status.Pending.Name,
+                    Type = Contract.Enum.Product.Type.Exchange.Name,
+                    Status = Contract.Enum.Order.Status.Proccessing.Name,
                     TotalOrderDetails = 1,
                     OrderDetails = createOrderRequest.ExchangerProducts.Select(p => new OrderDetail() {
                         ProductId = p.ProductId,
                         SellerId = p.SellerId,
                         Amount = 0,
                         Quantity = 1,
-                        Status = Contract.Enum.OrderDetail.Status.Pending.Name,
                     }).ToList()
                 };
                 foreach (var orderDetailDto in createOrderRequest.ExchangerProducts) {
                     var exchangeProduct = await _productService.GetProduct(orderDetailDto.ProductId) ?? throw new ProductNotFoundException(createOrderRequest.OwnerProduct.ProductId);
-                    exchangeProduct.Status = Status.Sold.Name;
+                    exchangeProduct.Status = Contract.Enum.Product.Status.Sold.Name;
                 }
                 await _orderRepository.AddOrder(orderExchanger);
             
@@ -92,7 +91,7 @@ namespace ExchangeGood.Service.UseCase
             foreach (var orderDetail in createOrderRequest.OrderDetails) {
                 // check product status
                 Product product = await _productService.GetProduct(orderDetail.ProductId) ?? throw new ProductNotFoundException(orderDetail.ProductId);
-                if(product.Status.Equals(Status.Sold.Name)) {
+                if(product.Status.Equals(Contract.Enum.Product.Status.Sold.Name)) {
                     continue;
                 }
                 // check buyer buy their product
@@ -104,7 +103,7 @@ namespace ExchangeGood.Service.UseCase
                     throw new InvalidOperationException();
                 }*/
                 // update status of product
-                product.Status = Status.Sold.Name;
+                product.Status = Contract.Enum.Product.Status.Sold.Name;
                 totalAmount += orderDetail.Quantity * orderDetail.Amount;
             }
             // Add new Order
@@ -113,8 +112,8 @@ namespace ExchangeGood.Service.UseCase
                 CreatedTime = DateTime.UtcNow,
                 UpdatedTime = DateTime.UtcNow,
                 TotalAmount = totalAmount,
-                Status = Contract.Enum.Order.Status.Pending.Name,
-                Type = "Trade",
+                Status = Contract.Enum.Order.Status.Proccessing.Name,
+                Type = Contract.Enum.Order.Type.Trade.Name,
                 TotalOrderDetails = createOrderRequest.OrderDetails.Count()
             };
             // Add OrderDetail for Order
@@ -124,10 +123,8 @@ namespace ExchangeGood.Service.UseCase
                     SellerId = orderDetailDto.SellerId,
                     Amount = orderDetailDto.Amount,
                     Quantity = orderDetailDto.Quantity,
-                    Status = Contract.Enum.OrderDetail.Status.Pending.Name,
                 });
             }
-
             return await _orderRepository.AddOrder(order);
         }
 
