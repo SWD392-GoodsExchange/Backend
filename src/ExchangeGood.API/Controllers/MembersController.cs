@@ -109,11 +109,11 @@ namespace ExchangeGood.API.Controllers
             var feId = User.GetFeID();
             createOrderRequest.MemberId = feId;
             var result = await _orderService.CreateOrderForTrade(createOrderRequest);
-            if (!result.IsSuccess)
+            if (result == null)
             {
-                return BadRequest(result);
+                return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
             }
-            return Ok(result);
+            return Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, _mapper.Map<OrderDto>(result)));
         }
 
         [Authorize(Roles = "Member")]
@@ -122,12 +122,12 @@ namespace ExchangeGood.API.Controllers
         {
             var feId = User.GetFeID();
             createOrderRequest.OwnerID = feId;
-            var result = await _orderService.CreateOrderForExchange(createOrderRequest);
-            if (!result.IsSuccess)
+            var result = await _orderService.CreateOrdersForExchange(createOrderRequest);
+            if (result)
             {
-                return BadRequest(result);
+                return Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG));
             }
-            return Ok(result);
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
         }
 
         // notification

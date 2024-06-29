@@ -16,7 +16,7 @@ namespace ExchangeGood.Service.Extensions
         {
             _jwtOptions = jwtOptions.Value;
         }
-        public ClaimsPrincipal? GetTokenPrincipal(string token)
+        public ClaimsPrincipal GetTokenPrincipal(string token)
         {
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));

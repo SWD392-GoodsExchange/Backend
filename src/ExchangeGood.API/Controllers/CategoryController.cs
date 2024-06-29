@@ -1,6 +1,9 @@
-﻿using ExchangeGood.Contract.Common;
+﻿using AutoMapper;
+using ExchangeGood.Contract.Common;
+using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Category;
 using ExchangeGood.Contract.Payloads.Request.Product;
+using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Service.Interfaces;
 using ExchangeGood.Service.UseCase;
 using Microsoft.AspNetCore.Mvc;
@@ -10,35 +13,40 @@ namespace ExchangeGood.API.Controllers
 	public class CategoryController : BaseApiController
 	{
 		private readonly ICategoryService _categoryService;
-		public CategoryController(ICategoryService categoryService)
+		private readonly IMapper _mapper;
+		public CategoryController(ICategoryService categoryService, IMapper mapper)
 		{
 			_categoryService = categoryService;
+			_mapper = mapper;
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> GetCategories()
 		{
 			var response = await _categoryService.GetAllCategories();
-			if (response.Data != null)
+			if (response != null)
 			{
-				return Ok(response);
+				return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<CategoryDto>>(response)));
 			}
-			return BadRequest(response);
+			return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest categoryRequest)
 		{
 				var response = await _categoryService.AddCategory(categoryRequest);
-				return Ok(response);
+				if (response != null)
+					return Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG));
+				
+				return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
 		}
 
 
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteCategory(int id)
 		{
-			var response = await _categoryService.DeleteCategory(id);
-			return Ok(response);
+			await _categoryService.DeleteCategory(id);
+			return Ok(BaseResponse.Success(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG));
 		}
 
 
@@ -46,7 +54,10 @@ namespace ExchangeGood.API.Controllers
 		public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryRequest categoryRequest)
 		{
 			var response = await _categoryService.UpdateCategory(categoryRequest);
-			return Ok(response);
+			if(response != null)
+				return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<CategoryDto>>(response)));
+
+			return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
 		}
 
 	}
