@@ -38,7 +38,7 @@ namespace ExchangeGood.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             var result = await _memberService.Login(loginRequest);
-            return Ok(result);
+            return result.IsSuccess ? Ok(result) : BadRequest();
         }
 
         [HttpPost("changepassword")]
