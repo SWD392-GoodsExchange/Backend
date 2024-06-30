@@ -9,7 +9,7 @@ GO
 
 -- Create tables
 CREATE TABLE [Role] (
-                        RoleID INT IDENTITY(1,1) PRIMARY KEY,
+    RoleID INT IDENTITY(1,1) PRIMARY KEY,
     RoleName NVARCHAR(100) NOT NULL,
     CONSTRAINT CHK_RoleName CHECK (RoleName IN ('Admin', 'Member','Moderator'))
     );
@@ -34,21 +34,20 @@ CREATE TABLE [Member] (
     );
 GO
 CREATE TABLE [Notification](
-                               NotificationID INT IDENTITY(1,1) PRIMARY KEY,
+    NotificationID INT IDENTITY(1,1) PRIMARY KEY,
     SenderID NVARCHAR(8) not null,
     SenderUsername NVARCHAR(100) NOT NULL,
     RecipientID NVARCHAR(8) not null,
     RecipientUsername NVARCHAR(100) NOT NULL,
-    OnwerProductId NVarchar(255) NOT null,
-    ExchangerProductIds NVarchar(255) NOT null,
+    OnwerProductId NVarchar(255),
+    ExchangerProductIds NVarchar(255),
     Content NVARCHAR(100) NOT NULL,
     DateRead Datetime,
     CreatedDate DATETIME NOT NULL,
     [Type] NVARCHAR(50) NOT NULL,
     FOREIGN KEY (SenderID) REFERENCES [Member](FeID),
     FOREIGN KEY (RecipientID) REFERENCES [Member](FeID),
-    CONSTRAINT CHK_TypeNoti CHECK ([Type] IN ('Send', 'Receive'))
-
+    CONSTRAINT CHK_TypeNoti CHECK ([Type] IN ('ExchangeRequest', 'Notification'))
     )
     GO
 CREATE TABLE Category (
@@ -60,7 +59,7 @@ CREATE TABLE Product (
     ProductID INT IDENTITY(1,1) PRIMARY KEY,
     FeID NVARCHAR(8) NOT NULL,
     CateID INT NOT NULL,
-    UsageInformation NVARCHAR(255) NOT NULL,
+    [Description] NVARCHAR(255) NOT NULL,
     Origin NVARCHAR(100) NOT NULL,
     [Type] NVARCHAR(50) NOT NULL,
     [Status] NVARCHAR(50) NOT NULL,
@@ -87,7 +86,7 @@ CREATE TABLE [Order] (
     BuyerID NVARCHAR(8) NOT NULL,
     CreatedTime DATETIME NOT NULL,
     UpdatedTime DATETIME NOT NULL,
-    TotalAmount DECIMAL(18, 2) NOT NULL,
+    TotalAmount DECIMAL(18, 2),
     TotalOrderDetails INT,
     [Type] NVARCHAR(50) NOT NULL,
     [Status] NVARCHAR(50) NOT NULL,
@@ -101,8 +100,7 @@ CREATE TABLE OrderDetail (
     OrderID INT NOT NULL,
     ProductID INT NOT NULL,
     SellerID NVARCHAR(8) NOT NULL,
-    Amount DECIMAL(18, 2) NOT NULL,
-    Quantity INT NOT NULL,
+    Amount DECIMAL(18, 2),
     FOREIGN KEY (OrderID) REFERENCES [Order](OrderID),
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
 );

@@ -2,22 +2,22 @@
 {
     public abstract class Type : Enumeration<Type>
     {
-        public  static readonly Type Send = new SendType();
-        public  static readonly Type Receive = new ReceiveType();
+        public  static readonly Type ExchangeRequest = new ExchangeRequestType();
+        public  static readonly Type Notification = new NotificationType();
         
         protected Type(int value, string name) : base(value, name)
         {
         }
-        private sealed class SendType : Type
+        private sealed class ExchangeRequestType : Type
         {
-            public SendType() : base(1, nameof(Send))
+            public ExchangeRequestType() : base(1, nameof(ExchangeRequest))
             {
             }
         }
         
-        private sealed class ReceiveType : Type
+        private sealed class NotificationType : Type
         {
-            public ReceiveType() : base(2, nameof(Receive))
+            public NotificationType() : base(2, nameof(Notification))
             {
             }
         }

@@ -23,10 +23,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Comment]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Image]",
          "ObjectType": 0
       },

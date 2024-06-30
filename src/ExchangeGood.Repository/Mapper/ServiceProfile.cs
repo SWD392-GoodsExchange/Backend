@@ -21,7 +21,6 @@ namespace ExchangeGood.Repository.Mapper {
             CreateMap<Product, ProductDto>().ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Cate.CateName));
 			CreateMap<Member, MemberDto>();
 			CreateMap<Category, CategoryDto>();
-            CreateMap<Comment,CommentDto>();
 			CreateMap<Report, ReportDto>();
 			CreateMap<Notification, NotificationDto>().ReverseMap();
 			CreateMap<Image, ImageDto>().ReverseMap();
@@ -34,13 +33,11 @@ namespace ExchangeGood.Repository.Mapper {
             CreateMap<Bookmark, ProductDto>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Product.Cate.CateName))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Product.Price))
-                .ForMember(dest => dest.UsageInformation, opt => opt.MapFrom(src => src.Product.UsageInformation))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Product.Description))
                 .ForMember(dest => dest.FeId, opt => opt.MapFrom(src => src.Product.FeId))
                 .ForMember(dest => dest.Origin, opt => opt.MapFrom(src => src.Product.Origin))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Product.Status))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Product.Title));
-            CreateMap<CreateCommentRequest, Comment>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
-            CreateMap<UpdateCommentRequest, Comment>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
             CreateMap<CreateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
 			CreateMap<UpdateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
 			CreateMap<UpdateNotificationRequest, Notification>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));

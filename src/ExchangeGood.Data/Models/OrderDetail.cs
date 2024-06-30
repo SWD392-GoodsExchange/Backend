@@ -15,11 +15,7 @@ public partial class OrderDetail
 
     public string SellerId { get; set; }
 
-    public decimal Amount { get; set; }
-
-    public int Quantity { get; set; }
-
-    public string Status { get; set; }
+    public decimal? Amount { get; set; }
 
     public virtual Order Order { get; set; }
 

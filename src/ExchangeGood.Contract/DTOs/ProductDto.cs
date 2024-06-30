@@ -12,7 +12,7 @@ namespace ExchangeGood.Contract.DTOs {
 
         public string CategoryName { get; set; }
 
-        public string UsageInformation { get; set; }
+        public string Description { get; set; }
 
         public string Origin { get; set; }
 

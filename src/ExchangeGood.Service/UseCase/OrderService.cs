@@ -49,7 +49,6 @@ namespace ExchangeGood.Service.UseCase
                         ProductId = createOrderRequest.OwnerProduct.ProductId,
                         SellerId = createOrderRequest.OwnerID,
                         Amount = 0,
-                        Quantity = 1,
                     }}
                 };
                 await _orderRepository.AddOrder(orderOwner);
@@ -67,7 +66,6 @@ namespace ExchangeGood.Service.UseCase
                         ProductId = p.ProductId,
                         SellerId = p.SellerId,
                         Amount = 0,
-                        Quantity = 1,
                     }).ToList()
                 };
                 foreach (var orderDetailDto in createOrderRequest.ExchangerProducts) {
@@ -104,7 +102,7 @@ namespace ExchangeGood.Service.UseCase
                 }*/
                 // update status of product
                 product.Status = Contract.Enum.Product.Status.Sold.Name;
-                totalAmount += orderDetail.Quantity * orderDetail.Amount;
+                totalAmount += orderDetail.Amount;
             }
             // Add new Order
             var order = new Order() {
@@ -122,7 +120,6 @@ namespace ExchangeGood.Service.UseCase
                     ProductId = orderDetailDto.ProductId,
                     SellerId = orderDetailDto.SellerId,
                     Amount = orderDetailDto.Amount,
-                    Quantity = orderDetailDto.Quantity,
                 });
             }
             return await _orderRepository.AddOrder(order);

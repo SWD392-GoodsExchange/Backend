@@ -13,7 +13,7 @@ public partial class Product
 
     public int CateId { get; set; }
 
-    public string UsageInformation { get; set; }
+    public string Description { get; set; }
 
     public string Origin { get; set; }
 
@@ -32,8 +32,6 @@ public partial class Product
     public virtual ICollection<Bookmark> Bookmarks { get; set; } = new List<Bookmark>();
 
     public virtual Category Cate { get; set; }
-
-    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual Member Fe { get; set; }
 
