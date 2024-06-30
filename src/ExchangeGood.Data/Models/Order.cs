@@ -15,7 +15,7 @@ public partial class Order
 
     public DateTime UpdatedTime { get; set; }
 
-    public decimal TotalAmount { get; set; }
+    public decimal? TotalAmount { get; set; }
 
     public int? TotalOrderDetails { get; set; }
 

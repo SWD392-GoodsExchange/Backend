@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace ExchangeGood.Service.Interfaces {
     public interface IProductService {
-        public Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
-        public Task<Product> GetProduct(int ProductId);
-        public Task<IEnumerable<Product>> GetProductsForExchangeRequest(GetProductsForExchangeRequest request);
-        public Task<Product> AddProduct(CreateProductRequest createProductRequest);
-        public Task<Product> UpdateProduct(UpdateProductRequest updateProductRequest);
-        public Task DeleteProduct(int ProductId);
+        Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
+        Task<Product> GetProduct(int ProductId);
+        Task<IEnumerable<Product>> GetProductsForExchangeRequest(GetProductsForExchangeRequest request);
+        Task<Product> AddProduct(CreateProductRequest createProductRequest);
+        Task<Product> UpdateProduct(UpdateProductRequest updateProductRequest);
+        Task DeleteProduct(int ProductId);
 	}
 }
