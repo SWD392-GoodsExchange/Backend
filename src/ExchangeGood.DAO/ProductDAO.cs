@@ -48,7 +48,7 @@ namespace ExchangeGood.DAO {
                 .Include(p => p.Images)
                 .AsQueryable();
 
-            query = query.Where(p => p.Type.ToLower().Equals(type));
+            query = query.Where(p => p.Type.ToLower().Equals(type.ToLower()));
             query = query.Where(p => p.Status.Equals(Status.Selling.Name));
 
             // Add another logic later

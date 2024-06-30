@@ -13,7 +13,7 @@ namespace ExchangeGood.DAO {
             _context = context;
         }
 
-        public async Task<Order> GetAsync(int orderId) {
+        public async Task<Order> GetOrder(int orderId) {
             var order = await _context.Orders.FindAsync(orderId);
 
             if (order != null) {

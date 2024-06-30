@@ -28,6 +28,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin.Name))]
         public async Task<IActionResult> GetMembers([FromQuery] GetMembersQuery getMembersQuery)
         {
             var result = await _memberService.GetAllMembers(getMembersQuery);
