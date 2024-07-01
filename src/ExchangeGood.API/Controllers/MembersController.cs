@@ -32,14 +32,21 @@ namespace ExchangeGood.API.Controllers
         public async Task<IActionResult> GetMembers([FromQuery] GetMembersQuery getMembersQuery)
         {
             var result = await _memberService.GetAllMembers(getMembersQuery);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
+            return result != null
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG,
+                    new PaginationResponse<MemberDto>(result, result.CurrentPage, result.PageSize, result.TotalCount,
+                        result.TotalPages)))
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
-            var result = await _memberService.Login(loginRequest);
-            return result.IsSuccess ? Ok(result) : BadRequest();
+            var loginResponse = await _memberService.Login(loginRequest);
+
+            return loginResponse != null 
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, loginResponse)) 
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
         [HttpPost("changepassword")]
@@ -47,19 +54,17 @@ namespace ExchangeGood.API.Controllers
         public async Task<IActionResult> UpdatePassword([FromBody] PasswordRequest passwordRequest)
         {
             passwordRequest.FeId = User.GetFeID();
-            var result = await _memberService.UpdatePassword(passwordRequest);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
+            var isUpdate = await _memberService.UpdatePassword(passwordRequest);
+            return isUpdate 
+                ? Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, nameof(UpdatePassword) + " successful"))
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateMember([FromBody] CreateMemberRequest createMemberRequest)
         {
-            var result = await _memberService.CreateMember(createMemberRequest);
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
-
-            return CreatedAtAction(nameof(GetMemberById), result.Data);
+            var feId = await _memberService.CreateMember(createMemberRequest);
+            return CreatedAtAction(nameof(GetMemberById), feId);
         }
 
         [HttpGet("information")]
@@ -79,9 +84,9 @@ namespace ExchangeGood.API.Controllers
         {
             var feId = User.GetFeID();
             var list = await _memberService.GetBookMarkByFeId(feId);
-            return list.IsSuccess
-                ? Ok(list)
-                : BadRequest(list);
+            return list != null
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, list))
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
         [HttpPost("bookmark")]
@@ -89,8 +94,10 @@ namespace ExchangeGood.API.Controllers
         public async Task<IActionResult> CreateBookmark(CreateBookmarkRequest createBookmarkRequest)
         {
             createBookmarkRequest.FeId = User.GetFeID();
-            var result = await _memberService.CreateBookmark(createBookmarkRequest);
-            return result.IsSuccess ? Ok(result) : BadRequest(result);
+            var isAdd = await _memberService.CreateBookmark(createBookmarkRequest);
+            return isAdd 
+                ? Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG))
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE,Const.FAIL_CREATE_MSG));
         }
 
         [HttpDelete("bookmark")]
@@ -98,8 +105,10 @@ namespace ExchangeGood.API.Controllers
         public async Task<IActionResult> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
         {
             deleteBookmarkRequest.FeId = User.GetFeID();
-            var result = await _memberService.DeleteBookmark(deleteBookmarkRequest);
-            return result.IsSuccess ? NoContent() : BadRequest(result);
+            var isDelete = await _memberService.DeleteBookmark(deleteBookmarkRequest);
+            return isDelete 
+                ? NoContent() 
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE,Const.FAIL_DELETE_MSG));
         }
 
         // Đặt hàng
@@ -114,7 +123,9 @@ namespace ExchangeGood.API.Controllers
             {
                 return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
             }
-            return Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, _mapper.Map<OrderDto>(result)));
+
+            return Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG,
+                _mapper.Map<OrderDto>(result)));
         }
 
         [Authorize(Roles = "Member")]
@@ -128,6 +139,7 @@ namespace ExchangeGood.API.Controllers
             {
                 return Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG));
             }
+
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
         }
 
@@ -140,8 +152,10 @@ namespace ExchangeGood.API.Controllers
             var result = await _memberService.GetNotificationsWereSendedByUser(feId);
             if (result != null)
             {
-                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<NotificationDto>>(result)));
+                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG,
+                    _mapper.Map<IEnumerable<NotificationDto>>(result)));
             }
+
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
     }
