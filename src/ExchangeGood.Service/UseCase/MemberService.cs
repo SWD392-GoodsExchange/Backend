@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using ExchangeGood.Contract.Common;
+using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Members;
 using ExchangeGood.Contract.Payloads.Response;
@@ -34,22 +35,19 @@ public class MemberService : IMemberService
         _jwtProvider = jwtProvider;
     }
 
-    public async Task<BaseResponse> GetAllMembers(GetMembersQuery getMembersQuery)
+    public async Task<PagedList<MemberDto>> GetAllMembers(GetMembersQuery getMembersQuery)
     {
-        var result = await _memberRepository.GetMembers(getMembersQuery);
-        return result.TotalCount > 0
-            ? BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result)
-            : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
+        return await _memberRepository.GetMembers(getMembersQuery);
     }
 
-    public async Task<BaseResponse> CreateMember(CreateMemberRequest createMemberRequest)
+    public async Task<string> CreateMember(CreateMemberRequest createMemberRequest)
     {
-        var result = await _memberRepository.CreateMember(createMemberRequest);
+        var feId = await _memberRepository.CreateMember(createMemberRequest);
 
-        return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
+        return feId;
     }
 
-    public async Task<BaseResponse> Login(LoginRequest loginRequest)
+    public async Task<LoginResponse> Login(LoginRequest loginRequest)
     {
         var member = await _memberRepository.CheckLogin(loginRequest);
         bool result = false;
@@ -71,7 +69,7 @@ public class MemberService : IMemberService
             result = await _refreshTokenRepository.AddRefreshToken(newRefreshToken);
             if (!result)
             {
-                return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+                return default;
             }
         }
         // Update token
@@ -82,7 +80,7 @@ public class MemberService : IMemberService
             result = await _refreshTokenRepository.UpdateRefreshToken(refreshToken);
             if (!result)
             {
-                return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+                return default;
             }
         }
         var loginResponse = new LoginResponse
@@ -90,16 +88,13 @@ public class MemberService : IMemberService
             JwtToken = jwtToken,
             RefreshToken = refreshTokenString
         };
-        return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, loginResponse);
+        return loginResponse;
     }
 
-    public async Task<BaseResponse> UpdatePassword(PasswordRequest passwordRequest)
+    public async Task<bool> UpdatePassword(PasswordRequest passwordRequest)
     {
-        var result = await _memberRepository.UpdatePassword(passwordRequest);
-        return result
-            ? BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG,
-                nameof(UpdatePassword) + " successful")
-            : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG);
+        var isUpdate = await _memberRepository.UpdatePassword(passwordRequest);
+        return isUpdate;
     }
 
     public async Task<Member> GetMemberByFeId(string feId)
@@ -110,37 +105,32 @@ public class MemberService : IMemberService
         //     : BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, member);
     }
 
-    public async Task<BaseResponse> GetBookMarkByFeId(string feId)
+    public async Task<List<ProductDto>> GetBookMarkByFeId(string feId)
     {
         var product = await _bookmarkRepository.GetAllBookmarks(feId);
-        return product.Count > 0
-            ? BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, product)
-            : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
+        return product;
     }
 
-    public async Task<BaseResponse> CreateBookmark(CreateBookmarkRequest createBookmarkRequest)
+    public async Task<bool> CreateBookmark(CreateBookmarkRequest createBookmarkRequest)
     {
         // check if product is sold => can not bookmark
         if (!Int32.TryParse(createBookmarkRequest.ProductId, out int productId))
-            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+            return false;
         var product = await _productRepository.GetProduct(productId);
         var checkProductStatus = product.Status == Contract.Enum.Product.Status.Sold.Name;
-        if (checkProductStatus) return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+        if (checkProductStatus)
+            return false;
 
-        var result = await _bookmarkRepository.AddBookmark(createBookmarkRequest);
-        return result
-            ? BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG)
-            : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
+        var isAdd = await _bookmarkRepository.AddBookmark(createBookmarkRequest);
+        return isAdd;
     }
 
-    public async Task<BaseResponse> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
+    public async Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
     {
         if (!Int32.TryParse(deleteBookmarkRequest.ProductId, out int productId))
-            return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
-        var result = await _bookmarkRepository.DeleteBookmark(deleteBookmarkRequest);
-        return result
-            ? BaseResponse.Success(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG)
-            : BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_DELETE_MSG);
+            return false;
+        var isDelete = await _bookmarkRepository.DeleteBookmark(deleteBookmarkRequest);
+        return isDelete;
     }
 
 
