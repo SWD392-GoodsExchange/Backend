@@ -2,7 +2,7 @@
   {
     "FeID": "SE173531",
     "CateID": 1,
-    "UsageInformation": "Gently used, no marks or tears.",
+    "Description": "Gently used, no marks or tears.",
     "Origin": "USA",
     "Type": "Trade",
     "Status": "Selling",
@@ -14,7 +14,7 @@
   {
     "FeID": "SE173531",
     "CateID": 2,
-    "UsageInformation": "Brand new, unopened.",
+    "Description": "Brand new, unopened.",
     "Origin": "China",
     "Type": "Trade",
     "Status": "Selling",
@@ -26,7 +26,7 @@
   {
     "FeID": "SE173531",
     "CateID": 3,
-    "UsageInformation": "Used for one semester, in great condition.",
+    "Description": "Used for one semester, in great condition.",
     "Origin": "Canada",
     "Type": "Exchange",
     "Status": "Selling",
@@ -38,7 +38,7 @@
   {
     "FeID": "SE172732",
     "CateID": 4,
-    "UsageInformation": "Slightly used, works perfectly.",
+    "Description": "Slightly used, works perfectly.",
     "Origin": "Japan",
     "Type": "Trade",
     "Status": "Selling",
@@ -50,7 +50,7 @@
   {
     "FeID": "SE172732",
     "CateID": 5,
-    "UsageInformation": "Used for a project, like new.",
+    "Description": "Used for a project, like new.",
     "Origin": "Germany",
     "Type": "Exchange",
     "Status": "Selling",
@@ -62,7 +62,7 @@
   {
     "FeID": "SE172732",
     "CateID": 5,
-    "UsageInformation": "Used for a project, like new.",
+    "Description": "Used for a project, like new.",
     "Origin": "Germany",
     "Type": "Trade",
     "Status": "Selling",

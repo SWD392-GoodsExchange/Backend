@@ -84,7 +84,7 @@ namespace ExchangeGood.API.Controllers
         {
             var feId = User.GetFeID();
             var list = await _memberService.GetBookMarkByFeId(feId);
-            return list != null
+            return list.Count != 0
                 ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, list))
                 : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
