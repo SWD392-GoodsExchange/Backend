@@ -28,7 +28,7 @@ namespace ExchangeGood.API.SignalR
             // get notification for themself
             var notifications = await _memberService.GetNotificationsOfUser(feId);
             // send it when use open website -> connect to this hub
-            await Clients.Caller.SendAsync("NotificationForUser", _mapper.Map<IEnumerable<NotificationDto>>(notifications));
+            await Clients.Caller.SendAsync("NotificationOfUser", _mapper.Map<IEnumerable<NotificationDto>>(notifications));
             /*await base.OnConnectedAsync();*/
         }
 
@@ -54,11 +54,11 @@ namespace ExchangeGood.API.SignalR
                 Recipient = recipient,
                 SenderUsername = sender.UserName,
                 RecipientUsername = recipient.UserName,
-                OnwerProductId = newNotification.OnwerProductId,
-                ExchangerProductIds = newNotification.ExchangerProductIds,
-                Content = newNotification.Content,
+                OnwerProductId = newNotification.OnwerProductId, // product of owner
+                ExchangerProductIds = newNotification.ExchangerProductIds, // products of sender
+                Content = $"{sender.UserName} want to exchange goods with you",
                 CreatedDate = DateTime.UtcNow,
-                Type = "ExchangeRequest"
+                Type = Contract.Enum.Notification.Type.ExchangeRequest.Name
             };
 
             // get all connectionIds of recipientUser

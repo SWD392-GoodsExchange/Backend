@@ -38,7 +38,9 @@ namespace ExchangeGood.DAO {
             return await _context.Products
                 .Include(x => x.Cate)
                 .Include(x => x.Images)
-                .Where(x => productIds.Contains(x.ProductId))
+                .Where(x => productIds.Contains(x.ProductId) && 
+                    x.Type == Contract.Enum.Product.Type.Exchange.Name &&
+                    x.Status == Contract.Enum.Product.Status.Selling.Name)
                 .ToListAsync();
         }
 
@@ -46,6 +48,7 @@ namespace ExchangeGood.DAO {
             var query = _context.Products
                 .Include(p => p.Cate)
                 .Include(p => p.Images)
+                .Include(p => p.Fe)
                 .AsQueryable();
 
             query = query.Where(p => p.Type.ToLower().Equals(type.ToLower()));

@@ -22,10 +22,12 @@ namespace ExchangeGood.DAO {
             return await _context.Notifications.FindAsync(id);
         }
 
+        // get notification for user -> click the ring button -> get 20 new notification
         public async Task<IEnumerable<Notification>> GetNotificationsOfFeID(string id) {
-            var query =  await _context.Notifications
+            var query = await _context.Notifications
                 .Where(x => x.RecipientId.Equals(id))
                 .OrderByDescending(x => x.CreatedDate)
+                .Take(20)
                 .ToListAsync();
 
             var unreadNotification = query.Where(m => m.DateRead == null).ToList();
@@ -38,12 +40,24 @@ namespace ExchangeGood.DAO {
             return query.ToList(); 
         }
 
-        public async Task<IEnumerable<Notification>> GetNotificationsSendedByFeID(string id) {
+        public async Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string id) {
 
-            return await _context.Notifications
-                .Where(n => n.SenderId.Equals(id))
+            var query = _context.Notifications
+                .Where(n => n.SenderId == id || n.RecipientId == id)
                 .OrderByDescending(m => m.CreatedDate)
-                .ToListAsync();
+                .AsQueryable();
+
+            query = query.Where(n => n.Type == Contract.Enum.Notification.Type.ExchangeRequest.Name).Take(20);
+
+            var unreadNotification = query.Where(n => n.DateRead == null && n.RecipientId == id).ToList();
+            if(unreadNotification.Count > 0) {
+                foreach (var notifcation in unreadNotification)
+                {
+                    notifcation.DateRead = DateTime.UtcNow;
+                }
+            }
+
+            return await query.ToListAsync();
         }
 
         public void RemoveNotification(Notification notifcation) {

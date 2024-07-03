@@ -2,6 +2,7 @@ namespace ExchangeGood.Contract;
 
 public class GetProductsForExchangeRequest
 {
-    public string FeId { get; set; }
-    public int[] ProductIds { get; set; }
+    public string OwnerId { get; set; } // who has a product 
+    public string ExchangerId { get; set; } // who want to exchange
+    public List<int> ProductIds { get; set; }
 }

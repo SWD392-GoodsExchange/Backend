@@ -19,5 +19,5 @@ public interface IMemberService
     Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest);
     Task<IEnumerable<Notification>> GetNotificationsOfUser(string feId);
     Task<bool> AddNotification(Notification notification);
-    Task<IEnumerable<Notification>> GetNotificationsWereSendedByUser(string feId);
+    Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string feId);
 }

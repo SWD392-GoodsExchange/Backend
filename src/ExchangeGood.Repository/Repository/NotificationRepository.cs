@@ -28,13 +28,15 @@ namespace ExchangeGood.Repository.Repository {
         public async Task<IEnumerable<Notification>> GetNotifcationsForUser(string userId) {
             var resul = await _uow.NotificationDAO.GetNotificationsOfFeID(userId);
 
-            await _uow.SaveChangesAsync();
+            await _uow.SaveChangesAsync(); // because updating of DateRead of notification
             return resul;
         }
 
-        public async Task<IEnumerable<Notification>> GetNotifcationsSendedByUser(string userId)
+        public async Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string userId)
         {
-            return await _uow.NotificationDAO.GetNotificationsSendedByFeID(userId); 
+            var result = await _uow.NotificationDAO.GetAllRequestExchangesFromUserAndOtherUserRequestForUser(userId); 
+            await _uow.SaveChangesAsync(); // because updating of DateRead of notification
+            return result;
         }
     }
 }

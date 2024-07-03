@@ -11,6 +11,7 @@ using ExchangeGood.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Role = ExchangeGood.Contract.Enum.Member.Role;
+using ExchangeGood.Contract.Payloads.Request.Notification;
 
 namespace ExchangeGood.API.Controllers
 {
@@ -18,12 +19,14 @@ namespace ExchangeGood.API.Controllers
     {
         private readonly IMemberService _memberService;
         private readonly IOrderService _orderService;
+        private readonly IProductService _productService;
         private readonly IMapper _mapper;
 
-        public MembersController(IMemberService memberService, IOrderService orderService, IMapper mapper)
+        public MembersController(IMemberService memberService, IOrderService orderService, IProductService productService, IMapper mapper)
         {
             _memberService = memberService;
             _orderService = orderService;
+            _productService = productService;
             _mapper = mapper;
         }
 
@@ -113,7 +116,7 @@ namespace ExchangeGood.API.Controllers
 
         // Đặt hàng
         [Authorize(Roles = "Member")]
-        [HttpPost("checkout")]
+        [HttpPost("checkout")] // làm lại với payment service
         public async Task<IActionResult> CheckoutOrder([FromBody] CreateOrderRequest createOrderRequest)
         {
             var feId = User.GetFeID();
@@ -145,18 +148,54 @@ namespace ExchangeGood.API.Controllers
 
         // notification
         [Authorize(Roles = "Member")]
-        [HttpGet("notifications-sended")]
-        public async Task<IActionResult> GetNotificationsSendedByUser()
+        [HttpGet("exchange/requests")]
+        public async Task<IActionResult> GetAllRequestExchangesFromUserAndOtherUserRequestForUser()
         {
             var feId = User.GetFeID();
-            var result = await _memberService.GetNotificationsWereSendedByUser(feId);
-            if (result != null)
+            var notifications = await _memberService.GetAllRequestExchangesFromUserAndOtherUserRequestForUser(feId);
+            List<ExchangeRequestDto> result = null;
+            if (notifications != null)
             {
-                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG,
-                    _mapper.Map<IEnumerable<NotificationDto>>(result)));
+                foreach (var notification in notifications)
+                {
+                    try
+                    {
+                        var products = await _productService.GetProductsForExchangeRequest(new Contract.GetProductsForExchangeRequest
+                        {
+                            OwnerId = notification.RecipientId,
+                            ExchangerId = notification.SenderId,
+                            ProductIds = GetProductIds(notification.OnwerProductId, notification.ExchangerProductIds),
+                        });
+
+                        result.Add(new ExchangeRequestDto
+                        {
+                            SenderId = notification.SenderId,
+                            SenderUsername = notification.SenderUsername,
+                            RecipientId = notification.RecipientId,
+                            RecipientUsername = notification.RecipientUsername,
+                            OnwerProduct = _mapper.Map<ProductDto>(products.SingleOrDefault(x => x.FeId == notification.RecipientId)),
+                            ExchangerProducts = _mapper.Map<IEnumerable<ProductDto>>(products.Select(x => x.FeId == notification.SenderId)),
+                            Content = notification.Content,
+                            DateRead = notification.DateRead,
+                            CreatedDate = notification.CreatedDate,
+                        });
+                    }
+                    catch (System.Exception)
+                    {
+                           continue;
+                    }
+                }
+                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result));
             }
 
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
+
+        private List<int> GetProductIds(string productId, string exchangeProductIds)
+        {
+            var result = new List<int>(int.Parse(productId));
+            result.AddRange(exchangeProductIds.Split(',').Select(x => int.Parse(x)));
+            return result;
         }
     }
 }
