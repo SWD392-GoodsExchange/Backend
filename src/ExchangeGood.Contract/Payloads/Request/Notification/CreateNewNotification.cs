@@ -11,7 +11,5 @@ namespace ExchangeGood.Contract.Payloads.Request.Notification {
         public string OnwerProductId { get; set; }
 
         public string ExchangerProductIds { get; set; }
-
-        public string Content { get; set; }
     }
 }

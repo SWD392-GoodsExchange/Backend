@@ -26,7 +26,7 @@ app.UseCors(builder => builder
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials() // to support a SignalR
-    .WithOrigins("http://localhost:5173"));
+    .WithOrigins("https://localhost:5001"));
 
 app.UseHttpsRedirection();
 

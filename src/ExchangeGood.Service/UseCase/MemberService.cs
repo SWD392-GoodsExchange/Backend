@@ -146,8 +146,8 @@ public class MemberService : IMemberService
         return await _notificationRepository.AddNotifcation(notification);
     }
 
-    public async Task<IEnumerable<Notification>> GetNotificationsWereSendedByUser(string feId)
+    public async Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string feId)
     {
-        return await _notificationRepository.GetNotifcationsSendedByUser(feId);
+        return await _notificationRepository.GetAllRequestExchangesFromUserAndOtherUserRequestForUser(feId);
     }
 }

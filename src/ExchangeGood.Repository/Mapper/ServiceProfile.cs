@@ -18,7 +18,9 @@ using ExchangeGood.Contract.Payloads.Request.Notification;
 namespace ExchangeGood.Repository.Mapper {
     public class ServiceProfile : Profile {
         public ServiceProfile() {
-            CreateMap<Product, ProductDto>().ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Cate.CateName));
+            CreateMap<Product, ProductDto>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Cate.CateName))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Fe.UserName));
 			CreateMap<Member, MemberDto>();
 			CreateMap<Category, CategoryDto>();
 			CreateMap<Report, ReportDto>();

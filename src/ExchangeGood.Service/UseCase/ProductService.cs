@@ -58,12 +58,16 @@ namespace ExchangeGood.Service.UseCase {
         {
             var result = await _productRepository.GetProductsForExchange(request.ProductIds);
 
-            if(result.FirstOrDefault(x => x.FeId.Equals(request.FeId)) == null) {
-                throw new BadRequestException("Your product has already exchanged before.");
+            if(result.Count() < 1) {
+                throw new BadRequestException("Products of this request not found");
             }
 
-            if(result.Where(x => !x.FeId.Equals(request.FeId)).Count() < 1) {
-                throw new BadRequestException("Products of exchanger have already exchange before.");
+            if(result.Any(x => x.FeId.Equals(request.ExchangerId))) {
+                throw new BadRequestException("Your products were not found.");
+            }
+
+            if(result.SingleOrDefault(x => x.FeId.Equals(request.OwnerId)) == null) {
+                throw new BadRequestException("Product of exchanger were not found.");
             }
 
             return result;

@@ -23,7 +23,7 @@ namespace ExchangeGood.API.Controllers
             _mapper = mapper;
         }
 
-        // GET http://localhost:5000/api/products?keyword=a&orderby=price&pageSize=10&pageNumber=1
+        // GET http://localhost:5000/api/products?keyword=orderby=price&pageSize=10&pageNumber=1
         [HttpGet]
         public async Task<IActionResult> GetProducts([FromQuery] ProductParams productParams)
         {
@@ -51,11 +51,11 @@ namespace ExchangeGood.API.Controllers
         }
 
         [Authorize(Roles = nameof(Role.Member))]
-        [HttpGet("exchanges")]
+        [HttpGet("exchange")] // get product for exchange through notification
         public async Task<IActionResult> GetProductsForExchange([FromQuery] GetProductsForExchangeRequest request)
         {
             var feId = User.GetFeID();
-            request.FeId = feId;
+            if(request.OwnerId == feId) throw new Exception("Request is not for user");
             var result = await _productService.GetProductsForExchangeRequest(request);
             return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<ProductDto>>(result)));
         }
