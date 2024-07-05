@@ -11,5 +11,5 @@ public interface IMemberRepository
     public Task<Member> GetMemberById(string feId);
     public Task<Member> CheckLogin(LoginRequest loginRequest);
     public Task<bool> UpdatePassword(PasswordRequest passwordRequest); 
-    Task<string> CreateMember(CreateMemberRequest createMemberRequest);
+    Task<Member> CreateMember(CreateMemberRequest createMemberRequest);
 }

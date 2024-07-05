@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using AutoMapper.Execution;
+using Azure.Core;
 using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
@@ -40,11 +41,45 @@ public class MemberService : IMemberService
         return await _memberRepository.GetMembers(getMembersQuery);
     }
 
-    public async Task<string> CreateMember(CreateMemberRequest createMemberRequest)
+    public async Task<LoginResponse> CreateMember(CreateMemberRequest createMemberRequest)
     {
-        var feId = await _memberRepository.CreateMember(createMemberRequest);
+        var member = await _memberRepository.CreateMember(createMemberRequest);
+        bool result = false;
+        // get refresh token
+        var refreshToken = await _refreshTokenRepository.GetRefreshTokenByFeId(member.FeId);
+        // Gen token & refresh token
+        var jwtToken = _jwtProvider.GenerateToken(member);
+        var refreshTokenString = _jwtProvider.GenerateRefreshToken();
 
-        return feId;
+        // check refresh token if null => create 
+        if (refreshToken == null) {
+            var newRefreshToken = new RefreshToken {
+                FeId = member.FeId,
+                Token = refreshTokenString,
+                ExpiryDate = DateTime.UtcNow.AddHours(12)
+            };
+            result = await _refreshTokenRepository.AddRefreshToken(newRefreshToken);
+            if (!result) {
+                return default;
+            }
+        }
+        // Update token
+        else {
+            refreshToken.Token = refreshTokenString;
+            refreshToken.ExpiryDate = DateTime.UtcNow.AddHours(12);
+            result = await _refreshTokenRepository.UpdateRefreshToken(refreshToken);
+            if (!result) {
+                return default;
+            }
+        }
+        var loginResponse = new LoginResponse {
+            FeId = member.FeId,
+            UserName = member.UserName,
+            Avatar = AvatarImage.GetImage(member.FeId),
+            JwtToken = jwtToken,
+            RefreshToken = refreshTokenString
+        };
+        return loginResponse;
     }
 
     public async Task<LoginResponse> Login(LoginRequest loginRequest)
@@ -85,6 +120,9 @@ public class MemberService : IMemberService
         }
         var loginResponse = new LoginResponse
         {
+            FeId = member.FeId,
+            UserName = member.UserName,
+            Avatar = AvatarImage.GetImage(member.FeId),
             JwtToken = jwtToken,
             RefreshToken = refreshTokenString
         };
@@ -97,7 +135,7 @@ public class MemberService : IMemberService
         return isUpdate;
     }
 
-    public async Task<Member> GetMemberByFeId(string feId)
+    public async Task<Data.Models.Member> GetMemberByFeId(string feId)
     {
         return await _memberRepository.GetMemberById(feId);
         // return member == null
