@@ -84,7 +84,7 @@ public class MemberRepository : IMemberRepository
         return await _uow.SaveChangesAsync();
     }
 
-    public async Task<string> CreateMember(CreateMemberRequest createMemberRequest)
+    public async Task<Member> CreateMember(CreateMemberRequest createMemberRequest)
     {
         var existMember = await _uow.MemberDAO.GetMemberById(createMemberRequest.FeId);
         if (existMember != null)
@@ -107,6 +107,6 @@ public class MemberRepository : IMemberRepository
             .Create();
         _uow.MemberDAO.Add(member);
         await _uow.SaveChangesAsync();
-        return member.FeId;
+        return member;
     }
 }

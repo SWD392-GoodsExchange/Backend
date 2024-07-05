@@ -63,11 +63,13 @@ namespace ExchangeGood.API.Controllers
                 : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> CreateMember([FromBody] CreateMemberRequest createMemberRequest)
         {
-            var feId = await _memberService.CreateMember(createMemberRequest);
-            return CreatedAtAction(nameof(GetMemberById), feId);
+            var loginResponse = await _memberService.CreateMember(createMemberRequest);
+            return loginResponse != null
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, loginResponse))
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
         [HttpGet("information")]
