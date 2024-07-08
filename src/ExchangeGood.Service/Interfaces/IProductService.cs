@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 namespace ExchangeGood.Service.Interfaces {
     public interface IProductService {
         Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
+        Task<IEnumerable<Product>> GetProductsByFeId(string feId);
         Task<Product> GetProduct(int ProductId);
         Task<IEnumerable<Product>> GetProductsForExchangeRequest(GetProductsForExchangeRequest request);
         Task<Product> AddProduct(CreateProductRequest createProductRequest);

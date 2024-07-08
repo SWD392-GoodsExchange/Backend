@@ -54,6 +54,10 @@ namespace ExchangeGood.Service.UseCase {
             return await _productRepository.GetProduct(productId); 
         }
 
+        public async Task<IEnumerable<Product>> GetProductsByFeId(string feId) {
+            return await _productRepository.GetProductsByFeId(feId);
+        }
+
         public async Task<IEnumerable<Product>> GetProductsForExchangeRequest(GetProductsForExchangeRequest request)
         {
             var result = await _productRepository.GetProductsForExchange(request.ProductIds);

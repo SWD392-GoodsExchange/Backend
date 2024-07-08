@@ -66,6 +66,10 @@ namespace ExchangeGood.Repository.Repository
             return await _uow.ProductDAO.GetProductByIdAsync(productId, includeDetail);
         }
 
+        public async Task<IEnumerable<Product>> GetProductsByFeId(string feId) {
+            return await _uow.ProductDAO.GetProductsByFeId(feId, includeDetail: true);
+        }
+
         public async Task<IEnumerable<Product>> GetProductsForExchange(IEnumerable<int> productIds)
         {
             return await _uow.ProductDAO.GetProductsForExchange(productIds);    
