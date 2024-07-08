@@ -45,7 +45,7 @@ namespace ExchangeGood.API.Controllers
             var result = await _productService.AddProduct(productRequest);
             if (result != null)
             {
-                return CreatedAtAction(nameof(CreateProduct), result);
+                return CreatedAtAction(nameof(GetProducts), _mapper.Map<ProductDto>(result));
             }
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
         }
