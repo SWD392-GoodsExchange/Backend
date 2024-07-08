@@ -9,17 +9,21 @@ using System.Threading.Tasks;
 namespace ExchangeGood.Service.Validations {
     public class CreateProductRequestValidation : AbstractValidator<CreateProductRequest>{
         /*
-         public int MemberId { get; set; }
+            public int ProductId { get; set; }
 
-        public int CateId { get; set; }
+            public string FeId { get; set; }
 
-        public string UsageInformation { get; set; }
+            public int CateId { get; set; }
 
-        public string Origin { get; set; }
+            public string Description { get; set; }
 
-        public decimal Price { get; set; }
+            ublic string Origin { get; set; }
 
-        public string Title { get; set; }
+            public string Type { get; set; }
+
+            public decimal Price { get; set; }
+
+            public string Title { get; set; }
          */
         public CreateProductRequestValidation()
         {
@@ -27,7 +31,7 @@ namespace ExchangeGood.Service.Validations {
                 .NotEmpty()
                 .WithMessage("Tile is required");
 
-            RuleFor(x => x.UsageInformation)
+            RuleFor(x => x.Description)
                 .NotEmpty()
                 .WithMessage("Description is required");
 
