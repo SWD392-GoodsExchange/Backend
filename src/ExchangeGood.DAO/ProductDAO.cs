@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ExchangeGood.Contract.Common;
+using System.Linq.Expressions;
 
 namespace ExchangeGood.DAO {
     public class ProductDAO { // return Entity
@@ -32,6 +33,21 @@ namespace ExchangeGood.DAO {
             }
 
             return await query.FirstOrDefaultAsync(x => x.ProductId == id);   
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsByFeId(string feId, bool includeDetail = false) {
+
+            var query = _context.Products.AsQueryable().Where(x => x.FeId == feId);
+            // for view product so that use .AsNoTracking() otherwise use for business logic
+            if (includeDetail) {
+                query = query
+                    .Include(x => x.Cate)
+                    .Include(x => x.Images)
+                    .Include(x => x.Fe)
+                    .AsNoTracking();
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<IEnumerable<Product>> GetProductsForExchange(IEnumerable<int> productIds) {

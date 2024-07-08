@@ -31,7 +31,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin.Name))]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin))]
         public async Task<IActionResult> GetMembers([FromQuery] GetMembersQuery getMembersQuery)
         {
             var result = await _memberService.GetAllMembers(getMembersQuery);
@@ -79,8 +79,8 @@ namespace ExchangeGood.API.Controllers
             var feId = User.GetFeID();
             var member = await _memberService.GetMemberByFeId(feId);
             return member != null
-                ? Ok(member)
-                : NotFound(member);
+                ? Ok(_mapper.Map<MemberDto>(member))
+                : NotFound();
         }
 
         [HttpGet("bookmark")]

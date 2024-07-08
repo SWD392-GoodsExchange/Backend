@@ -14,7 +14,7 @@ public class MemberDto
 
     public string Phone { get; set; }
 
-    public string Status { get; set; }
+/*    public string Status { get; set; }*/
 
     public DateTime? Dob { get; set; }
 }
