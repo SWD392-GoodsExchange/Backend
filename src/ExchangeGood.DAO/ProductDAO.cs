@@ -50,6 +50,23 @@ namespace ExchangeGood.DAO {
             return await query.ToListAsync();
         }
 
+        public async Task<IEnumerable<Product>> GetProductsByCateId(int cateId, bool includeDetail = false)
+        {
+
+            var query = _context.Products.AsQueryable().Where(x => x.CateId == cateId);
+            // for view product so that use .AsNoTracking() otherwise use for business logic
+            if (includeDetail)
+            {
+                query = query
+                    .Include(x => x.Cate)
+                    .Include(x => x.Images)
+                    .Include(x => x.Fe)
+                    .AsNoTracking();
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task<IEnumerable<Product>> GetProductsForExchange(IEnumerable<int> productIds) {
             return await _context.Products
                 .Include(x => x.Cate)

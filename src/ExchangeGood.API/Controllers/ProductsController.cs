@@ -27,7 +27,7 @@ namespace ExchangeGood.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProducts([FromQuery] ProductParams productParams)
         {
-            var result  = await _productService.GetAllProducts(productParams);
+            var result = await _productService.GetAllProducts(productParams);
             if (result != null)
             {
                 return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, new PaginationResponse<ProductDto>(result, result.CurrentPage, result.PageSize, result.TotalCount, result.TotalPages)));
@@ -55,7 +55,7 @@ namespace ExchangeGood.API.Controllers
         public async Task<IActionResult> GetProductsForExchange([FromQuery] GetProductsForExchangeRequest request)
         {
             var feId = User.GetFeID();
-            if(request.OwnerId == feId) throw new Exception("Request is not for user");
+            if (request.OwnerId == feId) throw new Exception("Request is not for user");
             var result = await _productService.GetProductsForExchangeRequest(request);
             return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<ProductDto>>(result)));
         }
@@ -64,7 +64,18 @@ namespace ExchangeGood.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductsByFeId(string id) {
             var result = await _productService.GetProductsByFeId(id);
-            if(result.Count() > 0)
+            if (result.Count() > 0)
+                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<ProductDto>>(result)));
+
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
+
+        [Authorize(Roles = nameof(Role.Member))]
+        [HttpGet("cate/{id}")]
+        public async Task<IActionResult> GetProductsByCateId(int id)
+        {
+            var result = await _productService.GetProductsByCateId(id);
+            if (result.Count() > 0)
                 return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<ProductDto>>(result)));
 
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));

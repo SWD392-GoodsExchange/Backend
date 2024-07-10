@@ -29,7 +29,7 @@ namespace ExchangeGood.DAO
 
 		public async Task<IEnumerable<Category>> GetCategories()
 		{
-			var query = _context.Categories
+			var query = _context.Categories.AsQueryable()
 				.AsNoTracking();
 
 			return await query.ToListAsync();

@@ -14,6 +14,7 @@ namespace ExchangeGood.Repository.Interfaces {
         public Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
         public Task<IEnumerable<Product>> GetProductsByFeId(string feId);
         public Task<Product> GetProduct(int productId, bool includeDetail = false);
+        public Task<IEnumerable<Product>> GetProductsByCateId(int cateId);
         public Task<IEnumerable<Product>> GetProductsForExchange(IEnumerable<int> productIds);
         public Task<Product> AddProduct(CreateProductRequest productRequest);
         public Task<Product> UpdateProduct(UpdateProductRequest prodductRequest);
