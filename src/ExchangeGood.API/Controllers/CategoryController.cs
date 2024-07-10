@@ -6,6 +6,7 @@ using ExchangeGood.Contract.Payloads.Request.Product;
 using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Service.Interfaces;
 using ExchangeGood.Service.UseCase;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExchangeGood.API.Controllers
@@ -32,7 +33,8 @@ namespace ExchangeGood.API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest categoryRequest)
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin))]
+        public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest categoryRequest)
 		{
 				var response = await _categoryService.AddCategory(categoryRequest);
 				if (response != null)
@@ -43,7 +45,8 @@ namespace ExchangeGood.API.Controllers
 
 
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteCategory(int id)
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin))]
+        public async Task<IActionResult> DeleteCategory(int id)
 		{
 			await _categoryService.DeleteCategory(id);
 			return Ok(BaseResponse.Success(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG));
@@ -51,7 +54,8 @@ namespace ExchangeGood.API.Controllers
 
 
 		[HttpPut]
-		public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryRequest categoryRequest)
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin))]
+        public async Task<IActionResult> UpdateCategory([FromBody] UpdateCategoryRequest categoryRequest)
 		{
 			var response = await _categoryService.UpdateCategory(categoryRequest);
 			if(response != null)
