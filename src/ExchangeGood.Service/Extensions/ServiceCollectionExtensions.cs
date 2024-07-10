@@ -22,6 +22,8 @@ namespace ExchangeGood.Service.Extensions {
             services.AddScoped<IJwtProvider, JwtProvider>();
             services.AddScoped<IAuthService, AuthService>();
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+            services.Configure<VnPaySettings>(config.GetSection("VnPay"));
+            services.AddScoped<IVnPayService, VnPayService>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IClaimsPrincipalExtensions, ClaimsPrincipalExtensions>();
             

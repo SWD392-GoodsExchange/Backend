@@ -23,7 +23,8 @@ namespace ExchangeGood.Contract.Common {
         public static string SUCCESS_UPDATE_MSG = "Update data success";
         public static int SUCCESS_DELETE_CODE = (int)HttpStatusCode.NoContent;
         public static string SUCCESS_DELETE_MSG = "Delete data success";
-
+        public static int SUCCESS_PAYMENT_CODE = (int)HttpStatusCode.NoContent;
+        public static string SUCCESS_PAYMENT_MSG = "Payment successfully";
 
         #endregion
 
@@ -35,6 +36,7 @@ namespace ExchangeGood.Contract.Common {
         public static string FAIL_UPDATE_MSG = "Update data fail";
         public static string FAIL_DELETE_MSG = "Delete data fail";
         public static string FAIL_DUPLCATE_MSG = "Duplicate data";
+        public static string FAIL_PAYMENT_MSG = "Payment failure";
 
         #endregion
 

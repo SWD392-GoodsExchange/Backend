@@ -15,5 +15,6 @@ namespace ExchangeGood.Service.Interfaces {
         public Task<Order> GetOrder(int orderId);
         public Task<Order> CreateOrderForTrade(CreateOrderRequest createOrderRequest);
         public Task<bool> CreateOrdersForExchange(CreateOrderExchangeRequest createOrderRequest);
+        public Task<bool> UpdateOrderStatus(int orderId, bool isCompleted = true);
     }
 }

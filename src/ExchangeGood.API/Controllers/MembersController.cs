@@ -1,8 +1,12 @@
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using AutoMapper;
 using ExchangeGood.API.Extensions;
 using ExchangeGood.Contract.Enum.Member;
 using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.DTOs;
+using ExchangeGood.Contract.Payloads.Request;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Members;
 using ExchangeGood.Contract.Payloads.Request.Orders;
@@ -12,22 +16,30 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Role = ExchangeGood.Contract.Enum.Member.Role;
 using ExchangeGood.Contract.Payloads.Request.Notification;
+using ExchangeGood.Data.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ExchangeGood.API.Controllers
 {
     public class MembersController : BaseApiController
     {
         private readonly IMemberService _memberService;
+
+        // private readonly HttpClient _httpClient;
         private readonly IOrderService _orderService;
         private readonly IProductService _productService;
+        private readonly IVnPayService _vnPayService;
         private readonly IMapper _mapper;
 
-        public MembersController(IMemberService memberService, IOrderService orderService, IProductService productService, IMapper mapper)
+        public MembersController(IMemberService memberService, IOrderService orderService,
+            IProductService productService, IVnPayService vnPayService, IMapper mapper)
         {
             _memberService = memberService;
             _orderService = orderService;
             _productService = productService;
+            _vnPayService = vnPayService;
             _mapper = mapper;
+            // _httpClient = httpClient;
         }
 
         [HttpGet]
@@ -47,8 +59,8 @@ namespace ExchangeGood.API.Controllers
         {
             var loginResponse = await _memberService.Login(loginRequest);
 
-            return loginResponse != null 
-                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, loginResponse)) 
+            return loginResponse != null
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, loginResponse))
                 : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
@@ -58,8 +70,9 @@ namespace ExchangeGood.API.Controllers
         {
             passwordRequest.FeId = User.GetFeID();
             var isUpdate = await _memberService.UpdatePassword(passwordRequest);
-            return isUpdate 
-                ? Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, nameof(UpdatePassword) + " successful"))
+            return isUpdate
+                ? Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG,
+                    nameof(UpdatePassword) + " successful"))
                 : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
         }
 
@@ -100,9 +113,9 @@ namespace ExchangeGood.API.Controllers
         {
             createBookmarkRequest.FeId = User.GetFeID();
             var isAdd = await _memberService.CreateBookmark(createBookmarkRequest);
-            return isAdd 
+            return isAdd
                 ? Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG))
-                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE,Const.FAIL_CREATE_MSG));
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
         }
 
         [HttpDelete("bookmark")]
@@ -111,9 +124,9 @@ namespace ExchangeGood.API.Controllers
         {
             deleteBookmarkRequest.FeId = User.GetFeID();
             var isDelete = await _memberService.DeleteBookmark(deleteBookmarkRequest);
-            return isDelete 
-                ? NoContent() 
-                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE,Const.FAIL_DELETE_MSG));
+            return isDelete
+                ? NoContent()
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_DELETE_MSG));
         }
 
         // Đặt hàng
@@ -129,8 +142,46 @@ namespace ExchangeGood.API.Controllers
                 return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
             }
 
-            return Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG,
-                _mapper.Map<OrderDto>(result)));
+            // after add order success => redirect to Payment action to create payment url
+            return RedirectToAction(nameof(Payment), "members", new
+            {
+                amount = result.TotalAmount.ToString(),
+                fullName = feId,
+                orderId = result.OrderId.ToString()
+            });
+        }
+
+        [HttpGet("Payment")]
+        public async Task<IActionResult> Payment(string orderId, string amount, string fullName)
+        {
+            VnPaymentRequestModel vnPaymentRequestModel = new VnPaymentRequestModel
+            {
+                FullName = fullName,
+                OrderId = orderId,
+                Amount = Convert.ToDouble(amount),
+                CreatedDate = DateTime.UtcNow,
+                Description = $"Payment for the student's order with ID number {fullName}"
+            };
+            var paymentUrl = _vnPayService.CreatePaymentUrl(HttpContext, vnPaymentRequestModel);
+            return Redirect(paymentUrl);
+        }
+
+        [HttpGet("paymentCallback")]
+        public async Task<IActionResult> PaymentCallback()
+        {
+            // sau khi thanh toán xong sẽ auto gen url để vào paymentCallback
+            var response = _vnPayService.PaymentExecute(Request.Query);
+
+            var updateOrderStatusCheck = response.ResponseCode != "00"
+                ? await _orderService.UpdateOrderStatus(response.OrderId, false)
+                : await _orderService.UpdateOrderStatus(response.OrderId);
+
+            if (!updateOrderStatusCheck)
+                return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
+
+            return (response.ResponseCode == "00")
+                ? Ok(BaseResponse.Success(Const.SUCCESS_PAYMENT_CODE, Const.SUCCESS_PAYMENT_MSG))
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_PAYMENT_MSG));
         }
 
         [Authorize(Roles = "Member")]
@@ -162,12 +213,14 @@ namespace ExchangeGood.API.Controllers
                 {
                     try
                     {
-                        var products = await _productService.GetProductsForExchangeRequest(new Contract.GetProductsForExchangeRequest
-                        {
-                            OwnerId = notification.RecipientId,
-                            ExchangerId = notification.SenderId,
-                            ProductIds = GetProductIds(notification.OnwerProductId, notification.ExchangerProductIds),
-                        });
+                        var products = await _productService.GetProductsForExchangeRequest(
+                            new Contract.GetProductsForExchangeRequest
+                            {
+                                OwnerId = notification.RecipientId,
+                                ExchangerId = notification.SenderId,
+                                ProductIds = GetProductIds(notification.OnwerProductId,
+                                    notification.ExchangerProductIds),
+                            });
 
                         result.Add(new ExchangeRequestDto
                         {
@@ -175,8 +228,12 @@ namespace ExchangeGood.API.Controllers
                             SenderUsername = notification.SenderUsername,
                             RecipientId = notification.RecipientId,
                             RecipientUsername = notification.RecipientUsername,
-                            OnwerProduct = _mapper.Map<ProductDto>(products.SingleOrDefault(x => x.FeId == notification.RecipientId)),
-                            ExchangerProducts = _mapper.Map<IEnumerable<ProductDto>>(products.Select(x => x.FeId == notification.SenderId)),
+                            OnwerProduct =
+                                _mapper.Map<ProductDto>(
+                                    products.SingleOrDefault(x => x.FeId == notification.RecipientId)),
+                            ExchangerProducts =
+                                _mapper.Map<IEnumerable<ProductDto>>(products.Select(x =>
+                                    x.FeId == notification.SenderId)),
                             Content = notification.Content,
                             DateRead = notification.DateRead,
                             CreatedDate = notification.CreatedDate,
@@ -184,9 +241,10 @@ namespace ExchangeGood.API.Controllers
                     }
                     catch (System.Exception)
                     {
-                           continue;
+                        continue;
                     }
                 }
+
                 return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result));
             }
 
