@@ -33,7 +33,6 @@ public class MemberDAO
             membersQuery = membersQuery.Where(p => p.Gender.ToLower().Contains(searchTerm.ToLower()));
             membersQuery = membersQuery.Where(p => p.Phone.ToLower().Contains(searchTerm.ToLower()));
         }
-
         membersQuery = sortOrder?.ToLower() == "desc"
             ? membersQuery.OrderByDescending(GetSortExpression(sortColumn))
             : membersQuery.OrderBy(GetSortExpression(sortColumn));

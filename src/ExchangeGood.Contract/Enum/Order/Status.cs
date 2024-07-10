@@ -2,7 +2,7 @@
 {
     public abstract class Status : Enumeration<Order.Status>
     {
-        public static readonly Order.Status Proccessing = new ProccessingStatus();
+        public static readonly Order.Status Processing = new ProcessingStatus();
         public static readonly Order.Status Completed = new CompletedStatus();
         public static readonly Order.Status Cancelled = new CancelledStatus();
 
@@ -21,9 +21,9 @@
             {
             }
         }
-        private sealed class ProccessingStatus : Order.Status
+        private sealed class ProcessingStatus : Order.Status
         {
-            public ProccessingStatus() : base(1, nameof(Proccessing))
+            public ProcessingStatus() : base(1, nameof(Processing))
             {
             }
         }

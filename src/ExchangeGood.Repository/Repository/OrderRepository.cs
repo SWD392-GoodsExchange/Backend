@@ -31,14 +31,20 @@ namespace ExchangeGood.Repository.Repository
             return null;
         }
 
+        public async Task<Order> UpdateOrder(Order order)
+        {
+            _uow.OrderDAO.UpdateOrder(order);
+            return await _uow.SaveChangesAsync() ? order : default;
+        }
+
         public Task<IEnumerable<Order>> GetAllOrders()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Order> GetOrder(int orderId)
+        public async Task<Order> GetOrder(int orderId)
         {
-            throw new NotImplementedException();
+            return await _uow.OrderDAO.GetOrder(orderId);
         }
     }
 }

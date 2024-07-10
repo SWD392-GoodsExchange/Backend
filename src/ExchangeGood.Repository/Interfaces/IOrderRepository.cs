@@ -14,5 +14,6 @@ namespace ExchangeGood.Repository.Interfaces {
         public Task<IEnumerable<Order>> GetAllOrders();
         public Task<Order> GetOrder(int orderId);
         public Task<Order> AddOrder(Order order);
+        public Task<Order> UpdateOrder(Order order);
     }
 }
