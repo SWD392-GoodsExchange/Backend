@@ -8,6 +8,7 @@ using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Repository.Repository;
 using ExchangeGood.Service.Interfaces;
 using ExchangeGood.Service.UseCase;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExchangeGood.API.Controllers
@@ -21,7 +22,8 @@ namespace ExchangeGood.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetReports([FromQuery] ReportParam reportParam)
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
+        public async Task<IActionResult> GetReports([FromQuery] ReportParam reportParam)
 		{
 			var response = await _reportService.GetAllReports(reportParam);
 			if (response != null)
@@ -32,6 +34,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpGet("approved")]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
         public async Task<IActionResult> GetReportsApproved([FromQuery] ReportParam reportParam)
         {
             var response = await _reportService.GetReportsApproved(reportParam);
@@ -43,6 +46,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpGet("processing")]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
         public async Task<IActionResult> GetReportsProcessing([FromQuery] ReportParam reportParam)
         {
             var response = await _reportService.GetReportsProcessing(reportParam);
@@ -54,6 +58,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
         public async Task<IActionResult> GetReportsByProduct([FromQuery] ReportParam reportParam, int id)
         {
             var response = await _reportService.GetReportsByProduct(id, reportParam);
@@ -66,7 +71,8 @@ namespace ExchangeGood.API.Controllers
 
 
         [HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteReport(int id)
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
+        public async Task<IActionResult> DeleteReport(int id)
         {
             var existingReport = await _reportService.GetReport(id);
             if (existingReport != null)
@@ -79,7 +85,8 @@ namespace ExchangeGood.API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateReport([FromBody] CreateReportRequest reportRequest)
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Member))]
+        public async Task<IActionResult> CreateReport([FromBody] CreateReportRequest reportRequest)
         {
             var response = await _reportService.AddReport(reportRequest);
             if (response != null)
@@ -91,7 +98,8 @@ namespace ExchangeGood.API.Controllers
 
 
         [HttpPut("{reportId}")]
-        public async Task<IActionResult> UpdateReport(int reportId)
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
+        public async Task<IActionResult> UpdateReportStatus(int reportId)
         {
             var response = await _reportService.UpdateReportStatus(reportId);
             if (response != null)
