@@ -1,5 +1,8 @@
-﻿using ExchangeGood.Contract.Payloads.Request.Report;
+﻿using ExchangeGood.Contract.Common;
+using ExchangeGood.Contract.DTOs;
+using ExchangeGood.Contract.Payloads.Request.Report;
 using ExchangeGood.Contract.Payloads.Response;
+using ExchangeGood.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +13,10 @@ namespace ExchangeGood.Service.Interfaces
 {
 	public interface IReportService
 	{
-		public Task<BaseResponse> GetAllReports(ReportParam reportParams);
-		public Task<BaseResponse> GetReport(int ReportId);
-		public Task<BaseResponse> AddReport(CreateReportRequest createreportRequest);
-		public Task<BaseResponse> UpdateReport(UpdateReportRequest updatereportRequest);
-		public Task<BaseResponse> DeleteReport(int ReportId);
-	}
+        public Task<PagedList<ReportDto>> GetAllReports(ReportParam reportParam);
+        public Task<Report> GetReport(int reportId);
+        public Task<ReportDto> AddReport(CreateReportRequest reportRequest);
+        public Task<Report> UpdateReportStatus(int reportId);
+        public Task DeleteReport(int reportId);
+    }
 }
