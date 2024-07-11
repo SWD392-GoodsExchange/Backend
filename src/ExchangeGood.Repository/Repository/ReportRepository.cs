@@ -61,7 +61,34 @@ namespace ExchangeGood.Repository.Repository
 			return report;
 		}
 
+        public async Task<PagedList<ReportDto>> GetReportsApproved(ReportParam reportParam)
+        {
+            var query = _uow.ReportDAO.GetReportsApproved(reportParam.Keyword, reportParam.Orderby);
+            var result = await PagedList<ReportDto>.CreateAsync(query.ProjectTo<ReportDto>(_mapper.ConfigurationProvider),
+            reportParam.PageNumber, reportParam.PageSize);
 
+            return result;
+        }
+
+        public async Task<PagedList<ReportDto>> GetReportsProcessing(ReportParam reportParam)
+        {
+            var query = _uow.ReportDAO.GetReportsProcessing(reportParam.Keyword, reportParam.Orderby);
+
+            var result = await PagedList<ReportDto>.CreateAsync(query.ProjectTo<ReportDto>(_mapper.ConfigurationProvider),
+            reportParam.PageNumber, reportParam.PageSize);
+
+            return result;
+        }
+
+        public async Task<PagedList<ReportDto>> GetReportsByProduct(int pId, ReportParam reportParam)
+        {
+            var query = _uow.ReportDAO.GetReportsByProduct(pId, reportParam.Keyword, reportParam.Orderby);
+
+            var result = await PagedList<ReportDto>.CreateAsync(query.ProjectTo<ReportDto>(_mapper.ConfigurationProvider),
+            reportParam.PageNumber, reportParam.PageSize);
+
+            return result;
+        }
 
         public async Task<Report> UpdateReportStatus(int reportId)
         {

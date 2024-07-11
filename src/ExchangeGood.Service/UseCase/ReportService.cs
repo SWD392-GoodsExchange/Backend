@@ -52,6 +52,21 @@ namespace ExchangeGood.Service.UseCase
             return  await _reportRepository.GetReport(reportId);
         }
 
+        public async Task<PagedList<ReportDto>> GetReportsApproved(ReportParam reportParam)
+        {
+            return await _reportRepository.GetReportsApproved(reportParam);
+        }
+
+        public async Task<PagedList<ReportDto>> GetReportsByProduct(int pId, ReportParam reportParam)
+        {
+            return await _reportRepository.GetReportsByProduct(pId, reportParam);
+        }
+
+        public async Task<PagedList<ReportDto>> GetReportsProcessing(ReportParam reportParam)
+        {
+            return await _reportRepository.GetReportsProcessing(reportParam);
+        }
+
         public async Task<Report> UpdateReportStatus(int reportId)
         {
             var report = await _reportRepository.GetReport(reportId);
