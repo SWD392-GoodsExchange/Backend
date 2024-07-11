@@ -31,7 +31,41 @@ namespace ExchangeGood.API.Controllers
 			return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
-		[HttpDelete("{id}")]
+        [HttpGet("approved")]
+        public async Task<IActionResult> GetReportsApproved([FromQuery] ReportParam reportParam)
+        {
+            var response = await _reportService.GetReportsApproved(reportParam);
+            if (response != null)
+            {
+                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, new PaginationResponse<ReportDto>(response, response.CurrentPage, response.PageSize, response.TotalCount, response.TotalPages)));
+            }
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
+
+        [HttpGet("processing")]
+        public async Task<IActionResult> GetReportsProcessing([FromQuery] ReportParam reportParam)
+        {
+            var response = await _reportService.GetReportsProcessing(reportParam);
+            if (response != null)
+            {
+                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, new PaginationResponse<ReportDto>(response, response.CurrentPage, response.PageSize, response.TotalCount, response.TotalPages)));
+            }
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetReportsByProduct([FromQuery] ReportParam reportParam, int id)
+        {
+            var response = await _reportService.GetReportsByProduct(id, reportParam);
+            if (response != null)
+            {
+                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, new PaginationResponse<ReportDto>(response, response.CurrentPage, response.PageSize, response.TotalCount, response.TotalPages)));
+            }
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
+
+
+        [HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteReport(int id)
         {
             var existingReport = await _reportService.GetReport(id);

@@ -14,6 +14,9 @@ namespace ExchangeGood.Service.Interfaces
 	public interface IReportService
 	{
         public Task<PagedList<ReportDto>> GetAllReports(ReportParam reportParam);
+        public Task<PagedList<ReportDto>> GetReportsProcessing(ReportParam reportParam);
+        public Task<PagedList<ReportDto>> GetReportsApproved(ReportParam reportParam);
+        public Task<PagedList<ReportDto>> GetReportsByProduct(int pId, ReportParam reportParam);
         public Task<Report> GetReport(int reportId);
         public Task<ReportDto> AddReport(CreateReportRequest reportRequest);
         public Task<Report> UpdateReportStatus(int reportId);
