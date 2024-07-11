@@ -2,6 +2,7 @@
 using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Report;
 using ExchangeGood.Contract.Payloads.Response;
+using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ExchangeGood.Service.UseCase
 {
-	public class ReportService : IReportService
+    public class ReportService : IReportService
 	{
 		private readonly IProductRepository _productRepository;
 		private readonly IReportRepository _reportRepository;
@@ -24,62 +25,42 @@ namespace ExchangeGood.Service.UseCase
 			_reportRepository = reportRepository;
 			_memberRepository = memberRepository;
 		}
-		public async Task<BaseResponse> AddReport(CreateReportRequest createreportRequest)
-		{
-			var existingProduct = await _productRepository.GetProduct(createreportRequest.ProductId);
-			var existingMember = await _memberRepository.GetMemberById(createreportRequest.FeId);
 
-			if (existingProduct != null && existingMember != null)
-			{
-				ReportDto reportdto = await _reportRepository.AddReport(createreportRequest);
-				return BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, reportdto);
-			}
-			return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
-		}
+        public async Task<ReportDto> AddReport(CreateReportRequest reportRequest)
+        {
+            var existingProduct = await _productRepository.GetProduct(reportRequest.ProductId);
+            var existingMember = await _memberRepository.GetMemberById(reportRequest.FeId);
+            if(existingProduct != null && existingMember != null) {
+                var report = await _reportRepository.AddReport(reportRequest);
+                return report;
+            }
+            return null;
+        }
 
+        public async Task DeleteReport(int reportId)
+        {
+            await _reportRepository.DeleteReport(reportId);
+        }
 
-		public async Task<BaseResponse> DeleteReport(int ReportId)
-		{
-			var existingReport = await _reportRepository.GetReport(ReportId);
-			if (existingReport != null)
-			{
-				await _reportRepository.DeleteReport(ReportId);
-				return BaseResponse.Success(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG, existingReport);
-			}
-			return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_DELETE_MSG);
-		}
+        public async Task<PagedList<ReportDto>> GetAllReports(ReportParam reportParam)
+        {
+            return await _reportRepository.GetAllReports(reportParam);
+        }
 
-		public async Task<BaseResponse> GetAllReports(ReportParam reportParams)
-		{
-			var result = await _reportRepository.GetAllReports(reportParams);
+        public async Task<Report> GetReport(int reportId)
+        {
+            return  await _reportRepository.GetReport(reportId);
+        }
 
-			if (result.TotalCount > 0)
-			{
-				return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, new PaginationResponse<ReportDto>(result, result.CurrentPage, result.PageSize, result.TotalCount, result.TotalPages));
-			}
-
-			return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
-		}
-
-		public async Task<BaseResponse> GetReport(int ReportId)
-		{
-			var exstingReport = await _reportRepository.GetReport(ReportId);
-			if (exstingReport != null)
-			{
-				return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, exstingReport);
-			}
-			return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG);
-		}
-
-		public async Task<BaseResponse> UpdateReport(UpdateReportRequest updatereportRequest)
-		{
-			var report = await _reportRepository.GetReport(updatereportRequest.ReportId);
-			if (report != null)
-			{
-				await _reportRepository.UpdateReport(updatereportRequest);
-				return BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, updatereportRequest);
-			}
-			return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG);
-		}
-	}
+        public async Task<Report> UpdateReportStatus(int reportId)
+        {
+            var report = await _reportRepository.GetReport(reportId);
+            if (report != null)
+            {
+                await _reportRepository.UpdateReportStatus(reportId);
+                return report;
+            }
+            return null;
+        }
+    }
 }

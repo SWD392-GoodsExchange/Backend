@@ -2,6 +2,7 @@
 using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Product;
 using ExchangeGood.Contract.Payloads.Request.Report;
+using ExchangeGood.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace ExchangeGood.Repository.Interfaces
 	public interface IReportRepository
 	{
 		public Task<PagedList<ReportDto>> GetAllReports(ReportParam reportParam);
-		public Task<ReportDto> GetReport(int reportId);
+        public Task<Report> GetReport(int reportId);
 		public Task<ReportDto> AddReport(CreateReportRequest reportRequest);
-		public Task<int> UpdateReport(UpdateReportRequest reportRequest);
-		public Task DeleteReport(int reportId);
+		public Task<Report> UpdateReportStatus(int reportId);
+        public Task DeleteReport(int reportId);
 	}
 }

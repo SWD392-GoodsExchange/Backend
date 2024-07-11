@@ -11,8 +11,8 @@ using ExchangeGood.Repository.Interfaces;
 
 namespace ExchangeGood.Repository.Repository
 {
-	public class ReportRepository : IReportRepository
-	{
+    public class ReportRepository : IReportRepository
+	{	
 		private readonly IUnitOfWork _uow;
 		private readonly IMapper _mapper;
 
@@ -33,7 +33,7 @@ namespace ExchangeGood.Repository.Repository
 			return _mapper.Map<ReportDto>(report);
 		}
 
-		public async Task DeleteReport(int reportId)
+        public async Task DeleteReport(int reportId)
 		{
 			Report existedReport = await _uow.ReportDAO.GetReportByIdAsync(reportId);
 			if (existedReport == null)
@@ -55,24 +55,26 @@ namespace ExchangeGood.Repository.Repository
 			return result;
 		}
 
-		public async Task<ReportDto> GetReport(int reportId)
+		public async Task<Report> GetReport(int reportId)
 		{
 			var report = await _uow.ReportDAO.GetReportByIdAsync(reportId);
-			return _mapper.Map<ReportDto>(report);
+			return report;
 		}
 
-		public async Task<int> UpdateReport(UpdateReportRequest reportRequest)
-		{
-			Report existedReport = await _uow.ReportDAO.GetReportByIdAsync(reportRequest.ReportId);
-			if (existedReport == null)
-			{
-				throw new ReportNotFoundExceoption(reportRequest.ReportId);
-			}
-			_mapper.Map(reportRequest, existedReport);
-			_uow.ReportDAO.UpdateReport(existedReport);
 
-			await _uow.SaveChangesAsync();
-			return existedReport.ReportId;
-		}
-	}
+
+        public async Task<Report> UpdateReportStatus(int reportId)
+        {
+            Report existedReport = await _uow.ReportDAO.GetReportByIdAsync(reportId);
+            if (existedReport == null)
+            {
+                throw new ReportNotFoundExceoption(reportId);
+            }
+			existedReport.Status = Status.Approved.Name;
+            _uow.ReportDAO.UpdateReport(existedReport);
+
+            await _uow.SaveChangesAsync();
+            return existedReport;
+        }
+    }
 }
