@@ -1,5 +1,6 @@
 ﻿using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.DTOs;
+using ExchangeGood.Contract.Enum.Member;
 using ExchangeGood.Contract.Payloads.Request.Report;
 using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Data.Models;
@@ -47,7 +48,7 @@ namespace ExchangeGood.Service.UseCase
             return await _reportRepository.GetAllReports(reportParam);
         }
 
-        public async Task<Report> GetReport(int reportId)
+        public async Task<ReportDto> GetReport(int reportId)
         {
             return  await _reportRepository.GetReport(reportId);
         }
@@ -67,15 +68,30 @@ namespace ExchangeGood.Service.UseCase
             return await _reportRepository.GetReportsProcessing(reportParam);
         }
 
-        public async Task<Report> UpdateReportStatus(int reportId)
+        public async Task<PagedList<ReportDto>> GetReportsRejected(ReportParam reportParam)
+        {
+            return await _reportRepository.GetReportsRejected(reportParam);
+        }
+
+        public async Task<ReportDto> UpdateReportStatusApproved(int reportId)
         {
             var report = await _reportRepository.GetReport(reportId);
             if (report != null)
             {
-                await _reportRepository.UpdateReportStatus(reportId);
-                return report;
+                return await _reportRepository.UpdateReportStatusApproved(reportId);
             }
             return null;
         }
+
+        public async Task<ReportDto> UpdateReportStatusRejected(int reportId)
+        {
+            var report = await _reportRepository.GetReport(reportId);
+            if (report != null)
+            {
+                return await _reportRepository.UpdateReportStatusRejected(reportId);
+            }
+            return null;
+        }
+
     }
 }

@@ -71,7 +71,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [Authorize(Roles = nameof(Role.Member))]
-        [HttpGet("cate/{id}")]
+        [HttpGet("category/{id}")]
         public async Task<IActionResult> GetProductsByCateId(int id)
         {
             var result = await _productService.GetProductsByCateId(id);

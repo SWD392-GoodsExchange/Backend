@@ -121,6 +121,7 @@ CREATE TABLE Report (
     [Message] NVARCHAR(255) NOT NULL,
     [Status] NVARCHAR(50) NOT NULL,
     CreatedTime DATETIME NOT NULL,
+	UpdatedTime DATETIME NOT NULL,
     FOREIGN KEY (FeID) REFERENCES [Member](FeID),
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
     CONSTRAINT CHK_StatusReport CHECK ([Status] IN ('Processing', 'Approved','Rejected'))

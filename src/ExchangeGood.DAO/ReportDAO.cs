@@ -99,6 +99,31 @@ namespace ExchangeGood.DAO
 
             return query.AsNoTracking();
         }
+        public IQueryable<Report> GetReportsRejected(string keyword, string orderBy)
+        {
+            var query = _context.Reports
+                .Include(p => p.Fe)
+                .Include(p => p.Product)
+                .AsQueryable();
+            query = query.Where(x => x.Status.Equals("Rejected"));
+
+            // Add another logic later
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(x => x.Message.ToLower().Contains(keyword.ToLower().Trim()));
+            }
+
+            query = orderBy switch
+            {
+                "created" => query.OrderByDescending(u => u.CreatedTime),
+                _ => query.OrderBy(u => u.ReportId) // Default ordering, change as needed
+            };
+
+            // Add thu tu cua list later
+
+            return query.AsNoTracking();
+        }
+
         public IQueryable<Report> GetReportsByProduct(int Id, string keyword, string orderBy)
         {
             var query = _context.Reports

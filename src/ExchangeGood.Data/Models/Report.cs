@@ -18,6 +18,8 @@ public partial class Report
     public string Status { get; set; }
 
     public DateTime CreatedTime { get; set; }
+    public DateTime UpdatedTime { get; set; }
+
 
     public virtual Member Fe { get; set; }
 

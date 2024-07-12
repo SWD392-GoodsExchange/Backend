@@ -306,6 +306,7 @@ public partial class GoodsExchangeContext : DbContext
 
             entity.Property(e => e.ReportId).HasColumnName("ReportID");
             entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedTime).HasColumnType("datetime");
             entity.Property(e => e.FeId)
                 .IsRequired()
                 .HasMaxLength(8)

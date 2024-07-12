@@ -16,10 +16,13 @@ namespace ExchangeGood.Service.Interfaces
         public Task<PagedList<ReportDto>> GetAllReports(ReportParam reportParam);
         public Task<PagedList<ReportDto>> GetReportsProcessing(ReportParam reportParam);
         public Task<PagedList<ReportDto>> GetReportsApproved(ReportParam reportParam);
+        public Task<PagedList<ReportDto>> GetReportsRejected(ReportParam reportParam);
         public Task<PagedList<ReportDto>> GetReportsByProduct(int pId, ReportParam reportParam);
-        public Task<Report> GetReport(int reportId);
+        public Task<ReportDto> GetReport(int reportId);
         public Task<ReportDto> AddReport(CreateReportRequest reportRequest);
-        public Task<Report> UpdateReportStatus(int reportId);
+        public Task<ReportDto> UpdateReportStatusApproved(int reportId);
+        public Task<ReportDto> UpdateReportStatusRejected(int reportId);
+
         public Task DeleteReport(int reportId);
     }
 }
