@@ -1,4 +1,5 @@
-﻿using ExchangeGood.Contract.Common;
+﻿using ExchangeGood.API.Extensions;
+using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.DTOs;
 using ExchangeGood.Contract.Payloads.Request.Category;
 using ExchangeGood.Contract.Payloads.Request.Report;
@@ -57,6 +58,18 @@ namespace ExchangeGood.API.Controllers
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
+        [HttpGet("rejected")]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
+        public async Task<IActionResult> GetReportsRejected([FromQuery] ReportParam reportParam)
+        {
+            var response = await _reportService.GetReportsRejected(reportParam);
+            if (response != null)
+            {
+                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, new PaginationResponse<ReportDto>(response, response.CurrentPage, response.PageSize, response.TotalCount, response.TotalPages)));
+            }
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
+
         [HttpGet("{id}")]
         [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
         public async Task<IActionResult> GetReportsByProduct([FromQuery] ReportParam reportParam, int id)
@@ -88,6 +101,8 @@ namespace ExchangeGood.API.Controllers
         [Authorize(Roles = nameof(Contract.Enum.Member.Role.Member))]
         public async Task<IActionResult> CreateReport([FromBody] CreateReportRequest reportRequest)
         {
+            var feId = User.GetFeID();
+            reportRequest.FeId = feId;
             var response = await _reportService.AddReport(reportRequest);
             if (response != null)
             {
@@ -97,11 +112,24 @@ namespace ExchangeGood.API.Controllers
 		}
 
 
-        [HttpPut("{reportId}")]
+        [HttpPut("approved/{reportId}")]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
+        public async Task<IActionResult> UpdateReportStatusApproved(int reportId)
+        {
+            var response = await _reportService.UpdateReportStatusApproved(reportId);
+            if (response != null)
+            {
+                return Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, response));
+            }
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
+        }
+
+
+        [HttpPut("rejected/{reportId}")]
         [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
         public async Task<IActionResult> UpdateReportStatus(int reportId)
         {
-            var response = await _reportService.UpdateReportStatus(reportId);
+            var response = await _reportService.UpdateReportStatusRejected(reportId);
             if (response != null)
             {
                 return Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, response));

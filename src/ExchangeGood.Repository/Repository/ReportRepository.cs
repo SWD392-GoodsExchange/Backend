@@ -26,6 +26,7 @@ namespace ExchangeGood.Repository.Repository
 			var report = _mapper.Map<Report>(reportRequest);
 			report.ReportId = 0;
 			report.CreatedTime = DateTime.Now;
+            report.UpdatedTime = DateTime.Now;
 			report.Status = Status.Processing.Name;
 			_uow.ReportDAO.AddReport(report);
 			
@@ -55,15 +56,23 @@ namespace ExchangeGood.Repository.Repository
 			return result;
 		}
 
-		public async Task<Report> GetReport(int reportId)
+		public async Task<ReportDto> GetReport(int reportId)
 		{
 			var report = await _uow.ReportDAO.GetReportByIdAsync(reportId);
-			return report;
-		}
+            return _mapper.Map<ReportDto>(report);
+        }
 
         public async Task<PagedList<ReportDto>> GetReportsApproved(ReportParam reportParam)
         {
             var query = _uow.ReportDAO.GetReportsApproved(reportParam.Keyword, reportParam.Orderby);
+            var result = await PagedList<ReportDto>.CreateAsync(query.ProjectTo<ReportDto>(_mapper.ConfigurationProvider),
+            reportParam.PageNumber, reportParam.PageSize);
+
+            return result;
+        }
+        public async Task<PagedList<ReportDto>> GetReportsRejected(ReportParam reportParam)
+        {
+            var query = _uow.ReportDAO.GetReportsRejected(reportParam.Keyword, reportParam.Orderby);
             var result = await PagedList<ReportDto>.CreateAsync(query.ProjectTo<ReportDto>(_mapper.ConfigurationProvider),
             reportParam.PageNumber, reportParam.PageSize);
 
@@ -90,7 +99,7 @@ namespace ExchangeGood.Repository.Repository
             return result;
         }
 
-        public async Task<Report> UpdateReportStatus(int reportId)
+        public async Task<ReportDto> UpdateReportStatusApproved(int reportId)
         {
             Report existedReport = await _uow.ReportDAO.GetReportByIdAsync(reportId);
             if (existedReport == null)
@@ -98,10 +107,27 @@ namespace ExchangeGood.Repository.Repository
                 throw new ReportNotFoundExceoption(reportId);
             }
 			existedReport.Status = Status.Approved.Name;
+            existedReport.UpdatedTime = DateTime.Now;
             _uow.ReportDAO.UpdateReport(existedReport);
 
             await _uow.SaveChangesAsync();
-            return existedReport;
+            return _mapper.Map<ReportDto>(existedReport);
         }
+
+        public async Task<ReportDto> UpdateReportStatusRejected(int reportId)
+        {
+            Report existedReport = await _uow.ReportDAO.GetReportByIdAsync(reportId);
+            if (existedReport == null)
+            {
+                throw new ReportNotFoundExceoption(reportId);
+            }
+            existedReport.Status = Status.Rejected.Name;
+            existedReport.UpdatedTime = DateTime.Now;
+            _uow.ReportDAO.UpdateReport(existedReport);
+
+            await _uow.SaveChangesAsync();
+            return _mapper.Map<ReportDto>(existedReport);
+        }
+
     }
 }
