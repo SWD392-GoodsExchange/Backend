@@ -14,12 +14,14 @@ using System.Threading.Tasks;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Report;
 using ExchangeGood.Contract.Payloads.Request.Notification;
+using ExchangeGood.Contract.Common;
 
 namespace ExchangeGood.Repository.Mapper {
     public class ServiceProfile : Profile {
         public ServiceProfile() {
             CreateMap<Product, ProductDto>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Cate.CateName))
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => AvatarImage.GetImage(src.FeId)))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Fe.UserName));
 			CreateMap<Member, MemberDto>();
 			CreateMap<Category, CategoryDto>();
@@ -40,6 +42,7 @@ namespace ExchangeGood.Repository.Mapper {
                 .ForMember(dest => dest.Origin, opt => opt.MapFrom(src => src.Product.Origin))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Product.Status))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Product.Type))
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => AvatarImage.GetImage(src.FeId)))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Product.Title));
             CreateMap<CreateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
 			CreateMap<UpdateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Status));
