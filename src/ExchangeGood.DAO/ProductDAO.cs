@@ -21,16 +21,13 @@ namespace ExchangeGood.DAO {
             _context.Products.Add(product);
         }
 
-        public async Task<Product> GetProductByIdAsync(int id, bool includeDetail = false) {
+        public async Task<Product> GetProductByIdAsync(int id, params Expression<Func<Product, object>>[] includeProperties) {
 
             var query = _context.Products.AsQueryable();
             // for view product so that use .AsNoTracking() otherwise use for business logic
-            if(includeDetail) {
-                query = query
-                    .Include(x => x.Cate)
-                    .Include(x => x.Images)
-                    .AsNoTracking();
-            }
+            if (includeProperties != null)
+                foreach (var includeProperty in includeProperties)
+                    query = query.Include(includeProperty);
 
             return await query.FirstOrDefaultAsync(x => x.ProductId == id);   
         }

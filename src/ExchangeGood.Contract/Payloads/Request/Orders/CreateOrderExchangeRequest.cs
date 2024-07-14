@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 namespace ExchangeGood.Contract.Payloads.Request.Orders {
     public class CreateOrderExchangeRequest {
         public string OwnerID { get; set; }
-        public string ExchangerID { get; set; }
+        public int NotificationID { get; set; }
+        /*public string ExchangerID { get; set; }
         public OrderDetailDto OwnerProduct { get; set; }
-        public IEnumerable<OrderDetailDto> ExchangerProducts { get; set; }
+        public IEnumerable<OrderDetailDto> ExchangerProducts { get; set; }*/
     }
 }

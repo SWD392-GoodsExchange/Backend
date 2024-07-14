@@ -16,7 +16,7 @@ namespace ExchangeGood.API.SignalR
         public NotificationHub(IMemberService memberService, PresenceTracker tracker, IMapper mapper)  
         {
             _memberService = memberService;
-            _tracker = tracker;
+            _tracker = tracker; 
             _mapper = mapper; 
         }
 

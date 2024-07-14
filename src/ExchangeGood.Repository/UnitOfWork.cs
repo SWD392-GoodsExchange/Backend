@@ -34,7 +34,6 @@ namespace ExchangeGood.Repository {
 		public NotificationDAO NotificationDAO => _notificationDAO = new NotificationDAO(_context);
         public ProductDAO ProductDAO => _productDAO = new ProductDAO(_context);
         public MemberDAO MemberDAO => _memberDAO = new MemberDAO(_context);
-
         public OrderDAO OrderDAO => _orderDAO = new OrderDAO(_context);
 
         public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default) {

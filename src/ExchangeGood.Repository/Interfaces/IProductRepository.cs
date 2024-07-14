@@ -6,6 +6,7 @@ using ExchangeGood.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace ExchangeGood.Repository.Interfaces {
     public interface IProductRepository { // Return DTOs
         public Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
         public Task<IEnumerable<Product>> GetProductsByFeId(string feId);
-        public Task<Product> GetProduct(int productId, bool includeDetail = false);
+        public Task<Product> GetProduct(int productId, params Expression<Func<Product, object>>[] includeProperties);
         public Task<IEnumerable<Product>> GetProductsByCateId(int cateId);
         public Task<IEnumerable<Product>> GetProductsForExchange(IEnumerable<int> productIds);
         public Task<Product> AddProduct(CreateProductRequest productRequest);

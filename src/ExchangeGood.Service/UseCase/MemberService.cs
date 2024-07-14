@@ -179,6 +179,11 @@ public class MemberService : IMemberService
         return result;
     }
 
+    public async Task<Notification> GetNotificationsById(int notificationId) {
+        var result = await _notificationRepository.GetNotifcation(notificationId);
+        return result;
+    }
+
     public async Task<bool> AddNotification(Notification notification)
     {
         return await _notificationRepository.AddNotifcation(notification);

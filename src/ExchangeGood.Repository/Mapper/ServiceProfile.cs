@@ -39,6 +39,7 @@ namespace ExchangeGood.Repository.Mapper {
                 .ForMember(dest => dest.FeId, opt => opt.MapFrom(src => src.Product.FeId))
                 .ForMember(dest => dest.Origin, opt => opt.MapFrom(src => src.Product.Origin))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Product.Status))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Product.Type))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Product.Title));
             CreateMap<CreateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
 			CreateMap<UpdateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Status));
