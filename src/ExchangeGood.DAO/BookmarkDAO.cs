@@ -18,7 +18,10 @@ namespace ExchangeGood.DAO
             return _context.Bookmarks
                 .Where(x => x.FeId == feId)
                 .Include(x=>x.Product)
-                .ThenInclude(x => x.Cate)
+                    .ThenInclude(x => x.Cate)
+                 .Include(x=> x.Product)
+                    .ThenInclude(x => x.Images)
+                 .Include(x => x.Fe)
                 .OrderBy(x => x.CreateTime).AsNoTracking();
         }
         public async Task<Bookmark> GetBookmark(Bookmark deleteBookmark)
