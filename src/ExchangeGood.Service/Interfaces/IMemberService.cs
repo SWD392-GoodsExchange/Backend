@@ -21,4 +21,6 @@ public interface IMemberService
     Task<Notification> GetNotificationsById(int notificationId);
     Task<bool> AddNotification(Notification notification);
     Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string feId);
+    Task<bool> SendResetPasswordEmail(string email, string resetLink);
+    Task<Member> GetMemberByEmail(string email);
 }

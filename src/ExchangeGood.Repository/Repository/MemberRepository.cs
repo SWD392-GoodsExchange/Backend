@@ -109,4 +109,9 @@ public class MemberRepository : IMemberRepository
         await _uow.SaveChangesAsync();
         return member;
     }
+
+    public async Task<Member> GetMemberByEmail(string email)
+    {
+        return await _uow.MemberDAO.GetMemberByEmail(email);
+    }
 }

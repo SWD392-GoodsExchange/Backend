@@ -13,7 +13,7 @@ public class MemberDAO
         _context = context;
     }
 
-    public async Task<Member> GetMemberById(string feId, bool role =false)
+    public async Task<Member> GetMemberById(string feId, bool role = false)
     {
         var query = _context.Members.Where(x => x.FeId == feId);
         if (role)
@@ -66,4 +66,10 @@ public class MemberDAO
     {
         _context.Members.Remove(member);
     }
+
+    public async Task<Member> GetMemberByEmail(string email)
+    {
+        return await _context.Members.FirstOrDefaultAsync(m => m.Email == email);
+    }
+
 }

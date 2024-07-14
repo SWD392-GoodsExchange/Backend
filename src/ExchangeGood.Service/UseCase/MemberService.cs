@@ -8,7 +8,10 @@ using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualBasic;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace ExchangeGood.Service.UseCase;
 
@@ -20,6 +23,7 @@ public class MemberService : IMemberService
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly INotificationRepository _notificationRepository;
     private readonly IJwtProvider _jwtProvider;
+    private readonly SmtpSettings _smtpSetting;
 
     public MemberService(IMemberRepository memberRepository,
         IProductRepository productRepository,
@@ -34,6 +38,10 @@ public class MemberService : IMemberService
         _memberRepository = memberRepository;
         _notificationRepository = notificationRepository;
         _jwtProvider = jwtProvider;
+    }
+    public MemberService(IOptions<SmtpSettings> smtpSetting)
+    {
+        _smtpSetting = smtpSetting.Value;
     }
 
     public async Task<PagedList<MemberDto>> GetAllMembers(GetMembersQuery getMembersQuery)
@@ -192,5 +200,49 @@ public class MemberService : IMemberService
     public async Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string feId)
     {
         return await _notificationRepository.GetAllRequestExchangesFromUserAndOtherUserRequestForUser(feId);
+    }
+
+    public async Task<bool> SendResetPasswordEmail(string email, string resetLink)
+    {
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress("Your Name", _smtpSetting.Username));
+        message.To.Add(new MailboxAddress("", email));
+        message.Subject = "Reset Your Password";
+
+        var bodyBuilder = new BodyBuilder();
+        bodyBuilder.HtmlBody = $@"
+                <p>Hello,</p>
+                <p>You have requested to reset your password. Please click the link below to reset your password:</p>
+                <p><a href='{resetLink}'>Reset Password</a></p>
+                <p>If you did not request this, please ignore this email.</p>
+                <p>Thank you,</p>
+            ";
+
+        message.Body = bodyBuilder.ToMessageBody();
+
+        using (var client = new SmtpClient())
+        {
+            try
+            {
+                client.Connect(_smtpSetting.SmtpServer, _smtpSetting.Port, _smtpSetting.UseSsl);
+                client.Authenticate(_smtpSetting.Username, _smtpSetting.Password);
+                await client.SendAsync(message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send email: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                await client.DisconnectAsync(true);
+            }
+        }
+    }
+
+    public async Task<Data.Models.Member> GetMemberByEmail(string email)
+    {
+        return await _memberRepository.GetMemberByEmail(email);
     }
 }

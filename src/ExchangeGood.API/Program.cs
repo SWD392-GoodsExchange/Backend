@@ -4,6 +4,7 @@ using ExchangeGood.API.Extensions;
 using ExchangeGood.DAO.Extensions;
 using ExchangeGood.Repository.Extensions;
 using ExchangeGood.API.SignalR;
+using ExchangeGood.Contract.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.IdentityServices();
 builder.Services.AddRepositoryLayer();
 builder.Services.AddServiceLayer(builder.Configuration);
 builder.Services.AddDAOLayer(builder.Configuration);
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 
 var app = builder.Build();

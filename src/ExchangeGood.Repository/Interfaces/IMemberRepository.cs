@@ -10,6 +10,7 @@ public interface IMemberRepository
     public Task<PagedList<MemberDto>> GetMembers(GetMembersQuery getMembersQuery);
     public Task<Member> GetMemberById(string feId);
     public Task<Member> CheckLogin(LoginRequest loginRequest);
-    public Task<bool> UpdatePassword(PasswordRequest passwordRequest); 
+    public Task<bool> UpdatePassword(PasswordRequest passwordRequest);
     Task<Member> CreateMember(CreateMemberRequest createMemberRequest);
+    Task<Member> GetMemberByEmail(string email);
 }

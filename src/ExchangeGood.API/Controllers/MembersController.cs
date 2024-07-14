@@ -18,6 +18,8 @@ using Role = ExchangeGood.Contract.Enum.Member.Role;
 using ExchangeGood.Contract.Payloads.Request.Notification;
 using ExchangeGood.Data.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System;
+using ExchangeGood.DAO;
 
 namespace ExchangeGood.API.Controllers
 {
@@ -258,5 +260,26 @@ namespace ExchangeGood.API.Controllers
             result.AddRange(exchangeProductIds.Split(',').Select(x => int.Parse(x)));
             return result;
         }
+
+        [HttpPost("sendEmail")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            var member = await _memberService.GetMemberByEmail(request.Email);
+            if (member == null)
+            {
+                return NotFound("Email not found");
+            }
+
+            string resetLink = GenerateResetLink(); 
+            bool emailSent = await _memberService.SendResetPasswordEmail(request.Email, resetLink);
+
+            return Ok("Reset password email sent");
+        }
+
+        private string GenerateResetLink()
+        {
+            return "https://example.com/reset-password";
+        }
+
     }
 }
