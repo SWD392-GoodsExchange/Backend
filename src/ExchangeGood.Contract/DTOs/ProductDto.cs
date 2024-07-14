@@ -9,6 +9,7 @@ namespace ExchangeGood.Contract.DTOs {
         public int ProductId { get; set; }
         public string FeId { get; set; }
         public string UserName { get; set; }
+        public string Avatar {  get; set; }
         public string CategoryName { get; set; }
         public string Description { get; set; }
         public string Origin { get; set; }
