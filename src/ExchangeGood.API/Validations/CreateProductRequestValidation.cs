@@ -41,7 +41,11 @@ namespace ExchangeGood.Service.Validations {
 
             RuleFor(x => x.Price)
                 .Must(x => double.TryParse(x, out var price))
-                .WithMessage("Price must be a number"); 
+                .WithMessage("Price must be a number");
+
+            RuleFor(x => x.File)
+                .NotNull()
+                .WithMessage("File image is required");
         }   
     }
 }

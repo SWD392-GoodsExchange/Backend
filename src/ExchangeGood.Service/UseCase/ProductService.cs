@@ -7,6 +7,7 @@ using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Exceptions;
 using ExchangeGood.Repository.Interfaces;
 using ExchangeGood.Service.Interfaces;
+using System.Linq.Expressions;
 
 namespace ExchangeGood.Service.UseCase {
     public class ProductService : IProductService { // Return BaseResponse
@@ -49,9 +50,9 @@ namespace ExchangeGood.Service.UseCase {
             // return BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, new PaginationResponse<ProductDto>(result, result.CurrentPage, result.PageSize, result.TotalCount, result.TotalPages));
         }
 
-        public async Task<Product> GetProduct(int productId)
+        public async Task<Product> GetProduct(int productId, params Expression<Func<Product, object>>[] includeProperties)
         {
-            return await _productRepository.GetProduct(productId); 
+            return await _productRepository.GetProduct(productId, includeProperties); 
         }
 
         public async Task<IEnumerable<Product>> GetProductsByFeId(string feId) {

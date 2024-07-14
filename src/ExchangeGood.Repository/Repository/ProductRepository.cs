@@ -9,6 +9,7 @@ using ExchangeGood.Data.Models;
 using ExchangeGood.Repository.Exceptions;
 using ExchangeGood.Contract.Enum.Product;
 using Azure;
+using System.Linq.Expressions;
 
 namespace ExchangeGood.Repository.Repository
 {
@@ -62,8 +63,8 @@ namespace ExchangeGood.Repository.Repository
             productParams.PageNumber, productParams.PageSize);
         }
 
-        public async Task<Product> GetProduct(int productId, bool includeDetail = false) {
-            return await _uow.ProductDAO.GetProductByIdAsync(productId, includeDetail);
+        public async Task<Product> GetProduct(int productId, params Expression<Func<Product, object>>[] includeProperties) {
+            return await _uow.ProductDAO.GetProductByIdAsync(productId, includeProperties);
         }
 
         public async Task<IEnumerable<Product>> GetProductsByFeId(string feId) {

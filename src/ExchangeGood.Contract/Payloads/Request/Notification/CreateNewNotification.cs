@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ExchangeGood.Contract.Payloads.Request.Notification {
     public class CreateNewNotification {
-        // Luan(A) gui request cho Huy(B)
-        public string RecipientId { get; set; } // huy
+        // SE173531(4) gui request cho SE182732(6)
+        public string RecipientId { get; set; } // SE182732
 
-        public string OnwerProductId { get; set; } //B
+        public string OnwerProductId { get; set; } //6
 
-        public string ExchangerProductIds { get; set; } // A
+        public string ExchangerProductIds { get; set; } // 4
     }
 }

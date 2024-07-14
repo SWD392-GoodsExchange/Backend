@@ -184,7 +184,7 @@ namespace ExchangeGood.API.Controllers
                 : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_PAYMENT_MSG));
         }
 
-        [Authorize(Roles = "Member")]
+        [Authorize(Roles = nameof(Role.Member))]
         [HttpPost("exchange")]
         public async Task<IActionResult> ExchangeOrder([FromBody] CreateOrderExchangeRequest createOrderRequest)
         {
@@ -224,6 +224,7 @@ namespace ExchangeGood.API.Controllers
 
                         result.Add(new ExchangeRequestDto
                         {
+                            NotificationId = notification.NotificationId,
                             SenderId = notification.SenderId,
                             SenderUsername = notification.SenderUsername,
                             RecipientId = notification.RecipientId,
