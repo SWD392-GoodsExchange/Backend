@@ -1,3 +1,5 @@
+using ExchangeGood.Contract.DTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,16 +14,16 @@ namespace ExchangeGood.Contract.Payloads.Request.Product
 
         public string FeId { get; set; }
 
-        public int CateId { get; set; }
-
-        public string UsageInformation { get; set; }
-
         public string Origin { get; set; }
 
         public string Price { get; set; }
 
         public string Title { get; set; }
 
-        public string Status { get; set; }
+        public string Description { get; set; }
+
+        public IFormFile? File { get; set; }
+
+        public ImageDto? Image { get; set; }
     }
 }

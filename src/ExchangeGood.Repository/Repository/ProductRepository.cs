@@ -84,18 +84,39 @@ namespace ExchangeGood.Repository.Repository
         public async Task<Product> UpdateProduct(UpdateProductRequest productRequest)
         {
             Product existedProduct = await _uow.ProductDAO.GetProductByIdAsync(productRequest.ProductId);
-            if(existedProduct == null) {
-                 throw new ProductNotFoundException(productRequest.ProductId);
+            if (existedProduct == null)
+            {
+                throw new ProductNotFoundException(productRequest.ProductId);
             }
+
+            var currentImage = existedProduct.Images;
+
             _mapper.Map(productRequest, existedProduct);
+
+            if (productRequest.Image == null)
+            {
+                existedProduct.Images = currentImage;
+            }
+            else
+            {
+                Image image = new Image()
+                {
+                    PublicId = productRequest.Image.PublicId,
+                    ImageUrl = productRequest.Image.ImageUrl,
+                };
+                existedProduct.Images.Add(image);
+            }
+
             existedProduct.UpdatedTime = DateTime.UtcNow;
 
             _uow.ProductDAO.UpdateProduct(existedProduct);
 
-            if(await _uow.SaveChangesAsync()) {
+            if (await _uow.SaveChangesAsync())
+            {
                 return existedProduct;
             }
             return null;
         }
+
     }
 }
