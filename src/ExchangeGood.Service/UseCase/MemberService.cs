@@ -205,7 +205,7 @@ public class MemberService : IMemberService
     public async Task<bool> SendResetPasswordEmail(string email, string resetLink)
     {
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress("Your Name", _smtpSetting.Username));
+        message.From.Add(new MailboxAddress("ExchangeGood System", _smtpSetting.Username));
         message.To.Add(new MailboxAddress("", email));
         message.Subject = "Reset Your Password";
 
