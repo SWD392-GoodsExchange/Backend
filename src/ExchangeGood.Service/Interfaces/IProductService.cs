@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace ExchangeGood.Service.Interfaces {
     public interface IProductService {
         Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
-        Task<IEnumerable<Product>> GetProductsByFeId(string feId);
+        Task<IEnumerable<Product>> GetProductsByFeId(string feId, string type = null, bool includeDetail = false);
         Task<Product> GetProduct(int ProductId, params Expression<Func<Product, object>>[] includeProperties);
         Task<IEnumerable<Product>> GetProductsByCateId(int cateId);
         Task<IEnumerable<Product>> GetProductsForExchangeRequest(GetProductsForExchangeRequest request);

@@ -63,8 +63,8 @@ namespace ExchangeGood.API.SignalR
 
             // get all connectionIds of recipientUser
             List<string> connectionIds = await _tracker.GetConnectionForUser(newNotification.RecipientId);
-            
-            if(connectionIds.Count > 0) {
+
+            if (connectionIds != null && connectionIds.Count > 0) {
                 notification.DateRead = DateTime.UtcNow;   
             }
   

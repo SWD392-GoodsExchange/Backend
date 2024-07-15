@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace ExchangeGood.Repository.Interfaces {
     public interface IProductRepository { // Return DTOs
         public Task<PagedList<ProductDto>> GetAllProducts(ProductParams productParams);
-        public Task<IEnumerable<Product>> GetProductsByFeId(string feId);
+        public Task<IEnumerable<Product>> GetProductsByFeId(string feId, string type = null, bool includeDetail = false);
         public Task<Product> GetProduct(int productId, params Expression<Func<Product, object>>[] includeProperties);
         public Task<IEnumerable<Product>> GetProductsByCateId(int cateId);
         public Task<IEnumerable<Product>> GetProductsForExchange(IEnumerable<int> productIds);

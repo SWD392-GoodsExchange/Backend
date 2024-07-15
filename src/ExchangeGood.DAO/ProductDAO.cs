@@ -32,9 +32,12 @@ namespace ExchangeGood.DAO {
             return await query.FirstOrDefaultAsync(x => x.ProductId == id);   
         }
 
-        public async Task<IEnumerable<Product>> GetProductsByFeId(string feId, bool includeDetail = false) {
+        public async Task<IEnumerable<Product>> GetProductsByFeId(string feId, string type = null, bool includeDetail = false) {
 
             var query = _context.Products.AsQueryable().Where(x => x.FeId == feId);
+
+            if(type != null && type == Contract.Enum.Product.Type.Exchange.Name) query = query.Where(x => x.Type == type && x.Status == Contract.Enum.Product.Status.Selling.Name);
+
             // for view product so that use .AsNoTracking() otherwise use for business logic
             if (includeDetail) {
                 query = query
