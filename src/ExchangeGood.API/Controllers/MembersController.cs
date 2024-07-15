@@ -112,11 +112,9 @@ namespace ExchangeGood.API.Controllers {
 
         [HttpDelete("bookmark/{productId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteBookmark(int productId) {
-            DeleteBookmarkRequest deleteBookmarkRequest = new DeleteBookmarkRequest {
-                FeId = User.GetFeID(),
-                ProductId = productId.ToString(),
-            };
+        public async Task<IActionResult> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
+        {
+            deleteBookmarkRequest.FeId = User.GetFeID();
             var isDelete = await _memberService.DeleteBookmark(deleteBookmarkRequest);
             return isDelete
                 ? NoContent()
@@ -152,7 +150,9 @@ namespace ExchangeGood.API.Controllers {
                 Description = $"Payment for the student's order with ID number {fullName}"
             };
             var paymentUrl = _vnPayService.CreatePaymentUrl(HttpContext, vnPaymentRequestModel);
-            return Redirect(paymentUrl);
+            return !string.IsNullOrEmpty(paymentUrl)
+                ? Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_PAYMENT_MSG,paymentUrl))
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_PAYMENT_MSG));
         }
 
         [HttpGet("paymentCallback")]

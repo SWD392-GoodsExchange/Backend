@@ -143,9 +143,7 @@ public class MemberService : IMemberService {
 
     public async Task<bool> CreateBookmark(CreateBookmarkRequest createBookmarkRequest) {
         // check if product is sold => can not bookmark
-        if (!Int32.TryParse(createBookmarkRequest.ProductId, out int productId))
-            return false;
-        var product = await _productRepository.GetProduct(productId);
+        var product = await _productRepository.GetProduct(createBookmarkRequest.ProductId);
         var checkProductStatus = product.Status == Contract.Enum.Product.Status.Sold.Name;
         if (checkProductStatus)
             return false;
@@ -155,8 +153,6 @@ public class MemberService : IMemberService {
     }
 
     public async Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest) {
-        if (!Int32.TryParse(deleteBookmarkRequest.ProductId, out int productId))
-            return false;
         var isDelete = await _bookmarkRepository.DeleteBookmark(deleteBookmarkRequest);
         return isDelete;
     }
