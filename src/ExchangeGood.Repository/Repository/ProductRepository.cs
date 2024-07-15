@@ -67,8 +67,8 @@ namespace ExchangeGood.Repository.Repository
             return await _uow.ProductDAO.GetProductByIdAsync(productId, includeProperties);
         }
 
-        public async Task<IEnumerable<Product>> GetProductsByFeId(string feId) {
-            return await _uow.ProductDAO.GetProductsByFeId(feId, includeDetail: true);
+        public async Task<IEnumerable<Product>> GetProductsByFeId(string feId, string type = null, bool includeDetail = false) {
+            return await _uow.ProductDAO.GetProductsByFeId(feId, type, includeDetail: true);
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCateId(int cateId)

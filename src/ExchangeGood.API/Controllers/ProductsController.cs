@@ -9,7 +9,7 @@ using ExchangeGood.Contract.Payloads.Response;
 using ExchangeGood.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Linq.Expressions;
 
 namespace ExchangeGood.API.Controllers
 {
@@ -62,8 +62,9 @@ namespace ExchangeGood.API.Controllers
 
         [Authorize(Roles = nameof(Role.Member))]
         [HttpGet("fe/{id}")]
-        public async Task<IActionResult> GetProductsByFeId(string id) {
-            var result = await _productService.GetProductsByFeId(id);
+        public async Task<IActionResult> GetProductsByFeId(string id, [FromQuery] string type) {
+
+            var result = await _productService.GetProductsByFeId(id, type);
             if (result.Count() > 0)
                 return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<ProductDto>>(result)));
 
