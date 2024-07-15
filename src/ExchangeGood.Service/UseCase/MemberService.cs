@@ -15,8 +15,7 @@ using MailKit.Net.Smtp;
 
 namespace ExchangeGood.Service.UseCase;
 
-public class MemberService : IMemberService
-{
+public class MemberService : IMemberService {
     private readonly IMemberRepository _memberRepository;
     private readonly IBookmarkRepository _bookmarkRepository;
     private readonly IProductRepository _productRepository;
@@ -30,9 +29,8 @@ public class MemberService : IMemberService
         IBookmarkRepository bookmarkRepository,
         IJwtProvider jwtProvider,
         IRefreshTokenRepository refreshTokenRepository,
-        INotificationRepository notificationRepository, 
-        IOptions<SmtpSettings> smtpSetting)
-    {
+        INotificationRepository notificationRepository,
+        IOptions<SmtpSettings> smtpSetting) {
         _refreshTokenRepository = refreshTokenRepository;
         _bookmarkRepository = bookmarkRepository;
         _productRepository = productRepository;
@@ -42,13 +40,11 @@ public class MemberService : IMemberService
         _smtpSetting = smtpSetting.Value;
     }
 
-    public async Task<PagedList<MemberDto>> GetAllMembers(GetMembersQuery getMembersQuery)
-    {
+    public async Task<PagedList<MemberDto>> GetAllMembers(GetMembersQuery getMembersQuery) {
         return await _memberRepository.GetMembers(getMembersQuery);
     }
 
-    public async Task<LoginResponse> CreateMember(CreateMemberRequest createMemberRequest)
-    {
+    public async Task<LoginResponse> CreateMember(CreateMemberRequest createMemberRequest) {
         var member = await _memberRepository.CreateMember(createMemberRequest);
         bool result = false;
         // get refresh token
@@ -88,8 +84,7 @@ public class MemberService : IMemberService
         return loginResponse;
     }
 
-    public async Task<LoginResponse> Login(LoginRequest loginRequest)
-    {
+    public async Task<LoginResponse> Login(LoginRequest loginRequest) {
         var member = await _memberRepository.CheckLogin(loginRequest);
         bool result = false;
         // get refresh token
@@ -99,33 +94,27 @@ public class MemberService : IMemberService
         var refreshTokenString = _jwtProvider.GenerateRefreshToken();
 
         // check refresh token if null => create 
-        if (refreshToken == null)
-        {
-            var newRefreshToken = new RefreshToken
-            {
+        if (refreshToken == null) {
+            var newRefreshToken = new RefreshToken {
                 FeId = member.FeId,
                 Token = refreshTokenString,
                 ExpiryDate = DateTime.UtcNow.AddHours(12)
             };
             result = await _refreshTokenRepository.AddRefreshToken(newRefreshToken);
-            if (!result)
-            {
+            if (!result) {
                 return default;
             }
         }
         // Update token
-        else
-        {
+        else {
             refreshToken.Token = refreshTokenString;
             refreshToken.ExpiryDate = DateTime.UtcNow.AddHours(12);
             result = await _refreshTokenRepository.UpdateRefreshToken(refreshToken);
-            if (!result)
-            {
+            if (!result) {
                 return default;
             }
         }
-        var loginResponse = new LoginResponse
-        {
+        var loginResponse = new LoginResponse {
             FeId = member.FeId,
             UserName = member.UserName,
             Avatar = AvatarImage.GetImage(member.FeId),
@@ -135,28 +124,24 @@ public class MemberService : IMemberService
         return loginResponse;
     }
 
-    public async Task<bool> UpdatePassword(PasswordRequest passwordRequest)
-    {
+    public async Task<bool> UpdatePassword(PasswordRequest passwordRequest) {
         var isUpdate = await _memberRepository.UpdatePassword(passwordRequest);
         return isUpdate;
     }
 
-    public async Task<Data.Models.Member> GetMemberByFeId(string feId)
-    {
+    public async Task<Data.Models.Member> GetMemberByFeId(string feId) {
         return await _memberRepository.GetMemberById(feId);
         // return member == null
         //     ? BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG)
         //     : BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, member);
     }
 
-    public async Task<List<ProductDto>> GetBookMarkByFeId(string feId)
-    {
+    public async Task<List<ProductDto>> GetBookMarkByFeId(string feId) {
         var product = await _bookmarkRepository.GetAllBookmarks(feId);
         return product;
     }
 
-    public async Task<bool> CreateBookmark(CreateBookmarkRequest createBookmarkRequest)
-    {
+    public async Task<bool> CreateBookmark(CreateBookmarkRequest createBookmarkRequest) {
         // check if product is sold => can not bookmark
         if (!Int32.TryParse(createBookmarkRequest.ProductId, out int productId))
             return false;
@@ -169,8 +154,7 @@ public class MemberService : IMemberService
         return isAdd;
     }
 
-    public async Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
-    {
+    public async Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest) {
         if (!Int32.TryParse(deleteBookmarkRequest.ProductId, out int productId))
             return false;
         var isDelete = await _bookmarkRepository.DeleteBookmark(deleteBookmarkRequest);
@@ -179,8 +163,7 @@ public class MemberService : IMemberService
 
 
     // Notification
-    public async Task<IEnumerable<Notification>> GetNotificationsOfUser(string feId)
-    {
+    public async Task<IEnumerable<Notification>> GetNotificationsOfUser(string feId) {
         var result = await _notificationRepository.GetNotifcationsForUser(feId);
         return result;
     }
@@ -190,18 +173,15 @@ public class MemberService : IMemberService
         return result;
     }
 
-    public async Task<bool> AddNotification(Notification notification)
-    {
+    public async Task<bool> AddNotification(Notification notification) {
         return await _notificationRepository.AddNotifcation(notification);
     }
 
-    public async Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string feId)
-    {
+    public async Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string feId) {
         return await _notificationRepository.GetAllRequestExchangesFromUserAndOtherUserRequestForUser(feId);
     }
 
-    public async Task<bool> SendResetPasswordEmail(string email, string resetLink)
-    {
+    public async Task<bool> SendResetPasswordEmail(string email, string resetLink) {
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("ExchangeGood System", _smtpSetting.Username));
         message.To.Add(new MailboxAddress("", email));
@@ -218,29 +198,24 @@ public class MemberService : IMemberService
 
         message.Body = bodyBuilder.ToMessageBody();
 
-        using (var client = new SmtpClient())
-        {
-            try
-            {
+        using (var client = new SmtpClient()) {
+            try {
                 client.Connect(_smtpSetting.SmtpServer, _smtpSetting.Port, _smtpSetting.UseSsl);
                 client.Authenticate(_smtpSetting.Username, _smtpSetting.Password);
                 await client.SendAsync(message);
                 return true;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.WriteLine($"Failed to send email: {ex.Message}");
                 return false;
             }
-            finally
-            {
+            finally {
                 await client.DisconnectAsync(true);
             }
         }
     }
 
-    public async Task<Data.Models.Member> GetMemberByEmail(string email)
-    {
+    public async Task<Data.Models.Member> GetMemberByEmail(string email) {
         return await _memberRepository.GetMemberByEmail(email);
     }
 }
