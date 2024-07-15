@@ -6,7 +6,6 @@ CREATE DATABASE GoodsExchange;
 GO
 USE GoodsExchange;
 GO
-
 -- Create tables
 CREATE TABLE [Role] (
     RoleID INT IDENTITY(1,1) PRIMARY KEY,
