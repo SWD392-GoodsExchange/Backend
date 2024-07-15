@@ -237,7 +237,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpPost("sendEmail")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request) {
+        public async Task<IActionResult> ResetPassword(SendEmailRequest request) {
             var member = await _memberService.GetMemberByEmail(request.Email);
             if (member == null) {
                 return NotFound("Email not found");
