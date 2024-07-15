@@ -86,6 +86,20 @@ namespace ExchangeGood.Service.UseCase {
         public async Task<Product> UpdateProduct(UpdateProductRequest updateProductRequest)
         {
             // Call third-party to create picture
+            if (updateProductRequest.File != null)
+            {
+                var result = await _photoService.AddPhotoAsync(updateProductRequest.File);
+                if (result.Error != null)
+                {
+                    throw new Exception("Upload images fail");
+                }
+                ImageDto imageDto = new ImageDto()
+                {
+                    ImageUrl = result.SecureUrl.AbsoluteUri,
+                    PublicId = result.PublicId,
+                };
+                updateProductRequest.Image = imageDto;
+            }    
             return await _productRepository.UpdateProduct(updateProductRequest);
         }
     }

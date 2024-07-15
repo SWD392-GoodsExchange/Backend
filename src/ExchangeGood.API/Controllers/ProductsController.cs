@@ -89,5 +89,19 @@ namespace ExchangeGood.API.Controllers
 
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
+
+        [Authorize(Roles = nameof(Role.Member))]
+        [HttpPut]
+        public async Task<IActionResult> UpdateProduct([FromForm] UpdateProductRequest productRequest)
+        {
+            var feId = User.GetFeID();
+            productRequest.FeId = feId;
+            var result = await _productService.UpdateProduct(productRequest);
+            if (result != null)
+            {
+               return Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG));
+            }
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
+        }
     }
 }
