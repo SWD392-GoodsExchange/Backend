@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExchangeGood.Contract.Payloads.Request
 {
-    public class ResetPasswordRequest
+    public class SendEmailRequest
     {
         public string Email { get; set; }
     }

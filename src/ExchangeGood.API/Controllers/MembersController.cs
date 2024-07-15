@@ -262,7 +262,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpPost("sendEmail")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        public async Task<IActionResult> SendEmail(SendEmailRequest request)
         {
             var member = await _memberService.GetMemberByEmail(request.Email);
             if (member == null)
@@ -278,8 +278,20 @@ namespace ExchangeGood.API.Controllers
 
         private string GenerateResetLink()
         {
-            return "https://example.com/reset-password";
+            return "";
         }
 
+
+        [HttpPost("resetpassword")]
+        [Authorize]
+        public async Task<IActionResult> ResetPassword([FromBody] PasswordRequest passwordRequest)
+        {
+            passwordRequest.FeId = User.GetFeID();
+            var isUpdate = await _memberService.UpdatePassword(passwordRequest);
+            return isUpdate
+                ? Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG,
+                    nameof(UpdatePassword) + " successful"))
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
+        }
     }
 }
