@@ -61,7 +61,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [Authorize(Roles = nameof(Role.Member))]
-        [HttpGet("{id}")]
+        [HttpGet("fe/{id}")]
         public async Task<IActionResult> GetProductsByFeId(string id) {
             var result = await _productService.GetProductsByFeId(id);
             if (result.Count() > 0)
@@ -77,6 +77,15 @@ namespace ExchangeGood.API.Controllers
             var result = await _productService.GetProductsByCateId(id);
             if (result.Count() > 0)
                 return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<ProductDto>>(result)));
+
+            return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductById(int id) {
+            var result = await _productService.GetProduct(id, x => x.Cate, x => x.Fe, x => x.Images);
+            if (result != null)
+                return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<ProductDto>(result)));
 
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
