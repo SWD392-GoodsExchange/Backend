@@ -30,7 +30,8 @@ public class MemberService : IMemberService
         IBookmarkRepository bookmarkRepository,
         IJwtProvider jwtProvider,
         IRefreshTokenRepository refreshTokenRepository,
-        INotificationRepository notificationRepository)
+        INotificationRepository notificationRepository, 
+        IOptions<SmtpSettings> smtpSetting)
     {
         _refreshTokenRepository = refreshTokenRepository;
         _bookmarkRepository = bookmarkRepository;
@@ -38,9 +39,6 @@ public class MemberService : IMemberService
         _memberRepository = memberRepository;
         _notificationRepository = notificationRepository;
         _jwtProvider = jwtProvider;
-    }
-    public MemberService(IOptions<SmtpSettings> smtpSetting)
-    {
         _smtpSetting = smtpSetting.Value;
     }
 
