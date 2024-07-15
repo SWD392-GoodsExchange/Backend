@@ -21,10 +21,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using ExchangeGood.DAO;
 
-namespace ExchangeGood.API.Controllers
-{
-    public class MembersController : BaseApiController
-    {
+namespace ExchangeGood.API.Controllers {
+    public class MembersController : BaseApiController {
         private readonly IMemberService _memberService;
 
         // private readonly HttpClient _httpClient;
@@ -34,8 +32,7 @@ namespace ExchangeGood.API.Controllers
         private readonly IMapper _mapper;
 
         public MembersController(IMemberService memberService, IOrderService orderService,
-            IProductService productService, IVnPayService vnPayService, IMapper mapper)
-        {
+            IProductService productService, IVnPayService vnPayService, IMapper mapper) {
             _memberService = memberService;
             _orderService = orderService;
             _productService = productService;
@@ -46,8 +43,7 @@ namespace ExchangeGood.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin))]
-        public async Task<IActionResult> GetMembers([FromQuery] GetMembersQuery getMembersQuery)
-        {
+        public async Task<IActionResult> GetMembers([FromQuery] GetMembersQuery getMembersQuery) {
             var result = await _memberService.GetAllMembers(getMembersQuery);
             return result != null
                 ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG,
@@ -57,8 +53,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
-        {
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest) {
             var loginResponse = await _memberService.Login(loginRequest);
 
             return loginResponse != null
@@ -68,8 +63,7 @@ namespace ExchangeGood.API.Controllers
 
         [HttpPost("changepassword")]
         [Authorize]
-        public async Task<IActionResult> UpdatePassword([FromBody] PasswordRequest passwordRequest)
-        {
+        public async Task<IActionResult> UpdatePassword([FromBody] PasswordRequest passwordRequest) {
             passwordRequest.FeId = User.GetFeID();
             var isUpdate = await _memberService.UpdatePassword(passwordRequest);
             return isUpdate
@@ -79,8 +73,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> CreateMember([FromBody] CreateMemberRequest createMemberRequest)
-        {
+        public async Task<IActionResult> CreateMember([FromBody] CreateMemberRequest createMemberRequest) {
             var loginResponse = await _memberService.CreateMember(createMemberRequest);
             return loginResponse != null
                 ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, loginResponse))
@@ -89,8 +82,7 @@ namespace ExchangeGood.API.Controllers
 
         [HttpGet("information")]
         [Authorize]
-        public async Task<IActionResult> GetMemberById()
-        {
+        public async Task<IActionResult> GetMemberById() {
             var feId = User.GetFeID();
             var member = await _memberService.GetMemberByFeId(feId);
             return member != null
@@ -100,8 +92,7 @@ namespace ExchangeGood.API.Controllers
 
         [HttpGet("bookmark")]
         [Authorize]
-        public async Task<IActionResult> GetBookMark()
-        {
+        public async Task<IActionResult> GetBookMark() {
             var feId = User.GetFeID();
             var list = await _memberService.GetBookMarkByFeId(feId);
             return list.Count != 0
@@ -111,8 +102,7 @@ namespace ExchangeGood.API.Controllers
 
         [HttpPost("bookmark")]
         [Authorize]
-        public async Task<IActionResult> CreateBookmark(CreateBookmarkRequest createBookmarkRequest)
-        {
+        public async Task<IActionResult> CreateBookmark(CreateBookmarkRequest createBookmarkRequest) {
             createBookmarkRequest.FeId = User.GetFeID();
             var isAdd = await _memberService.CreateBookmark(createBookmarkRequest);
             return isAdd
@@ -120,11 +110,13 @@ namespace ExchangeGood.API.Controllers
                 : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
         }
 
-        [HttpDelete("bookmark")]
+        [HttpDelete("bookmark/{productId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
-        {
-            deleteBookmarkRequest.FeId = User.GetFeID();
+        public async Task<IActionResult> DeleteBookmark(int productId) {
+            DeleteBookmarkRequest deleteBookmarkRequest = new DeleteBookmarkRequest {
+                FeId = User.GetFeID(),
+                ProductId = productId.ToString(),
+            };
             var isDelete = await _memberService.DeleteBookmark(deleteBookmarkRequest);
             return isDelete
                 ? NoContent()
@@ -134,19 +126,16 @@ namespace ExchangeGood.API.Controllers
         // Đặt hàng
         [Authorize(Roles = "Member")]
         [HttpPost("checkout")] // làm lại với payment service
-        public async Task<IActionResult> CheckoutOrder([FromBody] CreateOrderRequest createOrderRequest)
-        {
+        public async Task<IActionResult> CheckoutOrder([FromBody] CreateOrderRequest createOrderRequest) {
             var feId = User.GetFeID();
             createOrderRequest.MemberId = feId;
             var result = await _orderService.CreateOrderForTrade(createOrderRequest);
-            if (result == null)
-            {
+            if (result == null) {
                 return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG));
             }
 
             // after add order success => redirect to Payment action to create payment url
-            return RedirectToAction(nameof(Payment), "members", new
-            {
+            return RedirectToAction(nameof(Payment), "members", new {
                 amount = result.TotalAmount.ToString(),
                 fullName = feId,
                 orderId = result.OrderId.ToString()
@@ -154,10 +143,8 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpGet("Payment")]
-        public async Task<IActionResult> Payment(string orderId, string amount, string fullName)
-        {
-            VnPaymentRequestModel vnPaymentRequestModel = new VnPaymentRequestModel
-            {
+        public async Task<IActionResult> Payment(string orderId, string amount, string fullName) {
+            VnPaymentRequestModel vnPaymentRequestModel = new VnPaymentRequestModel {
                 FullName = fullName,
                 OrderId = orderId,
                 Amount = Convert.ToDouble(amount),
@@ -169,8 +156,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpGet("paymentCallback")]
-        public async Task<IActionResult> PaymentCallback()
-        {
+        public async Task<IActionResult> PaymentCallback() {
             // sau khi thanh toán xong sẽ auto gen url để vào paymentCallback
             var response = _vnPayService.PaymentExecute(Request.Query);
 
@@ -188,13 +174,11 @@ namespace ExchangeGood.API.Controllers
 
         [Authorize(Roles = nameof(Role.Member))]
         [HttpPost("exchange")]
-        public async Task<IActionResult> ExchangeOrder([FromBody] CreateOrderExchangeRequest createOrderRequest)
-        {
+        public async Task<IActionResult> ExchangeOrder([FromBody] CreateOrderExchangeRequest createOrderRequest) {
             var feId = User.GetFeID();
             createOrderRequest.OwnerID = feId;
             var result = await _orderService.CreateOrdersForExchange(createOrderRequest);
-            if (result)
-            {
+            if (result) {
                 return Ok(BaseResponse.Success(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG));
             }
 
@@ -202,30 +186,24 @@ namespace ExchangeGood.API.Controllers
         }
 
         // notification
-        [Authorize(Roles = "Member")]
+        [Authorize(Roles = nameof(Role.Member))]
         [HttpGet("exchange/requests")]
-        public async Task<IActionResult> GetAllRequestExchangesFromUserAndOtherUserRequestForUser()
-        {
+        public async Task<IActionResult> GetAllRequestExchangesFromUserAndOtherUserRequestForUser() {
             var feId = User.GetFeID();
             var notifications = await _memberService.GetAllRequestExchangesFromUserAndOtherUserRequestForUser(feId);
             List<ExchangeRequestDto> result = null;
-            if (notifications != null)
-            {
-                foreach (var notification in notifications)
-                {
-                    try
-                    {
+            if (notifications != null) {
+                foreach (var notification in notifications) {
+                    try {
                         var products = await _productService.GetProductsForExchangeRequest(
-                            new Contract.GetProductsForExchangeRequest
-                            {
+                            new Contract.GetProductsForExchangeRequest {
                                 OwnerId = notification.RecipientId,
                                 ExchangerId = notification.SenderId,
                                 ProductIds = GetProductIds(notification.OnwerProductId,
                                     notification.ExchangerProductIds),
                             });
 
-                        result.Add(new ExchangeRequestDto
-                        {
+                        result.Add(new ExchangeRequestDto {
                             NotificationId = notification.NotificationId,
                             SenderId = notification.SenderId,
                             SenderUsername = notification.SenderUsername,
@@ -242,35 +220,30 @@ namespace ExchangeGood.API.Controllers
                             CreatedDate = notification.CreatedDate,
                         });
                     }
-                    catch (System.Exception)
-                    {
+                    catch (System.Exception) {
                         continue;
                     }
                 }
-
                 return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result));
             }
 
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
-        private List<int> GetProductIds(string productId, string exchangeProductIds)
-        {
+        private List<int> GetProductIds(string productId, string exchangeProductIds) {
             var result = new List<int>(int.Parse(productId));
             result.AddRange(exchangeProductIds.Split(',').Select(x => int.Parse(x)));
             return result;
         }
 
         [HttpPost("sendEmail")]
-        public async Task<IActionResult> SendEmail(SendEmailRequest request)
-        {
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request) {
             var member = await _memberService.GetMemberByEmail(request.Email);
-            if (member == null)
-            {
+            if (member == null) {
                 return NotFound("Email not found");
             }
 
-            string resetLink = GenerateResetLink(); 
+            string resetLink = GenerateResetLink();
             bool emailSent = await _memberService.SendResetPasswordEmail(request.Email, resetLink);
 
             return Ok("Reset password email sent");
