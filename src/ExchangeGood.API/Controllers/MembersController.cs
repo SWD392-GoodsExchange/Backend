@@ -253,8 +253,7 @@ namespace ExchangeGood.API.Controllers {
         {
             return "https://example.com/reset-password";
         }
-
-
+        
         [HttpPost("resetpassword")]
         public async Task<IActionResult> ResetPassword([FromBody] PasswordRequest passwordRequest)
         {
