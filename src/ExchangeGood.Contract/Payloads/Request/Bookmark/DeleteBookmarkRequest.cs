@@ -3,6 +3,6 @@
     public class DeleteBookmarkRequest
     {
         public string FeId { get; set; }
-        public string ProductId { get; set; }
+        public int ProductId { get; set; }
     }
 }
