@@ -44,7 +44,7 @@ public class JwtProvider : IJwtProvider
 
         return tokenResult;
     }
-
+    
     public string GenerateRefreshToken()
     {
         var randomNumber = new byte[64];

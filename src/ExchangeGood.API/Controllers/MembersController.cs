@@ -278,12 +278,11 @@ namespace ExchangeGood.API.Controllers
 
         private string GenerateResetLink()
         {
-            return "";
+            return "https://example.com/reset-password";
         }
 
 
         [HttpPost("resetpassword")]
-        [Authorize]
         public async Task<IActionResult> ResetPassword([FromBody] PasswordRequest passwordRequest)
         {
             passwordRequest.FeId = User.GetFeID();
