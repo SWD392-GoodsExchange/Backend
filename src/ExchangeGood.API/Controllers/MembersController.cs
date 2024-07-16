@@ -284,5 +284,13 @@ namespace ExchangeGood.API.Controllers {
                     orderResponse))
                 : NotFound(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
+
+        [HttpGet("notifications")]
+        [Authorize(Roles = nameof(Role.Member))]
+        public async Task<IActionResult> GetNotificationsOfUser() {
+            var feId = User.GetFeID();
+            var notifications = await _memberService.GetNotificationsOfUser(feId);
+            return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<NotificationDto>>(notifications)));
+        }
     }
 }
