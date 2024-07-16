@@ -52,6 +52,7 @@ namespace ExchangeGood.DAO {
             var query = _context.Notifications
                 .Where(n => n.SenderId == id || n.RecipientId == id)
                 .Where(n => n.OnwerProductId != null && n.ExchangerProductIds != null)
+                .Where(n => n.Type == Contract.Enum.Notification.Type.ExchangeRequest.Name)
                 .OrderByDescending(m => m.CreatedDate)
                 .AsQueryable();
 

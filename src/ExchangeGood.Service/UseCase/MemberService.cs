@@ -215,6 +215,10 @@ public class MemberService : IMemberService
         return await _notificationRepository.GetAllRequestExchangesFromUserAndOtherUserRequestForUser(feId);
     }
 
+    public async Task<bool> RemoveNotification(int notificationId) {
+        return await _notificationRepository.RemoveNotification(notificationId);
+    }
+
     public async Task<bool> SendResetPasswordEmail(string email, string resetLink)
     {
         var member = await _memberRepository.GetMemberByEmail(email);
@@ -396,6 +400,4 @@ public class MemberService : IMemberService
             }
         }
     }
-
-
 }

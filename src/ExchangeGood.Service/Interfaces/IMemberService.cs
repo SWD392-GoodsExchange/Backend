@@ -26,5 +26,5 @@ public interface IMemberService
     Task<bool> SendResetPasswordEmail(string email, string resetLink);
     Task<Member> GetMemberByEmail(string email);
     Task<bool> ResetPassword(ResetPasswordRequest resetPasswordRequest);
-
+    Task<bool> RemoveNotification(int notificationId);
 }

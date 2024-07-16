@@ -72,5 +72,39 @@ namespace ExchangeGood.API.SignalR
                 await Clients.Clients(connectionIds).SendAsync("NewNotification", _mapper.Map<NotificationDto>(notification));
             }
         }
+
+        public async Task DeniedRequestExchange(int notificationId) {
+            var feId = Context.User.GetFeID();
+            var sender = await _memberService.GetMemberByFeId(feId);
+            var notification = await _memberService.GetNotificationsById(notificationId);
+
+            var recipientId = notification.SenderId;
+            var recipient = await _memberService.GetMemberByFeId(recipientId);
+
+            var notificationĐenid = new Notification {
+                Sender = sender,
+                Recipient = recipient,
+                SenderUsername = sender.UserName,
+                RecipientUsername = recipient.UserName,
+                Content = $"{sender.UserName} denied your request",
+                CreatedDate = DateTime.UtcNow,
+                Type = Contract.Enum.Notification.Type.Notification.Name
+            };
+
+            if(!(await _memberService.RemoveNotification(notificationId))) {
+                throw new HubException("Remove notification fail.");
+            }
+
+            // get all connectionIds of recipientUser
+            List<string> connectionIds = await _tracker.GetConnectionForUser(recipientId);
+
+            if (connectionIds != null && connectionIds.Count > 0) {
+                notification.DateRead = DateTime.UtcNow;
+            }
+
+            if (await _memberService.AddNotification(notification)) {
+                await Clients.Clients(connectionIds).SendAsync("NewNotification", _mapper.Map<NotificationDto>(notification));
+            }
+        }
     }
 }
