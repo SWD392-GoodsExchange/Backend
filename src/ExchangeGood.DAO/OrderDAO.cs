@@ -29,6 +29,11 @@ namespace ExchangeGood.DAO {
         {
              var orderList = await _context.Orders.Where(o => o.BuyerId.ToLower().Trim().Equals(feId.ToLower().Trim()))
                  .Include(o => o.OrderDetails)
+                 .ThenInclude(o => o.Product.Cate)
+                 .Include(o => o.OrderDetails)
+                 .ThenInclude(o => o.Product.Fe)
+                 .Include(o => o.OrderDetails)
+                 .ThenInclude(o => o.Product.Images)
                  .ToListAsync();
              return orderList;
         }
