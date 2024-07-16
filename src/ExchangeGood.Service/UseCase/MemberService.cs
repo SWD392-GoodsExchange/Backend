@@ -136,7 +136,7 @@ public class MemberService : IMemberService {
         //     : BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, member);
     }
 
-    public async Task<List<ProductDto>> GetBookMarkByFeId(string feId) {
+    public async Task<List<Bookmark>> GetBookMarkByFeId(string feId) {
         var product = await _bookmarkRepository.GetAllBookmarks(feId);
         return product;
     }

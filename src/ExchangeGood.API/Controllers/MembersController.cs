@@ -19,6 +19,7 @@ using ExchangeGood.Contract.Payloads.Request.Notification;
 using ExchangeGood.Data.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System;
+using Azure.Core;
 using ExchangeGood.DAO;
 using ExchangeGood.Repository.Exceptions;
 
@@ -92,17 +93,17 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpGet("bookmark")]
-        [Authorize]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Member))]
         public async Task<IActionResult> GetBookMark() {
             var feId = User.GetFeID();
             var list = await _memberService.GetBookMarkByFeId(feId);
             return list.Count != 0
-                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, list))
-                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<ProductDto>>(list)))
+                : NotFound(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
         [HttpPost("bookmark")]
-        [Authorize]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Member))]
         public async Task<IActionResult> CreateBookmark(CreateBookmarkRequest createBookmarkRequest) {
             createBookmarkRequest.FeId = User.GetFeID();
             var isAdd = await _memberService.CreateBookmark(createBookmarkRequest);
@@ -112,7 +113,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpDelete("bookmark/{productId}")]
-        [Authorize]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Member))]
         public async Task<IActionResult> DeleteBookmark(int productId)
         {
             var deleteBookmarkRequest = new DeleteBookmarkRequest { 
@@ -126,7 +127,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         // Đặt hàng
-        [Authorize(Roles = "Member")]
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Member))]
         [HttpPost("checkout")] // làm lại với payment service
         public async Task<IActionResult> CheckoutOrder([FromBody] CreateOrderRequest createOrderRequest) {
             var feId = User.GetFeID();
@@ -263,6 +264,7 @@ namespace ExchangeGood.API.Controllers {
         }
         
         [HttpPost("resetpassword")]
+        [Authorize]
         public async Task<IActionResult> ResetPassword([FromBody] PasswordRequest passwordRequest)
         {
             passwordRequest.FeId = User.GetFeID();
@@ -271,6 +273,18 @@ namespace ExchangeGood.API.Controllers {
                 ? Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG,
                     nameof(UpdatePassword) + " successful"))
                 : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
+        }
+
+        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Member))]
+        [HttpGet("order")]
+        public async Task<IActionResult> GetOrdersForMember()
+        {
+            var orderList = await _orderService.GetOrdersByFeId(User.GetFeID());
+            var orderResponse = _mapper.Map<IEnumerable<OrderDto>>(orderList);
+            return orderList.Any()
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG,
+                    orderResponse))
+                : NotFound(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
     }
 }

@@ -21,7 +21,8 @@ namespace ExchangeGood.DAO
                     .ThenInclude(x => x.Cate)
                  .Include(x=> x.Product)
                     .ThenInclude(x => x.Images)
-                 .Include(x => x.Fe)
+                .Include(x => x.Product)
+                    .ThenInclude(x => x.Fe)
                 .OrderBy(x => x.CreateTime).AsNoTracking();
         }
         public async Task<Bookmark> GetBookmark(Bookmark deleteBookmark)

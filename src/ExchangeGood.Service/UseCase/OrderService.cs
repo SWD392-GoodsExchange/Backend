@@ -198,6 +198,11 @@ namespace ExchangeGood.Service.UseCase
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<Order>> GetOrdersByFeId(string feId)
+        {
+            return await _orderRepository.GetAllOrdersByFeId(feId);
+        }
+
         public Task<Order> GetOrder(int orderId)
         {
             throw new NotImplementedException();

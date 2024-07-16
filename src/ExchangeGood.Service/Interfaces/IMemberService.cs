@@ -14,7 +14,7 @@ public interface IMemberService
     Task<LoginResponse> Login(LoginRequest loginRequest);
     Task<bool> UpdatePassword(PasswordRequest passwordRequest);
     Task<Member> GetMemberByFeId(string feId);
-    Task<List<ProductDto>> GetBookMarkByFeId(string feId);
+    Task<List<Bookmark>> GetBookMarkByFeId(string feId);
     Task<bool> CreateBookmark(CreateBookmarkRequest createBookmarkRequest);
     Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest);
     Task<IEnumerable<Notification>> GetNotificationsOfUser(string feId);
