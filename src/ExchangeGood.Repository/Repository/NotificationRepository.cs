@@ -41,5 +41,16 @@ namespace ExchangeGood.Repository.Repository {
             await _uow.SaveChangesAsync(); // because updating of DateRead of notification
             return result;
         }
+
+        public async Task<bool> RemoveNotification(int notificationId) {
+            var result = false;
+            var noti = await GetNotifcation(notificationId);
+
+            if (noti != null) {
+                _uow.NotificationDAO.RemoveNotification(noti);
+                result = await _uow.SaveChangesAsync();
+            }
+            return result;
+        }
     }
 }

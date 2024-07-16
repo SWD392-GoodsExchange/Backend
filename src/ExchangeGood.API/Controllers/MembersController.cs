@@ -181,6 +181,7 @@ namespace ExchangeGood.API.Controllers {
         [HttpPost("exchange")]
         public async Task<IActionResult> ExchangeOrder([FromBody] CreateOrderExchangeRequest createOrderRequest) {
             var feId = User.GetFeID();
+            if (feId != createOrderRequest.OwnerID) throw new Exception();
             createOrderRequest.OwnerID = feId;
             var result = await _orderService.CreateOrdersForExchange(createOrderRequest);
             if (result) {

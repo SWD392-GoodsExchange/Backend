@@ -12,5 +12,6 @@ namespace ExchangeGood.Repository.Interfaces {
         public Task<IEnumerable<Notification>> GetNotifcationsForUser(string userId);
         public Task<int> GetNumberUnreadNotificationedOfUser(string userId);
         public Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string userId);
+        public Task<bool> RemoveNotification(int notificationId);
     }
 } 
