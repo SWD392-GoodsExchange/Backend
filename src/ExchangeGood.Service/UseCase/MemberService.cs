@@ -150,6 +150,9 @@ public class MemberService : IMemberService
     public async Task<bool> UpdatePassword(PasswordRequest passwordRequest)
     {
         var isUpdate = await _memberRepository.UpdatePassword(passwordRequest);
+
+        await SendPasswordUpdateEmail(passwordRequest.FeId);
+
         return isUpdate;
     }
 
@@ -272,7 +275,7 @@ public class MemberService : IMemberService
 
         await SendPasswordChangedEmail(member.Email);
 
-        return isUpdate; 
+        return isUpdate;
     }
 
     private async Task SendPasswordChangedEmail(string email)
@@ -311,7 +314,7 @@ public class MemberService : IMemberService
             }
         }
     }
-    private async Task SendWelcomeEmail(string name,string email)
+    private async Task SendWelcomeEmail(string name, string email)
     {
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("ExchangeGood System", _smtpSetting.Username));
@@ -348,4 +351,45 @@ public class MemberService : IMemberService
             }
         }
     }
+    private async Task SendPasswordUpdateEmail(string feid)
+    {
+        var member = await _memberRepository.GetMemberById(feid);
+
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress("ExchangeGood System", _smtpSetting.Username));
+        message.To.Add(new MailboxAddress("", member.Email));
+        message.Subject = "Password Changed";
+
+        var bodyBuilder = new BodyBuilder();
+        bodyBuilder.HtmlBody = $@"
+            <p>Dear {member.UserName},</p>
+            <p>Your password has been successfully changed.</p>
+            <p>If you did not make this change, please contact us immediately.</p>
+            <p>Best regards,</p>
+            <p>The ExchangeGood Team</p>
+        ";
+
+        message.Body = bodyBuilder.ToMessageBody();
+
+        using (var client = new SmtpClient())
+        {
+            try
+            {
+                await client.ConnectAsync(_smtpSetting.SmtpServer, _smtpSetting.Port, _smtpSetting.UseSsl);
+                await client.AuthenticateAsync(_smtpSetting.Username, _smtpSetting.Password);
+                await client.SendAsync(message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send email: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                await client.DisconnectAsync(true);
+            }
+        }
+    }
+
+
 }
