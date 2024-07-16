@@ -7,6 +7,7 @@ public class NotificationDto
     public string SenderId { get; set; }
 
     public string SenderUsername { get; set; }
+    public string AvatarSender { get; set; }
 
     public string RecipientId { get; set; }
 

@@ -20,6 +20,7 @@ using ExchangeGood.Data.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using ExchangeGood.DAO;
+using ExchangeGood.Repository.Exceptions;
 
 namespace ExchangeGood.API.Controllers {
     public class MembersController : BaseApiController {
@@ -191,7 +192,7 @@ namespace ExchangeGood.API.Controllers {
         public async Task<IActionResult> GetAllRequestExchangesFromUserAndOtherUserRequestForUser() {
             var feId = User.GetFeID();
             var notifications = await _memberService.GetAllRequestExchangesFromUserAndOtherUserRequestForUser(feId);
-            List<ExchangeRequestDto> result = null;
+            List<ExchangeRequestDto> result = new List<ExchangeRequestDto>();
             if (notifications != null) {
                 foreach (var notification in notifications) {
                     try {
@@ -213,16 +214,19 @@ namespace ExchangeGood.API.Controllers {
                                 _mapper.Map<ProductDto>(
                                     products.SingleOrDefault(x => x.FeId == notification.RecipientId)),
                             ExchangerProducts =
-                                _mapper.Map<IEnumerable<ProductDto>>(products.Select(x =>
-                                    x.FeId == notification.SenderId)),
+                                _mapper.Map<IEnumerable<ProductDto>>(products.Where(x =>
+                                    x.FeId == notification.SenderId).ToList()),
                             Content = notification.Content,
                             DateRead = notification.DateRead,
                             CreatedDate = notification.CreatedDate,
                         });
                     }
-                    catch (System.Exception) {
+                    catch(BadRequestException ex) {
                         continue;
                     }
+                    /*catch (Exception) {
+                        continue;
+                    }*/
                 }
                 return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result));
             }
@@ -231,7 +235,8 @@ namespace ExchangeGood.API.Controllers {
         }
 
         private List<int> GetProductIds(string productId, string exchangeProductIds) {
-            var result = new List<int>(int.Parse(productId));
+            var result = new List<int>();
+            result.Add(int.Parse(productId));
             result.AddRange(exchangeProductIds.Split(',').Select(x => int.Parse(x)));
             return result;
         }
