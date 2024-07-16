@@ -26,9 +26,9 @@ namespace ExchangeGood.API.SignalR
             // Add the logged user to the hub
             await _tracker.AddConnection(feId, Context.ConnectionId);
             // get notification for themself
-            var notifications = await _memberService.GetNotificationsOfUser(feId);
+            int unreadNotis = await _memberService.GetNumberUnreadNotificationedOfUser(feId);
             // send it when use open website -> connect to this hub
-            await Clients.Caller.SendAsync("NotificationOfUser", _mapper.Map<IEnumerable<NotificationDto>>(notifications));
+            await Clients.Caller.SendAsync("UnreadNotificationNumber", unreadNotis);
             /*await base.OnConnectedAsync();*/
         }
 

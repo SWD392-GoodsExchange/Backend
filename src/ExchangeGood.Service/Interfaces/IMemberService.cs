@@ -20,6 +20,7 @@ public interface IMemberService
     Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest);
     Task<IEnumerable<Notification>> GetNotificationsOfUser(string feId);
     Task<Notification> GetNotificationsById(int notificationId);
+    Task<int> GetNumberUnreadNotificationedOfUser(string userId);
     Task<bool> AddNotification(Notification notification);
     Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string feId);
     Task<bool> SendResetPasswordEmail(string email, string resetLink);

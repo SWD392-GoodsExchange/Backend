@@ -25,9 +25,9 @@ namespace ExchangeGood.DAO {
         // get notification for user -> click the ring button -> get 20 new notification
         public async Task<IEnumerable<Notification>> GetNotificationsOfFeID(string id) {
             var query = await _context.Notifications
-                .Where(x => x.RecipientId.Equals(id))
+                .Where(x => x.RecipientId == id)
                 .OrderByDescending(x => x.CreatedDate)
-                .Take(20)
+                .Take(25)
                 .ToListAsync();
 
             var unreadNotification = query.Where(m => m.DateRead == null).ToList();
@@ -40,10 +40,18 @@ namespace ExchangeGood.DAO {
             return query.ToList(); 
         }
 
+        public async Task<int> GetNumberUnreadNotificationedOfUser(string id) {
+            return await _context.Notifications
+                   .Where(x => x.RecipientId == id)
+                   .Where(x => x.DateRead == null)
+                   .CountAsync();
+        }
+
         public async Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string id) {
 
             var query = _context.Notifications
                 .Where(n => n.SenderId == id || n.RecipientId == id)
+                .Where(n => n.OnwerProductId != null && n.ExchangerProductIds != null)
                 .OrderByDescending(m => m.CreatedDate)
                 .AsQueryable();
 

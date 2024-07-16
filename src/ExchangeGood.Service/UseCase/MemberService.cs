@@ -196,6 +196,9 @@ public class MemberService : IMemberService
         return result;
     }
 
+    public async Task<int> GetNumberUnreadNotificationedOfUser(string userId)
+        => await _notificationRepository.GetNumberUnreadNotificationedOfUser(userId);
+
     public async Task<Notification> GetNotificationsById(int notificationId)
     {
         var result = await _notificationRepository.GetNotifcation(notificationId);

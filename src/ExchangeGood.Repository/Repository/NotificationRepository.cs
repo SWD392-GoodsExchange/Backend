@@ -32,6 +32,9 @@ namespace ExchangeGood.Repository.Repository {
             return resul;
         }
 
+        public async Task<int> GetNumberUnreadNotificationedOfUser(string userId) =>
+             await _uow.NotificationDAO.GetNumberUnreadNotificationedOfUser(userId);        
+
         public async Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string userId)
         {
             var result = await _uow.NotificationDAO.GetAllRequestExchangesFromUserAndOtherUserRequestForUser(userId); 
