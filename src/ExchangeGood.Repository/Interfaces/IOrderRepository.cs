@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 
 namespace ExchangeGood.Repository.Interfaces {
     public interface IOrderRepository {
-        public Task<IEnumerable<Order>> GetAllOrders();
+        public Task<IEnumerable<Order>> GetAllOrders(string feId);
         public Task<Order> GetOrder(int orderId);
+        public Task<IEnumerable<Order>> GetAllOrdersByFeId(string feId);
         public Task<Order> AddOrder(Order order);
         public Task<Order> UpdateOrder(Order order);
     }

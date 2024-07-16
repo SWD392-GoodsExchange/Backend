@@ -23,11 +23,10 @@ namespace ExchangeGood.Repository.Repository
             _mapper = mapper;
         }
 
-        public async Task<List<ProductDto>> GetAllBookmarks(string feId)
+        public async Task<List<Bookmark>> GetAllBookmarks(string feId)
         {
-            var query = _uow.BookmarkDAO.GetALl(feId);
-            var list = await query.ProjectTo<ProductDto>(_mapper.ConfigurationProvider).ToListAsync();
-            return list;
+            return await _uow.BookmarkDAO.GetALl(feId).ToListAsync();
+            
         }
 
         public async Task<bool> AddBookmark(CreateBookmarkRequest createBookmarkRequest)
