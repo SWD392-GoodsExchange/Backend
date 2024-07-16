@@ -214,6 +214,7 @@ public class MemberService : IMemberService
 
     public async Task<bool> SendResetPasswordEmail(string email, string resetLink)
     {
+        var member = await _memberRepository.GetMemberByEmail(email);
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("ExchangeGood System", _smtpSetting.Username));
         message.To.Add(new MailboxAddress("", email));
@@ -221,7 +222,7 @@ public class MemberService : IMemberService
 
         var bodyBuilder = new BodyBuilder();
         bodyBuilder.HtmlBody = $@"
-                <p>Hello,</p>
+                <p>Dear {member.UserName},</p>
                 <p>You have requested to reset your password. Please click the link below to reset your password:</p>
                 <p><a href='{resetLink}'>Reset Password</a></p>
                 <p>If you did not request this, please ignore this email.</p>
@@ -280,6 +281,8 @@ public class MemberService : IMemberService
 
     private async Task SendPasswordChangedEmail(string email)
     {
+        var member = await _memberRepository.GetMemberByEmail(email);
+
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("ExchangeGood System", _smtpSetting.Username));
         message.To.Add(new MailboxAddress("", email));
@@ -287,7 +290,7 @@ public class MemberService : IMemberService
 
         var bodyBuilder = new BodyBuilder();
         bodyBuilder.HtmlBody = $@"
-                <p>Hello,</p>
+                <p>Dear {member.UserName},</p>
                 <p>Your password has been successfully changed.</p>
                 <p>If you did not make this change, please contact support immediately.</p>
                 <p>Thank you,</p>
