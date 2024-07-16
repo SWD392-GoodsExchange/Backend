@@ -113,9 +113,12 @@ namespace ExchangeGood.API.Controllers {
 
         [HttpDelete("bookmark/{productId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest)
+        public async Task<IActionResult> DeleteBookmark(int productId)
         {
-            deleteBookmarkRequest.FeId = User.GetFeID();
+            var deleteBookmarkRequest = new DeleteBookmarkRequest { 
+                FeId = User.GetFeID(),
+                ProductId = productId 
+            };
             var isDelete = await _memberService.DeleteBookmark(deleteBookmarkRequest);
             return isDelete
                 ? NoContent()
