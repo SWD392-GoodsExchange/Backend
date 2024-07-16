@@ -25,6 +25,14 @@ namespace ExchangeGood.DAO {
             return order;
         }
 
+        public async Task<IEnumerable<Order>> GetAllOrderByFeId(string feId)
+        {
+             var orderList = await _context.Orders.Where(o => o.BuyerId.ToLower().Trim().Equals(feId.ToLower().Trim()))
+                 .Include(o => o.OrderDetails)
+                 .ToListAsync();
+             return orderList;
+        }
+
         public void AddOrder(Order order) {
             _context.Orders.Add(order);
         }

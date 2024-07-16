@@ -15,6 +15,7 @@ using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Report;
 using ExchangeGood.Contract.Payloads.Request.Notification;
 using ExchangeGood.Contract.Common;
+using Microsoft.Data.SqlClient;
 
 namespace ExchangeGood.Repository.Mapper {
     public class ServiceProfile : Profile {
@@ -46,11 +47,20 @@ namespace ExchangeGood.Repository.Mapper {
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Product.Type))
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => AvatarImage.GetImage(src.FeId)))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Product.Images))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Fe.UserName))
-                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Product.Title));
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Product.Fe.UserName))
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Product.Title))
+                .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreateTime));
             CreateMap<CreateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message));
 			CreateMap<UpdateReportRequest, Report>().ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Status));
 			CreateMap<UpdateNotificationRequest, Notification>().ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content));
-		}
+            CreateMap<OrderDetail, OrderDetailDto>();
+            CreateMap<Order, OrderDto>()
+                .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails))
+                .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreatedTime))
+                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalAmount))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+
+        }
 	}
 }

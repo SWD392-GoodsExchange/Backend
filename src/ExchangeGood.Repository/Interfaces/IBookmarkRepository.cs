@@ -8,7 +8,7 @@ namespace ExchangeGood.Repository.Interfaces
 {
     public interface IBookmarkRepository
     {
-        public Task<List<ProductDto>> GetAllBookmarks(string feId);
+        public Task<List<Bookmark>> GetAllBookmarks(string feId);
         public Task<bool> AddBookmark(CreateBookmarkRequest createBookmarkRequest);
         public Task<bool> DeleteBookmark(DeleteBookmarkRequest deleteBookmarkRequest);
     }
