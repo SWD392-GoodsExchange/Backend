@@ -1,5 +1,6 @@
 ﻿using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.DTOs;
+using ExchangeGood.Contract.Payloads.Request;
 using ExchangeGood.Contract.Payloads.Request.Bookmark;
 using ExchangeGood.Contract.Payloads.Request.Members;
 using ExchangeGood.Contract.Payloads.Response;
@@ -23,4 +24,6 @@ public interface IMemberService
     Task<IEnumerable<Notification>> GetAllRequestExchangesFromUserAndOtherUserRequestForUser(string feId);
     Task<bool> SendResetPasswordEmail(string email, string resetLink);
     Task<Member> GetMemberByEmail(string email);
+    Task<bool> ResetPassword(ResetPasswordRequest resetPasswordRequest);
+
 }

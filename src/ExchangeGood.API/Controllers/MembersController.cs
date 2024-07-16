@@ -245,7 +245,7 @@ namespace ExchangeGood.API.Controllers {
             return result;
         }
 
-        [HttpPost("sendEmail")]
+        [HttpPost("send-email")]
         public async Task<IActionResult> ResetPassword(SendEmailRequest request) {
             var member = await _memberService.GetMemberByEmail(request.Email);
             if (member == null) {
@@ -264,11 +264,9 @@ namespace ExchangeGood.API.Controllers {
         }
         
         [HttpPost("resetpassword")]
-        [Authorize]
-        public async Task<IActionResult> ResetPassword([FromBody] PasswordRequest passwordRequest)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest resetPassword)
         {
-            passwordRequest.FeId = User.GetFeID();
-            var isUpdate = await _memberService.UpdatePassword(passwordRequest);
+            var isUpdate = await _memberService.ResetPassword(resetPassword);
             return isUpdate
                 ? Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG,
                     nameof(UpdatePassword) + " successful"))
