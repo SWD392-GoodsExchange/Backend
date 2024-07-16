@@ -72,11 +72,11 @@ namespace ExchangeGood.Service.UseCase {
                 throw new BadRequestException("Products of this request not found");
             }
 
-            if(result.Any(x => x.FeId.Equals(request.ExchangerId))) {
+            if(!result.Any(x => x.FeId == request.ExchangerId)) {
                 throw new BadRequestException("Your products were not found.");
             }
 
-            if(result.SingleOrDefault(x => x.FeId.Equals(request.OwnerId)) == null) {
+            if(result.SingleOrDefault(x => x.FeId == request.OwnerId) == null) {
                 throw new BadRequestException("Product of exchanger were not found.");
             }
 
