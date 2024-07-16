@@ -119,6 +119,9 @@ namespace ExchangeGood.Service.UseCase
                 };
                 updateProductRequest.Image = imageDto;
             }
+
+            await SendProductUpdatedEmail(updateProductRequest.FeId, updateProductRequest.Title);
+
             return await _productRepository.UpdateProduct(updateProductRequest);
         }
 
@@ -165,6 +168,51 @@ namespace ExchangeGood.Service.UseCase
                 }
             }
         }
+
+        private async Task SendProductUpdatedEmail(string feId, string productName)
+        {
+            var member = await _memberService.GetMemberByFeId(feId);
+            if (member == null || string.IsNullOrEmpty(member.Email))
+            {
+                throw new Exception($"Member with FeId {feId} not found or has no email specified.");
+            }
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("ExchangeGood System", _smtpSetting.Username));
+            message.To.Add(new MailboxAddress(member.UserName, member.Email));
+            message.Subject = "Product Updated";
+
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.HtmlBody = $@"
+        <p>Dear {member.UserName},</p>
+        <p>We are writing to inform you that your product <strong>{productName}</strong> has been successfully updated on ExchangeGood.</p>
+        <p>Thank you for using our platform!</p>
+        <p>Best regards,</p>
+        <p>The ExchangeGood Team</p>
+    ";
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    client.Connect(_smtpSetting.SmtpServer, _smtpSetting.Port, _smtpSetting.UseSsl);
+                    client.Authenticate(_smtpSetting.Username, _smtpSetting.Password);
+                    await client.SendAsync(message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to send email: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
+            }
+        }
+
     }
 }
 
