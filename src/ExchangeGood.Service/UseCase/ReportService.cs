@@ -41,9 +41,10 @@ namespace ExchangeGood.Service.UseCase
             var existingMember = await _memberRepository.GetMemberById(reportRequest.FeId);
             if(existingProduct != null && existingMember != null) {
                 var report = await _reportRepository.AddReport(reportRequest);
+                await SendReportAddedEmail(reportRequest.FeId, existingProduct.Title);
+
                 return report;
             }
-            await SendReportAddedEmail(reportRequest.FeId);
             return null;
         }
 
@@ -85,11 +86,13 @@ namespace ExchangeGood.Service.UseCase
         public async Task<ReportDto> UpdateReportStatusApproved(int reportId)
         {
             var report = await _reportRepository.GetReport(reportId);
+            var product = await _productRepository.GetProduct(report.ProductId);
             if (report != null)
-            {     
+            {
+                await SendReportUpdatedEmailApproved(report.FeId, product.Title);
+
                 return await _reportRepository.UpdateReportStatusApproved(reportId);
             }
-           await SendReportUpdatedEmailApproved(report.FeId);
 
             return null;
         }
@@ -97,15 +100,18 @@ namespace ExchangeGood.Service.UseCase
         public async Task<ReportDto> UpdateReportStatusRejected(int reportId)
         {
             var report = await _reportRepository.GetReport(reportId);
+            var product = await _productRepository.GetProduct(report.ProductId);
+
             if (report != null)
             {
+                await SendReportUpdatedEmailRejected(report.FeId, product.Title);
+
                 return await _reportRepository.UpdateReportStatusRejected(reportId);
             }
-            await SendReportUpdatedEmailRejected(report.FeId);
             return null;
         }
 
-        private async Task SendReportAddedEmail(string feId)
+        private async Task SendReportAddedEmail(string feId, string productNamme)
         {
             var member = await _memberservice.GetMemberByFeId(feId);
             if (member == null || string.IsNullOrEmpty(member.Email))
@@ -121,7 +127,7 @@ namespace ExchangeGood.Service.UseCase
             var bodyBuilder = new BodyBuilder();
             bodyBuilder.HtmlBody = $@"
             <p>Dear {member.UserName},</p>
-            <p>We are pleased to inform you that your report has been successfully sended to ExchangeGood.</p>
+            <p>We are pleased to inform you that your report to <strong>{productNamme}</strong> has been successfully sended to ExchangeGood.</p>
             <p>Please, wait! Your report will be reviewed soon.</p>
             <p>Thank you for using our platform!</p>
             <p>Best regards,</p>
@@ -150,7 +156,7 @@ namespace ExchangeGood.Service.UseCase
             }
         }
 
-        private async Task SendReportUpdatedEmailApproved(string feId)
+        private async Task SendReportUpdatedEmailApproved(string feId, string productNamme)
         {
             var member = await _memberservice.GetMemberByFeId(feId);
             if (member == null || string.IsNullOrEmpty(member.Email))
@@ -166,7 +172,7 @@ namespace ExchangeGood.Service.UseCase
             var bodyBuilder = new BodyBuilder();
             bodyBuilder.HtmlBody = $@"
             <p>Dear {member.UserName},</p>
-            <p>We are pleased to inform you that your report has been successfully approved to ExchangeGood.</p>
+            <p>We are pleased to inform you that your report to <strong>{productNamme}</strong> has been successfully approved to ExchangeGood.</p>
             <p>Thank you for using our platform!</p>
             <p>Best regards,</p>
             <p>The ExchangeGood Team</p>
@@ -195,7 +201,7 @@ namespace ExchangeGood.Service.UseCase
         }
 
 
-        private async Task SendReportUpdatedEmailRejected(string feId)
+        private async Task SendReportUpdatedEmailRejected(string feId, string productNamme)
         {
             var member = await _memberservice.GetMemberByFeId(feId);
             if (member == null || string.IsNullOrEmpty(member.Email))
@@ -211,7 +217,7 @@ namespace ExchangeGood.Service.UseCase
             var bodyBuilder = new BodyBuilder();
             bodyBuilder.HtmlBody = $@"
             <p>Dear {member.UserName},</p>
-            <p>We are pleased to inform you that your report has been successfully rejected to ExchangeGood.</p>
+            <p>We are pleased to inform you that your report to <strong>{productNamme}</strong> has been successfully rejected to ExchangeGood.</p>
             <p>Thank you for using our platform!</p>
             <p>Best regards,</p>
             <p>The ExchangeGood Team</p>
