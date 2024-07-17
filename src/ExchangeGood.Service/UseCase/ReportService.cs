@@ -89,7 +89,7 @@ namespace ExchangeGood.Service.UseCase
             {     
                 return await _reportRepository.UpdateReportStatusApproved(reportId);
             }
-           await SendReportAddedEmail(report.FeId);
+           await SendReportUpdatedEmailApproved(report.FeId);
 
             return null;
         }
@@ -101,6 +101,7 @@ namespace ExchangeGood.Service.UseCase
             {
                 return await _reportRepository.UpdateReportStatusRejected(reportId);
             }
+            await SendReportUpdatedEmailRejected(report.FeId);
             return null;
         }
 
@@ -166,6 +167,51 @@ namespace ExchangeGood.Service.UseCase
             bodyBuilder.HtmlBody = $@"
             <p>Dear {member.UserName},</p>
             <p>We are pleased to inform you that your report has been successfully approved to ExchangeGood.</p>
+            <p>Thank you for using our platform!</p>
+            <p>Best regards,</p>
+            <p>The ExchangeGood Team</p>
+        ";
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    client.Connect(_smtpsetting.SmtpServer, _smtpsetting.Port, _smtpsetting.UseSsl);
+                    client.Authenticate(_smtpsetting.Username, _smtpsetting.Password);
+                    await client.SendAsync(message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to send email: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
+            }
+        }
+
+
+        private async Task SendReportUpdatedEmailRejected(string feId)
+        {
+            var member = await _memberservice.GetMemberByFeId(feId);
+            if (member == null || string.IsNullOrEmpty(member.Email))
+            {
+                throw new Exception($"Member with FeId {feId} not found or has no email specified.");
+            }
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("ExchangeGood System", _smtpsetting.Username));
+            message.To.Add(new MailboxAddress(member.UserName, member.Email));
+            message.Subject = "New Report sended";
+
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.HtmlBody = $@"
+            <p>Dear {member.UserName},</p>
+            <p>We are pleased to inform you that your report has been successfully rejected to ExchangeGood.</p>
             <p>Thank you for using our platform!</p>
             <p>Best regards,</p>
             <p>The ExchangeGood Team</p>
