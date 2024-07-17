@@ -102,7 +102,7 @@ namespace ExchangeGood.API.SignalR
                 notification.DateRead = DateTime.UtcNow;
             }
 
-            if (await _memberService.AddNotification(notification)) {
+            if (await _memberService.AddNotification(notificationĐenid)) {
                 await Clients.Clients(connectionIds).SendAsync("NewNotification", _mapper.Map<NotificationDto>(notification));
             }
         }
