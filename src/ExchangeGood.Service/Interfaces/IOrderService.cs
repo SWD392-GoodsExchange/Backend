@@ -13,7 +13,7 @@ namespace ExchangeGood.Service.Interfaces {
     public interface IOrderService {
         public Task<IEnumerable<Order>> GetAllOrders();
         public Task<IEnumerable<Order>> GetOrdersByFeId(string feId);
-        public Task<Order> GetOrder(int orderId);
+        public Task<Order> GetOrder(GetOrderRequest getOrderRequest);
         public Task<Order> CreateOrderForTrade(CreateOrderRequest createOrderRequest);
         public Task<bool> CreateOrdersForExchange(CreateOrderExchangeRequest createOrderRequest);
         public Task<bool> UpdateOrderStatus(int orderId, bool isCompleted = true);

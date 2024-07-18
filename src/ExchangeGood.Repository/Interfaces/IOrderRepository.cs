@@ -6,13 +6,14 @@ using ExchangeGood.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ExchangeGood.Repository.Interfaces {
     public interface IOrderRepository {
         public Task<IEnumerable<Order>> GetAllOrders(string feId);
-        public Task<Order> GetOrder(int orderId);
+        public Task<Order> GetOrder(int orderId, params Expression<Func<Order, bool>>[] validateField);
         public Task<IEnumerable<Order>> GetAllOrdersByFeId(string feId);
         public Task<Order> AddOrder(Order order);
         public Task<Order> UpdateOrder(Order order);

@@ -11,7 +11,7 @@ namespace ExchangeGood.Contract.DTOs {
         public int OrderId { get; set; }
 
         public DateTime CreatedTime { get; set; }
-        
+        public DateTime UpdatedTime { get; set; }
         public decimal? TotalAmount { get; set; }
 
         public int? TotalOrderDetails { get; set; }

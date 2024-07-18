@@ -222,9 +222,10 @@ namespace ExchangeGood.Service.UseCase
             return await _orderRepository.GetAllOrdersByFeId(feId);
         }
 
-        public Task<Order> GetOrder(int orderId)
+        public async Task<Order> GetOrder(GetOrderRequest getOrderRequest)
         {
-            throw new NotImplementedException();
+            return await _orderRepository.GetOrder(getOrderRequest.OrderId,
+                x => x.BuyerId == getOrderRequest.FeId);
         }
 
 

@@ -45,7 +45,7 @@ namespace ExchangeGood.Repository.Mapper {
                 .ForMember(dest => dest.Origin, opt => opt.MapFrom(src => src.Product.Origin))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Product.Status))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Product.Type))
-                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => AvatarImage.GetImage(src.FeId)))
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => AvatarImage.GetImage(src.Product.FeId)))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Product.Images))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Product.Fe.UserName))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Product.Title))
@@ -57,6 +57,7 @@ namespace ExchangeGood.Repository.Mapper {
             CreateMap<Order, OrderDto>()
                 .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => src.OrderDetails))
                 .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.CreatedTime))
+                .ForMember(dest => dest.UpdatedTime, opt => opt.MapFrom(src => src.UpdatedTime))
                 .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalAmount))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));

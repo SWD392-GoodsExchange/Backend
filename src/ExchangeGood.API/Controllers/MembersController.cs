@@ -293,5 +293,16 @@ namespace ExchangeGood.API.Controllers {
             var notifications = await _memberService.GetNotificationsOfUser(feId);
             return Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<IEnumerable<NotificationDto>>(notifications)));
         }
+
+        [Authorize(Roles = nameof(Role.Member))]
+        [HttpGet("getorder")]
+        public async Task<IActionResult> GetOrderByOrderId([FromQuery] GetOrderRequest getOrderRequest)
+        {
+            getOrderRequest.FeId = User.GetFeID();
+            var order = await _orderService.GetOrder(getOrderRequest);
+            return order != null
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<OrderDto>(order)))
+                : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
     }
 }
