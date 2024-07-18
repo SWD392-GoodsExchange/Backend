@@ -14,10 +14,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExchangeGood.API.Controllers
 {
-	public class ReportController : BaseApiController
+	public class ReportsController : BaseApiController
 	{
 		private readonly IReportService _reportService;
-		public ReportController(IReportService reportService)
+		public ReportsController(IReportService reportService)
 		{
 			_reportService = reportService;
 		}
@@ -129,7 +129,7 @@ namespace ExchangeGood.API.Controllers
         [Authorize(Roles = nameof(Contract.Enum.Member.Role.Moderator))]
         public async Task<IActionResult> UpdateReportStatus(int reportId)
         {
-            var response = await _reportService.UpdateReportStatusRejected(reportId);
+             var response = await _reportService.UpdateReportStatusRejected(reportId);
             if (response != null)
             {
                 return Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, response));

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +15,31 @@ namespace ExchangeGood.DAO {
             _context = context;
         }
 
-        public async Task<Order> GetOrder(int orderId) {
+        public async Task<Order> GetOrder(int orderId, Expression<Func<Order, bool>>[] validateField)
+        {
             var order = await _context.Orders.FindAsync(orderId);
 
+            var query = _context.Orders.AsQueryable();
+            if (validateField != null)
+            {
+                foreach (var field in validateField)
+                {
+                    var compiledExpression = field.Compile();
+                    var isValid = compiledExpression(order);
+                    if (!isValid) return default;
+                }
+            }
+            
             if (order != null) {
                 await _context.Entry(order)
                     .Collection(i => i.OrderDetails).LoadAsync();
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    await _context.Entry(orderDetail)
+                        .Reference(od => od.Product)
+                        .LoadAsync();
+                }
             }
-
             return order;
         }
 

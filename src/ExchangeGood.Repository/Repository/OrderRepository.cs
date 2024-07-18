@@ -8,6 +8,7 @@ using ExchangeGood.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,11 @@ namespace ExchangeGood.Repository.Repository
         public OrderRepository(IUnitOfWork uow)
         {
             _uow = uow;
+        }
+
+        public async Task<Order> GetOrder(int orderId, params Expression<Func<Order, bool>>[] validateField)
+        {
+            return await _uow.OrderDAO.GetOrder(orderId,validateField);
         }
 
         public async Task<IEnumerable<Order>> GetAllOrdersByFeId(string feId)
@@ -47,11 +53,6 @@ namespace ExchangeGood.Repository.Repository
         public async Task<IEnumerable<Order>> GetAllOrders(string feId)
         {
             throw new NotImplementedException();
-        }
-
-        public async Task<Order> GetOrder(int orderId)
-        {
-            return await _uow.OrderDAO.GetOrder(orderId);
         }
     }
 }

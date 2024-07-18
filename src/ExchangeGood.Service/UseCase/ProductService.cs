@@ -32,6 +32,11 @@ namespace ExchangeGood.Service.UseCase
 
         public async Task<Product> AddProduct(CreateProductRequest createProductRequest)
         {
+            if (createProductRequest.Type.Equals(Contract.Enum.Product.Type.Trade.Name) &&
+                createProductRequest.Price.Equals("0"))
+            {
+                throw new BadRequestException("Price must be larger than 0");
+            }
             // Call third-party to create picture
             var result = await _photoService.AddPhotoAsync(createProductRequest.File);
             if (result.Error != null)

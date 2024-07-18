@@ -8,7 +8,6 @@ namespace ExchangeGood.Contract.Payloads.Request.Report
 {
 	public class CreateReportRequest
 	{
-		public int ReportId { get; set; }
 		public string FeId { get; set; }
 		public int ProductId { get; set; }
 		public string Message { get; set; }
