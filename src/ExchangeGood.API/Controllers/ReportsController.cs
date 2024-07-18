@@ -119,7 +119,7 @@ namespace ExchangeGood.API.Controllers
             var response = await _reportService.UpdateReportStatusApproved(reportId);
             if (response != null)
             {
-                return Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, response));
+                return Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG));
             }
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
         }
@@ -132,7 +132,7 @@ namespace ExchangeGood.API.Controllers
              var response = await _reportService.UpdateReportStatusRejected(reportId);
             if (response != null)
             {
-                return Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, response));
+                return Ok(BaseResponse.Success(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG));
             }
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
         }

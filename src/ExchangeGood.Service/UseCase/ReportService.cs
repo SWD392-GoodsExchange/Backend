@@ -127,7 +127,7 @@ namespace ExchangeGood.Service.UseCase
             var bodyBuilder = new BodyBuilder();
             bodyBuilder.HtmlBody = $@"
             <p>Dear {member.UserName},</p>
-            <p>We are pleased to inform you that your report to <strong>{productNamme}</strong> has been successfully sended to ExchangeGood.</p>
+            <p>We are pleased to inform you that your report to Product: <strong>{productNamme}</strong> has been successfully sended to ExchangeGood.</p>
             <p>Please, wait! Your report will be reviewed soon.</p>
             <p>Thank you for using our platform!</p>
             <p>Best regards,</p>
@@ -172,7 +172,8 @@ namespace ExchangeGood.Service.UseCase
             var bodyBuilder = new BodyBuilder();
             bodyBuilder.HtmlBody = $@"
             <p>Dear {member.UserName},</p>
-            <p>We are pleased to inform you that your report to <strong>{productNamme}</strong> has been successfully approved to ExchangeGood.</p>
+            <p>We are pleased to inform you that your report to Product: <strong>{productNamme}</strong> has been successfully approved to ExchangeGood.</p>
+            <p>If you have any feedbacks, please respond to this mail!</p>
             <p>Thank you for using our platform!</p>
             <p>Best regards,</p>
             <p>The ExchangeGood Team</p>
@@ -217,7 +218,8 @@ namespace ExchangeGood.Service.UseCase
             var bodyBuilder = new BodyBuilder();
             bodyBuilder.HtmlBody = $@"
             <p>Dear {member.UserName},</p>
-            <p>We are pleased to inform you that your report to <strong>{productNamme}</strong> has been successfully rejected to ExchangeGood.</p>
+            <p>We are pleased to inform you that your report to Product: <strong>{productNamme}</strong> has been successfully rejected to ExchangeGood.</p>
+            <p>If you have any feedbacks, please respond to this mail!</p>
             <p>Thank you for using our platform!</p>
             <p>Best regards,</p>
             <p>The ExchangeGood Team</p>
