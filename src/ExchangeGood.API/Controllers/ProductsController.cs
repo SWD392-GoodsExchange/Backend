@@ -71,7 +71,6 @@ namespace ExchangeGood.API.Controllers
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
-        [Authorize(Roles = nameof(Role.Member))]
         [HttpGet("category/{id}")]
         public async Task<IActionResult> GetProductsByCateId(int id)
         {
