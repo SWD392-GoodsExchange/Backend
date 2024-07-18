@@ -36,12 +36,12 @@ public class MemberRepository : IMemberRepository
 
     public async Task<Member> GetMemberById(string feId)
     {
-        var result = await _uow.MemberDAO.GetMemberById(feId);
+        var result = await _uow.MemberDAO.GetMemberById(feId,true);
         if (result == null)
         {
             return default;
         }
-
+    
         return result;
     }
 

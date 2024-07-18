@@ -142,6 +142,7 @@ public class MemberService : IMemberService
             UserName = member.UserName,
             Avatar = AvatarImage.GetImage(member.FeId),
             JwtToken = jwtToken,
+            RoleName = member.Role.RoleName,
             RefreshToken = refreshTokenString
         };
         return loginResponse;

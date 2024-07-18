@@ -36,7 +36,8 @@ namespace ExchangeGood.Service.Services
                 return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
             }
             // get User Name
-            string userName = (await _memberService.GetMemberByFeId(refreshTokenRequest.FeId)).UserName;
+            var member = await _memberService.GetMemberByFeId(refreshTokenRequest.FeId);
+            string userName = member.UserName;
             if (string.IsNullOrEmpty(userName))
             {
                 return BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_CREATE_MSG);
@@ -62,6 +63,7 @@ namespace ExchangeGood.Service.Services
                 FeId = refreshTokenRequest.FeId,
                 JwtToken = jwtToken,
                 UserName = userName,
+                RoleName = member.Role.RoleName,
                 Avatar = AvatarImage.GetImage(refreshToken.FeId),
                 RefreshToken = refreshTokenString
             };
