@@ -324,7 +324,7 @@ namespace ExchangeGood.API.Controllers {
                 : NotFound(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
-        [HttpGet("totalAccount")]
+        [HttpGet("totalAccounts")]
         public async Task<IActionResult> GetTotalAccount()
         {
             var result = await _memberService.GetTotalAccountsAsync();

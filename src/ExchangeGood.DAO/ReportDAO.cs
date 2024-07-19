@@ -34,7 +34,6 @@ namespace ExchangeGood.DAO
 				.Include(p => p.Product)
 				.AsQueryable();
 
-			// Add another logic later
 			if (!string.IsNullOrEmpty(keyword))
 			{
 				query = query.Where(x => x.Message.ToLower().Contains(keyword.ToLower().Trim()));
@@ -43,10 +42,8 @@ namespace ExchangeGood.DAO
 			query = orderBy switch
 			{
 				"created" => query.OrderByDescending(u => u.CreatedTime),
-				_ => query.OrderBy(u => u.ReportId) // Default ordering, change as needed
+				_ => query.OrderBy(u => u.ReportId) 
 			};
-
-			// Add thu tu cua list later
 
 			return query.AsNoTracking();
 		}
@@ -58,7 +55,6 @@ namespace ExchangeGood.DAO
                 .AsQueryable();
             query = query.Where(x => x.Status.Equals("Processing"));
 
-            // Add another logic later
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(x => x.Message.ToLower().Contains(keyword.ToLower().Trim()));
@@ -67,10 +63,9 @@ namespace ExchangeGood.DAO
             query = orderBy switch
             {
                 "created" => query.OrderByDescending(u => u.CreatedTime),
-                _ => query.OrderBy(u => u.ReportId) // Default ordering, change as needed
+                _ => query.OrderBy(u => u.ReportId) 
             };
 
-            // Add thu tu cua list later
 
             return query.AsNoTracking();
         }
@@ -83,7 +78,6 @@ namespace ExchangeGood.DAO
                 .AsQueryable();
             query = query.Where(x => x.Status.Equals("Approved"));
 
-            // Add another logic later
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(x => x.Message.ToLower().Contains(keyword.ToLower().Trim()));
@@ -92,10 +86,8 @@ namespace ExchangeGood.DAO
             query = orderBy switch
             {
                 "created" => query.OrderByDescending(u => u.CreatedTime),
-                _ => query.OrderBy(u => u.ReportId) // Default ordering, change as needed
+                _ => query.OrderBy(u => u.ReportId) 
             };
-
-            // Add thu tu cua list later
 
             return query.AsNoTracking();
         }
@@ -107,7 +99,7 @@ namespace ExchangeGood.DAO
                 .AsQueryable();
             query = query.Where(x => x.Status.Equals("Rejected"));
 
-            // Add another logic later
+      
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(x => x.Message.ToLower().Contains(keyword.ToLower().Trim()));
@@ -116,10 +108,8 @@ namespace ExchangeGood.DAO
             query = orderBy switch
             {
                 "created" => query.OrderByDescending(u => u.CreatedTime),
-                _ => query.OrderBy(u => u.ReportId) // Default ordering, change as needed
+                _ => query.OrderBy(u => u.ReportId)
             };
-
-            // Add thu tu cua list later
 
             return query.AsNoTracking();
         }
@@ -132,7 +122,6 @@ namespace ExchangeGood.DAO
                 .AsQueryable();
             query = query.Where(x => x.ProductId.Equals(Id));
 
-            // Add another logic later
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(x => x.Message.ToLower().Contains(keyword.ToLower().Trim()));
@@ -141,12 +130,16 @@ namespace ExchangeGood.DAO
             query = orderBy switch
             {
                 "created" => query.OrderByDescending(u => u.CreatedTime),
-                _ => query.OrderBy(u => u.ReportId) // Default ordering, change as needed
+                _ => query.OrderBy(u => u.ReportId) 
             };
 
-            // Add thu tu cua list later
 
             return query.AsNoTracking();
+        }
+
+        public async Task<int> GetTotalReportsAsync()
+        {
+            return await _context.Reports.CountAsync();
         }
 
         public void RemoveReport(Report report)

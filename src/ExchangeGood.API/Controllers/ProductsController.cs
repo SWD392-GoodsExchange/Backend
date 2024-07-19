@@ -104,7 +104,7 @@ namespace ExchangeGood.API.Controllers
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
         }
 
-        [HttpGet("totalProduct")]
+        [HttpGet("totalProducts")]
         public async Task<IActionResult> GetTotalProduct()
         {
             var result = await _productService.GetTotalProductsAsync();

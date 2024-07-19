@@ -129,5 +129,9 @@ namespace ExchangeGood.Repository.Repository
             return _mapper.Map<ReportDto>(existedReport);
         }
 
+        public async Task<int> GetTotalReportsAsync()
+        {
+            return await _uow.ReportDAO.GetTotalReportsAsync();
+        }
     }
 }

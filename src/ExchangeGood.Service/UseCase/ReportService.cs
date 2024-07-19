@@ -83,6 +83,11 @@ namespace ExchangeGood.Service.UseCase
             return await _reportRepository.GetReportsRejected(reportParam);
         }
 
+        public async Task<int> GetTotalReportsAsync()
+        {
+            return await _reportRepository.GetTotalReportsAsync();
+        }
+
         public async Task<ReportDto> UpdateReportStatusApproved(int reportId)
         {
             var report = await _reportRepository.GetReport(reportId);
