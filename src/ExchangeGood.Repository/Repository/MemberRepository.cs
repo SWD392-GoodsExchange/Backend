@@ -37,7 +37,7 @@ public class MemberRepository : IMemberRepository
 
     public async Task<Member> GetMemberById(string feId)
     {
-        var result = await _uow.MemberDAO.GetMemberById(feId,true);
+        var result = await _uow.MemberDAO.GetMemberById(feId,m => m.Role);
         if (result == null)
         {
             return default;
@@ -48,7 +48,7 @@ public class MemberRepository : IMemberRepository
 
     public async Task<Member> CheckLogin(LoginRequest loginRequest)
     {
-        var result = await _uow.MemberDAO.GetMemberById(loginRequest.FeId, true);
+        var result = await _uow.MemberDAO.GetMemberById(loginRequest.FeId, m => m.Role);
         if (result == null)
         {
             throw new MemberNotFoundException(loginRequest.FeId);
@@ -105,10 +105,12 @@ public class MemberRepository : IMemberRepository
             .Gender(createMemberRequest.Gender)
             .CreatedTime(DateTime.UtcNow)
             .UpdatedTime(DateTime.UtcNow)
+            .Dob(createMemberRequest.Dob)
             .Create();
         _uow.MemberDAO.Add(member);
         await _uow.SaveChangesAsync();
-        return member;
+        var returnMember = await _uow.MemberDAO.GetMemberById(createMemberRequest.FeId,m => m.Role);
+        return returnMember;
     }
 
     public async Task<Member> GetMemberByEmail(string email)

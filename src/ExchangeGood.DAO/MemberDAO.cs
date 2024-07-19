@@ -9,17 +9,18 @@ public class MemberDAO
     private readonly GoodsExchangeContext _context;
 
     public MemberDAO(GoodsExchangeContext context)
-    {
+    {   
         _context = context;
     }
 
-    public async Task<Member> GetMemberById(string feId, bool role = false)
+    public async Task<Member> GetMemberById(string feId,params Expression<Func<Member,object>>[] includeTables)
     {
         var query = _context.Members.Where(x => x.FeId == feId);
-        if (role)
-        {
-            query = query.Include(x => x.Role);
-        }
+        if(includeTables!= null)
+            foreach (var includeTable in includeTables)
+            {
+                query = query.Include(includeTable);
+            }
 
         return await query.FirstOrDefaultAsync();
     }

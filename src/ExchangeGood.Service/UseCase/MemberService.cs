@@ -60,6 +60,7 @@ public class MemberService : IMemberService
         bool result = false;
         // get refresh token
         var refreshToken = await _refreshTokenRepository.GetRefreshTokenByFeId(member.FeId);
+        // get member 
         // Gen token & refresh token
         var jwtToken = _jwtProvider.GenerateToken(member);
         var refreshTokenString = _jwtProvider.GenerateRefreshToken();
@@ -96,6 +97,7 @@ public class MemberService : IMemberService
             UserName = member.UserName,
             Avatar = AvatarImage.GetImage(member.FeId),
             JwtToken = jwtToken,
+            RoleName = member.Role.RoleName,
             RefreshToken = refreshTokenString
         };
 
