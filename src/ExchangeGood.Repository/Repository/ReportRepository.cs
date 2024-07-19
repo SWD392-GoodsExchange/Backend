@@ -133,5 +133,10 @@ namespace ExchangeGood.Repository.Repository
         {
             return await _uow.ReportDAO.GetTotalReportsAsync();
         }
+
+        public async Task<int> CountApprovedReportsForProduct(int productId)
+        {
+            return await _uow.ReportDAO.CountApprovedReportsByProductIdAsync(productId);
+        }
     }
 }

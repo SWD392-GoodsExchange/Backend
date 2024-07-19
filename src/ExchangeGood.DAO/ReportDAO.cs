@@ -151,5 +151,10 @@ namespace ExchangeGood.DAO
 		{
 			_context.Reports.Update(report);
 		}
-	}
+
+        public async Task<int> CountApprovedReportsByProductIdAsync(int productId)
+        {
+            return await _context.Reports.CountAsync(r => r.ProductId == productId && r.Status == "Approved");
+        }
+    }
 }
