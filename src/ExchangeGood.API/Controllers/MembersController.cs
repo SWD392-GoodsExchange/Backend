@@ -325,6 +325,7 @@ namespace ExchangeGood.API.Controllers {
         }
 
         [HttpGet("totalAccounts")]
+        [Authorize(Roles = nameof(Role.Admin))]
         public async Task<IActionResult> GetTotalAccount()
         {
             var result = await _memberService.GetTotalAccountsAsync();
