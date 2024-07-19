@@ -25,5 +25,8 @@ namespace ExchangeGood.Repository.Interfaces
         public Task<ReportDto> UpdateReportStatusRejected(int reportId);
         public Task<int> GetTotalReportsAsync();
         public Task DeleteReport(int reportId);
-	}
+
+        public Task<int> CountApprovedReportsForProduct(int productId);
+
+    }
 }

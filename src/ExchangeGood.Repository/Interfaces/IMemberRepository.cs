@@ -16,5 +16,6 @@ public interface IMemberRepository
     public Task<IEnumerable<Top3MemberDto>> GetTop3PostingProducts();
     public Task<IEnumerable<Top3MemberDto>> GetTop3PostingProductsTradeType();
     public Task<int> GetTotalAccountsAsync();
+    public Task UpdateMemberStatus(string feId);
 
 }

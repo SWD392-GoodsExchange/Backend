@@ -96,7 +96,16 @@ namespace ExchangeGood.Service.UseCase
             {
                 await SendReportUpdatedEmailApproved(report.FeId, product.Title);
 
-                return await _reportRepository.UpdateReportStatusApproved(reportId);
+                var updatedReport = await _reportRepository.UpdateReportStatusApproved(reportId);
+
+                int approvedReportCount = await _reportRepository.CountApprovedReportsForProduct(product.ProductId);
+
+                if (approvedReportCount >= 3)
+                {
+                    await _memberRepository.UpdateMemberStatus(product.FeId);
+                }
+
+                return updatedReport;
             }
 
             return null;

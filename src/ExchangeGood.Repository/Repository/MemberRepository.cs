@@ -5,6 +5,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ExchangeGood.Contract.Common;
 using ExchangeGood.Contract.DTOs;
+using ExchangeGood.Contract.Enum.Member;
 using ExchangeGood.Contract.Payloads.Request.Members;
 using ExchangeGood.DAO;
 using ExchangeGood.Data.Models;
@@ -132,5 +133,19 @@ public class MemberRepository : IMemberRepository
     public async Task<int> GetTotalAccountsAsync()
     {
         return await _uow.MemberDAO.GetTotalAccountsAsync();
+    }
+
+    public async Task UpdateMemberStatus(string feId)
+    {
+        var member = await _uow.MemberDAO.GetMemberById(feId);
+        if (member == null)
+        {
+            throw new MemberNotFoundException(feId);
+        }
+
+        member.Status = Status.Banned.Name;
+        _uow.MemberDAO.Update(member);
+
+        await _uow.SaveChangesAsync();
     }
 }
