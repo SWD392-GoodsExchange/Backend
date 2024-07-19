@@ -311,8 +311,8 @@ namespace ExchangeGood.API.Controllers {
         {
             var member = await _memberService.GetTop3PostingProducts();
             return member != null
-                ? Ok(member)
-                : NotFound();
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, member))
+                : NotFound(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
         [HttpGet("top3PostingProductsTradeType")]
@@ -320,8 +320,17 @@ namespace ExchangeGood.API.Controllers {
         {
             var member = await _memberService.GetTop3PostingProductsTradeType();
             return member != null
-                ? Ok(member)
-                : NotFound();
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, member))
+                : NotFound(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
+
+        [HttpGet("totalAccount")]
+        public async Task<IActionResult> GetTotalAccount()
+        {
+            var result = await _memberService.GetTotalAccountsAsync();
+            return result != 0
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result))
+                : NotFound(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
 
     }

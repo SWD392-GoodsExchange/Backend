@@ -29,5 +29,6 @@ public interface IMemberService
     Task<bool> RemoveNotification(int notificationId);
     Task<IEnumerable<Top3MemberDto>> GetTop3PostingProducts();
     Task<IEnumerable<Top3MemberDto>> GetTop3PostingProductsTradeType();
+    Task<int> GetTotalAccountsAsync();
 
 }

@@ -15,4 +15,6 @@ public interface IMemberRepository
     Task<Member> GetMemberByEmail(string email);
     public Task<IEnumerable<Top3MemberDto>> GetTop3PostingProducts();
     public Task<IEnumerable<Top3MemberDto>> GetTop3PostingProductsTradeType();
+    public Task<int> GetTotalAccountsAsync();
+
 }

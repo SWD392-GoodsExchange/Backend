@@ -126,4 +126,9 @@ public class MemberRepository : IMemberRepository
         var members = await _uow.MemberDAO.GetTop3MembersPostingProductsTradeType();
         return _mapper.Map<IEnumerable<Top3MemberDto>>(members);
     }
+
+    public async Task<int> GetTotalAccountsAsync()
+    {
+        return await _uow.MemberDAO.GetTotalAccountsAsync();
+    }
 }

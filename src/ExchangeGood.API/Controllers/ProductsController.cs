@@ -109,8 +109,8 @@ namespace ExchangeGood.API.Controllers
         {
             var result = await _productService.GetTotalProductsAsync();
             return result != 0
-                ? Ok(result)
-                : NotFound();
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result))
+                : NotFound(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
     }
 }
