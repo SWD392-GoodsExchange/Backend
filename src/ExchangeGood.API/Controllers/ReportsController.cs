@@ -138,6 +138,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpGet("totalReports")]
+        [Authorize(Roles = "Moderator,Admin")]
         public async Task<IActionResult> GetTotalProduct()
         {
             var result = await _reportService.GetTotalReportsAsync();

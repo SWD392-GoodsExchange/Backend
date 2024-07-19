@@ -105,6 +105,7 @@ namespace ExchangeGood.API.Controllers
         }
 
         [HttpGet("totalProducts")]
+        [Authorize(Roles = nameof(Role.Admin))]
         public async Task<IActionResult> GetTotalProduct()
         {
             var result = await _productService.GetTotalProductsAsync();
