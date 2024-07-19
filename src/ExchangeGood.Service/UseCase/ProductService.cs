@@ -218,6 +218,10 @@ namespace ExchangeGood.Service.UseCase
             }
         }
 
+        public async Task<int> GetTotalProductsAsync()
+        {
+            return await _productRepository.GetTotalProductsAsync();
+        }
     }
 }
 

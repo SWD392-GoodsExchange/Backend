@@ -100,6 +100,11 @@ namespace ExchangeGood.DAO {
 
             return query.AsNoTracking();
         }
+        public async Task<int> GetTotalProductsAsync()
+        {
+            return await _context.Products.CountAsync();
+        }
+
 
         public void RemoveProduct(Product product) {
             _context.Products.Remove(product);

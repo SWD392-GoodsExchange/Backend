@@ -20,5 +20,6 @@ namespace ExchangeGood.Repository.Interfaces {
         public Task<Product> AddProduct(CreateProductRequest productRequest);
         public Task<Product> UpdateProduct(UpdateProductRequest prodductRequest);
         public Task DeleteProduct(int productId);
+        public Task<int> GetTotalProductsAsync();
     } 
 }

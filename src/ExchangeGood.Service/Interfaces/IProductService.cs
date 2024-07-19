@@ -22,5 +22,7 @@ namespace ExchangeGood.Service.Interfaces {
         Task<Product> AddProduct(CreateProductRequest createProductRequest);
         Task<Product> UpdateProduct(UpdateProductRequest updateProductRequest);
         Task DeleteProduct(int ProductId);
-	}
+        Task<int> GetTotalProductsAsync();
+
+    }
 }
