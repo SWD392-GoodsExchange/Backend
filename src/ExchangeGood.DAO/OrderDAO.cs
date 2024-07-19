@@ -56,6 +56,8 @@ namespace ExchangeGood.DAO {
              return orderList;
         }
 
+
+
         public void AddOrder(Order order) {
             _context.Orders.Add(order);
         }

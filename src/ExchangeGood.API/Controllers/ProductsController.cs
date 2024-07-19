@@ -103,5 +103,14 @@ namespace ExchangeGood.API.Controllers
             }
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
         }
+
+        [HttpGet("totalProduct")]
+        public async Task<IActionResult> GetTotalProduct()
+        {
+            var result = await _productService.GetTotalProductsAsync();
+            return result != 0
+                ? Ok(result)
+                : NotFound();
+        }
     }
 }

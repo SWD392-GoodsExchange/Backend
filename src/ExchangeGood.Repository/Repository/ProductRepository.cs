@@ -118,5 +118,9 @@ namespace ExchangeGood.Repository.Repository
             return null;
         }
 
+        public async Task<int> GetTotalProductsAsync()
+        {
+            return await _uow.ProductDAO.GetTotalProductsAsync();
+        }
     }
 }
