@@ -13,4 +13,6 @@ public interface IMemberRepository
     public Task<bool> UpdatePassword(PasswordRequest passwordRequest);
     Task<Member> CreateMember(CreateMemberRequest createMemberRequest);
     Task<Member> GetMemberByEmail(string email);
+    public Task<IEnumerable<Top3MemberDto>> GetTop3PostingProducts();
+    public Task<IEnumerable<Top3MemberDto>> GetTop3PostingProductsTradeType();
 }

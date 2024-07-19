@@ -15,6 +15,9 @@ using MailKit.Net.Smtp;
 using ExchangeGood.Contract.Payloads.Request;
 using System.Security.Cryptography;
 using System.Text;
+using ExchangeGood.Repository.Repository;
+using ExchangeGood.DAO;
+using Newtonsoft.Json.Linq;
 
 namespace ExchangeGood.Service.UseCase;
 
@@ -27,6 +30,7 @@ public class MemberService : IMemberService
     private readonly INotificationRepository _notificationRepository;
     private readonly IJwtProvider _jwtProvider;
     private readonly SmtpSettings _smtpSetting;
+
 
     public MemberService(IMemberRepository memberRepository,
         IProductRepository productRepository,
@@ -400,5 +404,26 @@ public class MemberService : IMemberService
                 await client.DisconnectAsync(true);
             }
         }
+    }
+
+    public async Task<IEnumerable<Top3MemberDto>> GetTop3PostingProducts()
+    {
+        var members = await _memberRepository.GetTop3PostingProducts();
+        foreach (var member in members)
+        {
+            member.Avatar = AvatarImage.GetImage(member.FeId); 
+        }
+        return members;
+    }
+
+    public async Task<IEnumerable<Top3MemberDto>> GetTop3PostingProductsTradeType()
+    {
+        var members = await _memberRepository.GetTop3PostingProductsTradeType();
+
+        foreach (var member in members)
+        {
+            member.Avatar = AvatarImage.GetImage(member.FeId);
+        }
+        return members;
     }
 }
