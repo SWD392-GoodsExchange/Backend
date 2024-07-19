@@ -72,4 +72,35 @@ public class MemberDAO
         return await _context.Members.FirstOrDefaultAsync(m => m.Email == email);
     }
 
+
+    public async Task<IEnumerable<Member>> GetTop3MembersPostingProducts()
+    {
+        var query = _context.Members
+            .Select(member => new
+            {
+                Member = member,
+                ProductCount = member.Products.Count()
+            })
+            .OrderByDescending(m => m.ProductCount)
+            .Take(3)
+            .Select(m => m.Member);
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<IEnumerable<Member>> GetTop3MembersPostingProductsTradeType()
+    {
+        var query = _context.Members
+            .Select(member => new
+            {
+                Member = member,
+                ProductCount = member.Products.Count(p => p.Type == "Trade")
+            })
+            .OrderByDescending(m => m.ProductCount)
+            .Take(3)
+            .Select(m => m.Member);
+
+        return await query.ToListAsync();
+    }
+
 }

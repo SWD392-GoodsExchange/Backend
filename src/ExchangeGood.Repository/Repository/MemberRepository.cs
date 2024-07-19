@@ -114,4 +114,16 @@ public class MemberRepository : IMemberRepository
     {
         return await _uow.MemberDAO.GetMemberByEmail(email);
     }
+
+    public async Task<IEnumerable<Top3MemberDto>> GetTop3PostingProducts()
+    {
+        var members = await _uow.MemberDAO.GetTop3MembersPostingProducts();
+        return _mapper.Map<IEnumerable<Top3MemberDto>>(members);
+    }
+
+    public async Task<IEnumerable<Top3MemberDto>> GetTop3PostingProductsTradeType()
+    {
+        var members = await _uow.MemberDAO.GetTop3MembersPostingProductsTradeType();
+        return _mapper.Map<IEnumerable<Top3MemberDto>>(members);
+    }
 }

@@ -22,6 +22,7 @@ using System;
 using Azure.Core;
 using ExchangeGood.DAO;
 using ExchangeGood.Repository.Exceptions;
+using ExchangeGood.Service.UseCase;
 
 namespace ExchangeGood.API.Controllers {
     public class MembersController : BaseApiController {
@@ -304,5 +305,24 @@ namespace ExchangeGood.API.Controllers {
                 ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, _mapper.Map<OrderDto>(order)))
                 : BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
         }
+
+        [HttpGet("top3PostingProducts")]
+        public async Task<IActionResult> GetTop3PostingProducts()
+        {
+            var member = await _memberService.GetTop3PostingProducts();
+            return member != null
+                ? Ok(member)
+                : NotFound();
+        }
+
+        [HttpGet("top3PostingProductsTradeType")]
+        public async Task<IActionResult> GetTop3PostingProductsTradeType()
+        {
+            var member = await _memberService.GetTop3PostingProductsTradeType();
+            return member != null
+                ? Ok(member)
+                : NotFound();
+        }
+
     }
 }

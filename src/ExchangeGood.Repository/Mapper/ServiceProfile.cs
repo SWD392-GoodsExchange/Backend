@@ -27,7 +27,10 @@ namespace ExchangeGood.Repository.Mapper {
 			CreateMap<Member, MemberDto>();
 			CreateMap<Category, CategoryDto>();
 			CreateMap<Report, ReportDto>();
-			CreateMap<Notification, NotificationDto>()
+            CreateMap<Member, Top3MemberDto>();
+                
+
+            CreateMap<Notification, NotificationDto>()
                  .ForMember(dest => dest.AvatarSender, opt => opt.MapFrom(src => AvatarImage.GetImage(src.SenderId)))
                 .ReverseMap();
 			CreateMap<Image, ImageDto>();

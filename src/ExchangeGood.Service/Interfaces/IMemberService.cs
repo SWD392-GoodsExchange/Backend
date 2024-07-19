@@ -27,4 +27,7 @@ public interface IMemberService
     Task<Member> GetMemberByEmail(string email);
     Task<bool> ResetPassword(ResetPasswordRequest resetPasswordRequest);
     Task<bool> RemoveNotification(int notificationId);
+    Task<IEnumerable<Top3MemberDto>> GetTop3PostingProducts();
+    Task<IEnumerable<Top3MemberDto>> GetTop3PostingProductsTradeType();
+
 }
