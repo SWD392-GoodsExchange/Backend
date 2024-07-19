@@ -136,5 +136,14 @@ namespace ExchangeGood.API.Controllers
             }
             return BadRequest(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_UPDATE_MSG));
         }
+
+        [HttpGet("totalReports")]
+        public async Task<IActionResult> GetTotalProduct()
+        {
+            var result = await _reportService.GetTotalReportsAsync();
+            return result != 0
+                ? Ok(BaseResponse.Success(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result))
+                : NotFound(BaseResponse.Failure(Const.FAIL_CODE, Const.FAIL_READ_MSG));
+        }
     }
 }

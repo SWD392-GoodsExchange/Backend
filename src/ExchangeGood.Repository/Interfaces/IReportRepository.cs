@@ -23,7 +23,7 @@ namespace ExchangeGood.Repository.Interfaces
 		public Task<ReportDto> AddReport(CreateReportRequest reportRequest);
 		public Task<ReportDto> UpdateReportStatusApproved(int reportId);
         public Task<ReportDto> UpdateReportStatusRejected(int reportId);
-
+        public Task<int> GetTotalReportsAsync();
         public Task DeleteReport(int reportId);
 	}
 }
