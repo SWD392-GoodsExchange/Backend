@@ -103,4 +103,9 @@ public class MemberDAO
         return await query.ToListAsync();
     }
 
+    public async Task<int> GetTotalAccountsAsync()
+    {
+        return await _context.Members.CountAsync();
+    }
+
 }

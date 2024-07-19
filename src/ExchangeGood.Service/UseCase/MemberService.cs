@@ -426,4 +426,9 @@ public class MemberService : IMemberService
         }
         return members;
     }
+
+    public async Task<int> GetTotalAccountsAsync()
+    {
+        return await _memberRepository.GetTotalAccountsAsync();
+    }
 }
