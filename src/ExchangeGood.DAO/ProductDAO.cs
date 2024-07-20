@@ -113,5 +113,12 @@ namespace ExchangeGood.DAO {
         public void UpdateProduct(Product product) {
             _context.Products.Update(product);
         }
+
+        public async Task<IEnumerable<Product>> GetProductsByFeIdForReport(string feId)
+        {
+
+            var query = _context.Products.AsQueryable().Where(x => x.FeId == feId);
+            return await query.ToListAsync();
+        }
     }
 }
