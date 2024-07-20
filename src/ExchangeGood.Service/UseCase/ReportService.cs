@@ -117,6 +117,7 @@ namespace ExchangeGood.Service.UseCase
                     if (totalApprovedReportCount >= 3)
                     {
                         await _memberRepository.UpdateMemberStatus(product.FeId);
+                        await SendEmailBannedStatusMember(product.FeId);
                         break;
                     }
 
@@ -140,6 +141,51 @@ namespace ExchangeGood.Service.UseCase
                 return await _reportRepository.UpdateReportStatusRejected(reportId);
             }
             return null;
+        }
+
+        private async Task SendEmailBannedStatusMember(string feId)
+        {
+            var member = await _memberservice.GetMemberByFeId(feId);
+            if (member == null || string.IsNullOrEmpty(member.Email))
+            {
+                throw new Exception($"Member with FeId {feId} not found or has no email specified.");
+            }
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("ExchangeGood System", _smtpsetting.Username));
+            message.To.Add(new MailboxAddress(member.UserName, member.Email));
+            message.Subject = "New Report sended";
+
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.HtmlBody = $@"
+            <p>Dear {member.UserName},</p>
+            <p>We are unfortunately to inform you that you has been banned to use ExchangeGood.</p>
+            <p>If you have any feedbacks, please respond to this mail!</p>
+            <p>Thank you for using our platform!</p>
+            <p>Best regards,</p>
+            <p>The ExchangeGood Team</p>
+        ";
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    client.Connect(_smtpsetting.SmtpServer, _smtpsetting.Port, _smtpsetting.UseSsl);
+                    client.Authenticate(_smtpsetting.Username, _smtpsetting.Password);
+                    await client.SendAsync(message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to send email: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
+            }
         }
 
         private async Task SendReportAddedEmail(string feId, string productNamme)

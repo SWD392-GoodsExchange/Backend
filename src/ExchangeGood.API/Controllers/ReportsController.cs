@@ -84,7 +84,7 @@ namespace ExchangeGood.API.Controllers
 
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin))]
+        [Authorize(Roles = "Moderator,Admin")]
         public async Task<IActionResult> DeleteReport(int id)
         {
             var existingReport = await _reportService.GetReport(id);
@@ -98,7 +98,7 @@ namespace ExchangeGood.API.Controllers
 		}
 
 		[HttpPost]
-        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Member))]
+        [Authorize(Roles = "Moderator,Admin")]
         public async Task<IActionResult> CreateReport([FromBody] CreateReportRequest reportRequest)
         {
             var feId = User.GetFeID();
@@ -113,7 +113,7 @@ namespace ExchangeGood.API.Controllers
 
 
         [HttpPut("approved/{reportId}")]
-        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin))]
+        [Authorize(Roles = "Moderator,Admin")]
         public async Task<IActionResult> UpdateReportStatusApproved(int reportId)
         {
             var response = await _reportService.UpdateReportStatusApproved(reportId);
@@ -126,7 +126,7 @@ namespace ExchangeGood.API.Controllers
 
 
         [HttpPut("rejected/{reportId}")]
-        [Authorize(Roles = nameof(Contract.Enum.Member.Role.Admin))]
+        [Authorize(Roles = "Moderator,Admin")]
         public async Task<IActionResult> UpdateReportStatus(int reportId)
         {
              var response = await _reportService.UpdateReportStatusRejected(reportId);
