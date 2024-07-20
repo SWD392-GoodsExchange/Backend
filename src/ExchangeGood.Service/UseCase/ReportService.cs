@@ -98,11 +98,28 @@ namespace ExchangeGood.Service.UseCase
 
                 var updatedReport = await _reportRepository.UpdateReportStatusApproved(reportId);
 
-                int approvedReportCount = await _reportRepository.CountApprovedReportsForProduct(product.ProductId);
+                var products = await _productRepository.GetProductsByFeId(product.FeId);
 
-                if (approvedReportCount >= 3)
+
+                //int approvedReportCount = await _reportRepository.CountApprovedReportsForProduct(product.ProductId);
+
+                //if (approvedReportCount >= 3)
+                //{
+                //    await _memberRepository.UpdateMemberStatus(product.FeId);
+                //}
+
+                int totalApprovedReportCount = 0;
+
+                foreach (var prod in products)
                 {
-                    await _memberRepository.UpdateMemberStatus(product.FeId);
+                    int approvedReportCount = await _reportRepository.CountApprovedReportsForProduct(prod.ProductId);
+                    totalApprovedReportCount += approvedReportCount;
+                    if (totalApprovedReportCount >= 3)
+                    {
+                        await _memberRepository.UpdateMemberStatus(product.FeId);
+                        break;
+                    }
+
                 }
 
                 return updatedReport;

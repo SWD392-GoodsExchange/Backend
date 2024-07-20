@@ -122,5 +122,10 @@ namespace ExchangeGood.Repository.Repository
         {
             return await _uow.ProductDAO.GetTotalProductsAsync();
         }
+
+        public async Task<IEnumerable<Product>> GetProductsByFeIdForReport(string feId)
+        {
+            return await _uow.ProductDAO.GetProductsByFeIdForReport(feId);
+        }
     }
 }
